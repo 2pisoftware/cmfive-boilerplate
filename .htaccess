@@ -1,0 +1,12 @@
+<IfModule mod_headers.c>
+   RequestHeader unset Proxy
+</IfModule>
+
+Options All -Indexes
+
+# Turn on the RewriteEngine
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} !\.(jpg|png|ico|jpeg|gif|css|js)$
+RewriteRule ^(.*)$ /index.php [NC,L,QSA]

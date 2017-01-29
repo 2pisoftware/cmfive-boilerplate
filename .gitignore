@@ -1,0 +1,8 @@
+config.php
+
+# IDE Fluff
+.settings
+.buildpath
+.project
+.metadata
+.phpintel
