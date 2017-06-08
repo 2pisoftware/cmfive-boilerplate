@@ -1,0 +1,28 @@
+{
+    "name": "cmfive-boilerplate",
+    "version": "1.0",
+    "description": "A boilerplate project layout for Cmfive",
+    "require": {
+        "2pisoftware/cmfive-core": "dev-master"
+    },
+    "repositories": [
+        {
+            "type":"package",
+            "package": {
+            "name": "2pisoftware/cmfive-core",
+            "version":"master",
+            "source": {
+                "url": "https://github.com/2pisoftware/cmfive-core",
+                "type": "git",
+                "reference":"master"
+                }
+            }
+        }
+    ],
+    "scripts": {
+        "post-install-cmd": [
+            "php -r \"rename('vendor/2pisoftware/cmfive-core/system/', 'system/');\"",
+            "@composer install -d system/"
+        ]
+    }
+}

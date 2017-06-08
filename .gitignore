@@ -1,4 +1,5 @@
 config.php
+/system/
 
 # IDE Fluff
 .settings
@@ -6,3 +7,6 @@ config.php
 .project
 .metadata
 .phpintel
+
+# Composer
+/vendor/

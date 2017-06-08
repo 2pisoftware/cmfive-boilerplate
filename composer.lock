@@ -1,0 +1,31 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "c4462aaf7b7c32e50003fd0b5b1fb60f",
+    "packages": [
+        {
+            "name": "2pisoftware/cmfive-core",
+            "version": "master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/2pisoftware/cmfive-core",
+                "reference": "master"
+            },
+            "type": "library",
+            "time": "2017-06-06 00:14:48"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "2pisoftware/cmfive-core": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}
