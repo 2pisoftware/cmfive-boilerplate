@@ -22,7 +22,8 @@
     "scripts": {
         "post-install-cmd": [
             "php -r \"rename('vendor/2pisoftware/cmfive-core/system/', 'system/');\"",
-            "@composer install -d system/"
+            "php cmfive.php install",
+            "@composer update"
         ]
     }
 }
