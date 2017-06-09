@@ -50,6 +50,8 @@ echo exec('php composer.phar install');
 
 echo exec('cp -r composer/vendor/2pisoftware/cmfive-core/system system');
 
+echo exec('rm cache/config.cache');
+
 require('system/web.php');
 $w = new Web();
 
