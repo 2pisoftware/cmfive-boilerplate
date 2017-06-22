@@ -48,9 +48,9 @@ file_put_contents('./composer.json', json_encode($composer_json,JSON_PRETTY_PRIN
 
 echo exec('php composer.phar install');
 
-echo exec('cp -r composer/vendor/2pisoftware/cmfive-core/system system');
+echo exec('ln -s composer/vendor/2pisoftware/cmfive-core/system system');
 
-echo exec('rm cache/config.cache');
+echo exec('rm -f cache/config.cache');
 
 require('system/web.php');
 $w = new Web();
