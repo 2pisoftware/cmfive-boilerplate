@@ -8,3 +8,11 @@ system
 .project
 .metadata
 .phpintel
+nbproject/
+
+# Composer
+/composer/
+/vendor/
+composer.json
+composer.lock
+system
