@@ -1,5 +1,7 @@
 config.php
-
+composer/
+nbproject/
+system
 # IDE Fluff
 .settings
 .buildpath
