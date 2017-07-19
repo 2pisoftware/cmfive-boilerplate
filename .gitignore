@@ -1,7 +1,8 @@
-config.php
-composer/
-nbproject/
-system
+/config.php
+/cache/
+/lib/
+/uploads/
+
 # IDE Fluff
 .settings
 .buildpath
