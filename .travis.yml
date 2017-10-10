@@ -8,4 +8,5 @@ env:
 
 before_script:
   - mysql -e 'create database cmfive;'
+  - cp config.php.example config.php
   - php cmfive.php
