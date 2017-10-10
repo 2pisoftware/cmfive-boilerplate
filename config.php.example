@@ -18,10 +18,10 @@ Config::set("system.timezone", "Australia/Sydney");
 //========== Database Configuration ==========================
 
 Config::set("database", array(
-    "hostname"  => "localhost",
-    "username"  => "<username>",
-    "password"  => "<password>",
-    "database"  => "<database>",
+    "hostname"  => env('DB_HOST', "localhost"),
+    "username"  => env('DB_USERNAME', "<username>"),
+    "password"  => env('DB_PASSWORD', "<password>"),
+    "database"  => env('DB_DATABASE', "<database>"),
     "driver"    => "mysql"
 ));
 
