@@ -8,6 +8,4 @@ env:
 
 before_script:
   - mysql -e 'create database cmfive;'
-  - git clone https://github.com/2pisoftware/cmfive-boilerplate ~/cmfive
-  - cd ~/cmfive
   - php cmfive.php
