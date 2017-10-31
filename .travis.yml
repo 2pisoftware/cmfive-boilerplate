@@ -1,0 +1,11 @@
+language: php
+php:
+  - '7.0'
+  - '7.1'
+env:
+  - DB = mysql
+
+before_script:
+  - mysql -e 'create database cmfive;'
+  - cp config.php.example config.php
+  - php cmfive.php
