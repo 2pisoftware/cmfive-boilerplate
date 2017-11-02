@@ -9,6 +9,9 @@ addons:
   hosts:
     - cmfive.dev
 
+sudo:
+  - required
+
 before_script:
   - mysql -e 'create database cmfive;'
   - cp config.php.example config.php
