@@ -5,7 +5,7 @@ echo "Cloning testrunner...\n\n";
 echo exec('git clone https://iceaxelihne@bitbucket.org/2pisoftware/selenium-testrunner.git selenium-testrunner');
 echo "moving to repo directory...\n\n";
 chdir('selenium-testrunner');
-echo exec('ls');
+echo exec('ls ../');
 echo "\n\n";
 require_once("Testrunner_class.php");
 Testrunner::output("testrunner found", Testrunner::SUCCESS);
