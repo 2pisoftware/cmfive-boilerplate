@@ -11,7 +11,7 @@ require_once("Testrunner_class.php");
 Testrunner::output("testrunner found", Testrunner::SUCCESS);
 echo "\n\n";
 echo "Running tests...\n\n";
-echo exec('sudo php test_runner.php ~/build/iceaxeliehne/cmfive-boilerplate/ http://localhost:8000');
+echo exec('sudo php test_runner.php ~/build/iceaxeliehne/cmfive-boilerplate/ http://127.0.0.1');
 
 
 ?>
