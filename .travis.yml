@@ -13,6 +13,8 @@ before_script:
   - sed -i 's/<database>/cmfive/' config.php
   - php cmfive.php install core
   - php cmfive.php install migrations
-  - php test_installer.php 
+  
  # - git clone https://iceaxelihne@bitbucket.org/2pisoftware/selenium-testrunner.git
 
+script:
+  - php test_installer.php 
