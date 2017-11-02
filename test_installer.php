@@ -19,7 +19,7 @@ exec("apt-get install xvfb");
 exec("xvfb-run -a $current_path/firefox/firefox -CreateProfile 'test_runner $current_path/firefox-profile'");
 echo "\n\n";
 echo "Running tests...\n\n";
-echo exec('sudo $(which php) test_runner.php ~/build/iceaxeliehne/cmfive-boilerplate/ http://cmfive.dev false isaac@2pisoftware.com');
+echo exec('$(which php) test_runner.php ~/build/iceaxeliehne/cmfive-boilerplate/ http://cmfive.dev false isaac@2pisoftware.com');
 echo "finshed...\n\n";
 
 
