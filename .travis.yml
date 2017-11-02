@@ -8,7 +8,8 @@ env:
 before_script:
   - mysql -e 'create database cmfive;'
   - cp config.php.example config.php
-  - php cmfive.php
+  - php cmfive.php install core
+  - php cmfive.php install migrations
   - php test_installer.php
  # - git clone https://iceaxelihne@bitbucket.org/2pisoftware/selenium-testrunner.git
 
