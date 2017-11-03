@@ -24,4 +24,5 @@ before_script:
  # - git clone https://iceaxelihne@bitbucket.org/2pisoftware/selenium-testrunner.git
 
 script:
-  - php test_installer.php 
+  - bash install-dependancies.sh
+   
