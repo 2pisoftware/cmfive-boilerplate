@@ -6,7 +6,7 @@ tar -xjvf firefox-47.0.1.tar.bz2
 wget http://selenium-release.storage.googleapis.com/2.53/selenium-server-standalone-2.53.1.jar -P ./
 apt-get install xvfb
 xvfb-run -a $current_path/firefox/firefox -CreateProfile 'test_runner $current_path/firefox-profile'
-sudo php test_runner.php ~/build/iceaxeliehne/cmfive-boilerplate/ http://cmfive.dev false isaac@2pisoftware.com
+php test_runner.php ~/build/iceaxeliehne/cmfive-boilerplate/ http://cmfive.dev false isaac@2pisoftware.com
 
 
 
