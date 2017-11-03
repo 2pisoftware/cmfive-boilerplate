@@ -14,7 +14,7 @@ echo "installing firefox...\n\n";
 exec("wget https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/47.0.1/linux-x86_64/en-US/firefox-47.0.1.tar.bz2");
 exec("tar -xjvf firefox-47.0.1.tar.bz2");
 echo "installing selenium server...\n\n";
-exec("wget http://selenium-release.storage.googleapis.com/2.53/selenium-server-standalone-2.53.1.jar -P ./");
+exec("sudo wget http://selenium-release.storage.googleapis.com/2.53/selenium-server-standalone-2.53.1.jar -P ./");
 exec("apt-get install xvfb");
 exec("xvfb-run -a $current_path/firefox/firefox -CreateProfile 'test_runner $current_path/firefox-profile'");
 echo "\n\n";
