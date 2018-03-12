@@ -19,10 +19,12 @@ if ($argc == 3) {
                     exit(0);
                 default:
                     echo "\nUnknown command\n";
+                    exit(0);
             }
             break;
         default:
             echo "\nUnknown command\n";
+            exit(0);
     }
 }
 
