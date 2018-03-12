@@ -81,11 +81,17 @@ COMPOSER;
 
     echo exec('php composer.phar install');
 
-    echo exec('ln -s composer/vendor/2pisoftware/cmfive-core/system system');
+    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        echo exec('mklink /D system composer\vendor\2pisoftware\cmfive-core\system');
+        echo exec('del .\cache\config.cache');
+    } else {
+        echo exec('ln -s composer/vendor/2pisoftware/cmfive-core/system system');
+        echo exec('rm -f cache/config.cache');
+    }
 
-    echo exec('rm -f cache/config.cache');
-
-    require('system/web.php');
+    if (!class_exists('Web')) {
+        require('system/web.php');
+    }
     $w = new Web();
 
     $dependencies_array = array();
@@ -103,11 +109,18 @@ COMPOSER;
 }
 
 function installMigrations() {
-    echo exec('rm -f cache/config.cache');
+    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        echo exec('del .\cache\config.cache');
+    } else {
+        echo exec('rm -f cache/config.cache');
+    }
 
-    require('system/web.php');
+    if (!class_exists('Web')) {
+        require('system/web.php');
+    }
     $w = new Web();
     $w->initDB();
+    $w->startSession();
 
     try {
         $w->Migration->installInitialMigration();
@@ -120,18 +133,61 @@ function installMigrations() {
 
 function seedAdminUser() {
 
+    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        echo exec('del .\cache\config.cache');
+    } else {
+        echo exec('rm -f cache/config.cache');
+    }
+
+    if (!class_exists('Web')) {
+        require('system/web.php');
+    }
+    $w = new Web();
+    $w->initDB();
+
+    // Set up fake session to stop warnings
+    $_SESSION = [];
+
+    $admin_contact = new Contact($w);
+    $admin_contact->firstname = readConsoleLine("Enter first name: ");
+    $admin_contact->lastname = readConsoleLine("Enter last name: ");
+    $admin_contact->email = readConsoleLine("Enter email address: ");
+    $admin_contact->insert();
+
+    $admin_user = new User($w);
+    $admin_user->contact_id = $admin_contact->id;
+    $admin_user->login = readConsoleLine("Enter admin login: ");
+    $admin_user->is_admin = 1;
+    $admin_user->is_active = 1;
+    $admin_user->insert();
+
+    $admin_user->setPassword(readConsoleLine("Enter admin password: "));
+    $admin_user->update();
+
+    $user_role = new UserRole($w);
+    $user_role->user_id = $admin_user->id;
+    $user_role->role = "user";
+    $user_role->insert();
+
+    echo "\nAdmin user setup successful\n\n";
+}
+
+function readConsoleLine($prompt = "Command: ") {
+    $command = '';
+    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        echo $prompt;
+        $command = stream_get_line(STDIN, 1024, PHP_EOL);
+    } else {
+        $command = readline($prompt);
+    }
+
+    return $command;
 }
 
 while(true) {
     printMenu();
 
-    $command = '';
-    if (PHP_OS == 'WINNT') {
-        echo 'Command: ';
-        $command = stream_get_line(STDIN, 1024, PHP_EOL);
-    } else {
-        $command = readline('Command: ');
-    }
+    $command = readConsoleLine();
 
     switch(intval($command)) {
         case 1:
