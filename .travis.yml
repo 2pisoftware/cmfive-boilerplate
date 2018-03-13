@@ -3,7 +3,7 @@ php:
   - '7.0'
   - '7.1'
 env:
-  - DB=mysql DB_HOST=localhost DB_USERNAME=travis DB_PASSWORD='' DB_DATABASE=cmfive
+  - DB=mysql DB_HOST=localhost DB_USERNAME=root DB_PASSWORD='' DB_DATABASE=cmfive
 
 before_script:
   - mysql -e 'create database cmfive;'
