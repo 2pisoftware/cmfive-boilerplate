@@ -120,7 +120,8 @@ function installMigrations() {
     }
     $w = new Web();
     $w->initDB();
-    $w->startSession();
+    // $w->startSession();
+    $_SESSION = [];
 
     try {
         $w->Migration->installInitialMigration();
