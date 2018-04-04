@@ -10,4 +10,4 @@ before_script:
   - cp config.php.example config.php
   - php cmfive.php install core
   - php cmfive.php install migrations
-  - cd composer/vendor/monolog/monolog/
+  - cd composer/
