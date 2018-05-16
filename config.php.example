@@ -18,11 +18,11 @@ Config::set("system.timezone", "Australia/Sydney");
 //========== Database Configuration ==========================
 
 Config::set("database", array(
-    "hostname"  => "localhost",
-    "username"  => "<username>",
-    "password"  => "<password>",
-    "database"  => "<database>",
-    "driver"    => "mysql"
+    "hostname"  => getenv('DB_HOST') ? : "localhost",
+    "username"  => getenv('DB_USERNAME') ? : "<username>",
+    "password"  => getenv('DB_PASSWORD') ? : "<password>",
+    "database"  => getenv('DB_DATABASE') ? : "<database>",
+    "driver"    => getenv('DB') ? : "mysql"
 ));
 
 //=========== Email Layer Configuration =====================
