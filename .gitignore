@@ -10,6 +10,7 @@
 .metadata
 .phpintel
 nbproject/
+.vscode/
 
 # Composer
 /composer/
