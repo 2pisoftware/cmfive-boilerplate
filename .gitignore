@@ -11,6 +11,7 @@
 .phpintel
 nbproject/
 .vscode/
+.vs/
 
 # Composer
 /composer/
