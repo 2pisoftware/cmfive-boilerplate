@@ -41,6 +41,7 @@ function printMenu() {
     echo " 1) Install core libraries\n";
     echo " 2) Install database migrations\n";
     echo " 3) Seed admin user\n";
+    echo " 4) Generate encryption keys\n";
     echo " 0) Exit\n";
 }
 
@@ -173,6 +174,26 @@ function seedAdminUser() {
     echo "\nAdmin user setup successful\n\n";
 }
 
+function generateEncryptionKeys() {
+    $key_token = '';
+    $key_iv = '';
+
+    if (PHP_VERSION_ID >= 70000) {
+        $key_token = random_bytes(32);
+        $key_iv = random_bytes(8);
+    } else {
+        $key_token = openssl_random_pseudo_bytes(32);
+        $key_iv = openssl_random_pseudo_bytes(8);
+    }
+
+    $key_token = bin2hex($key_token);
+    $key_iv = bin2hex($key_iv);
+
+    echo "Encryption keys generated\n";
+    file_put_contents('config.php', "\nConfig::set('system.encryption', [\n\t'key' => '{$key_token}',\n\t'iv' => '{$key_iv}'\n]);", FILE_APPEND);
+    echo "Keys written to project config\n\n";
+}
+
 function readConsoleLine($prompt = "Command: ") {
     $command = '';
     if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
@@ -192,19 +213,20 @@ while(true) {
 
     switch(intval($command)) {
         case 1:
-            echo "Installing core libraries...\n";
-            echo "\n";
+            echo "Installing core libraries...\n\n";
             installCoreLibraries();
             break;
         case 2:
-            echo "Installing migrations...\n";
-            echo "\n";
+            echo "Installing migrations...\n\n";
             installMigrations();
             break;
         case 3:
-            echo "Setting up admin user...\n";
-            echo "\n";
+            echo "Setting up admin user...\n\n";
             seedAdminUser();
+            break;
+        case 4:
+            echo "Generating encryption keys...\n\n";
+            generateEncryptionKeys();
             break;
         case 0:
             echo "Exiting...";
