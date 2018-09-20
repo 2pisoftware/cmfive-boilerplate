@@ -4,7 +4,7 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-if ($argc == 3) {
+if ($argc >= 3) {
     switch($argv[1]) {
         case "install":
             switch($argv[2]) {
@@ -22,9 +22,24 @@ if ($argc == 3) {
                     exit(0);
             }
             break;
+        case "seed":
+            switch($argv[2]) {
+                case "admin":
+                    if ($argc < 8) {
+                        echo "Error: missing required number of parameters to seed user\nUsage: php cmfive.php seed admin '<firstname>' '<surname>' '<email>' '<username>' '<password>'";
+                        exit(1);
+                    }
+
+                    echo "Seeding admin user...\n\n";
+                    seedAdminUser(array_slice($argv, 3));
+                    exit(0);
+                default:
+                    echo "Unknown seed command\n";
+                    exit(1);
+            }
         default:
             echo "\nUnknown command\n";
-            exit(0);
+            exit(1);
     }
 }
 
@@ -133,7 +148,7 @@ function installMigrations() {
     }
 }
 
-function seedAdminUser() {
+function seedAdminUser($parameters = []) {
 
     if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
         echo exec('del .\cache\config.cache');
@@ -151,19 +166,19 @@ function seedAdminUser() {
     $_SESSION = [];
 
     $admin_contact = new Contact($w);
-    $admin_contact->firstname = readConsoleLine("Enter first name: ");
-    $admin_contact->lastname = readConsoleLine("Enter last name: ");
-    $admin_contact->email = readConsoleLine("Enter email address: ");
+    $admin_contact->firstname = !empty($parameters[0]) ? $parameters[0] : readConsoleLine("Enter first name: ");
+    $admin_contact->lastname = !empty($parameters[1]) ? $parameters[1] : readConsoleLine("Enter last name: ");
+    $admin_contact->email = !empty($parameters[2]) ? $parameters[2] : readConsoleLine("Enter email address: ");
     $admin_contact->insert();
 
     $admin_user = new User($w);
     $admin_user->contact_id = $admin_contact->id;
-    $admin_user->login = readConsoleLine("Enter admin login: ");
+    $admin_user->login = !empty($parameters[3]) ? $parameters[3] : readConsoleLine("Enter admin login: ");
     $admin_user->is_admin = 1;
     $admin_user->is_active = 1;
     $admin_user->insert();
 
-    $admin_user->setPassword(readConsoleLine("Enter admin password: "));
+    $admin_user->setPassword(!empty($parameters[4]) ? $parameters[4] : readConsoleLine("Enter admin password: "));
     $admin_user->update();
 
     $user_role = new UserRole($w);
@@ -171,7 +186,7 @@ function seedAdminUser() {
     $user_role->role = "user";
     $user_role->insert();
 
-    echo "\nAdmin user setup successful\n\n";
+    echo "Admin user setup successful\n";
 }
 
 function generateEncryptionKeys() {
