@@ -1,0 +1,49 @@
+
+TestRunner (boilerplate/cmfiveTests.php) will seek from:
+'PROJECT_MODULE_DIRECTORY' (testing CRM)
+'SYSTEM_MODULE_DIRECTORY' (testing CORE)
+
+Finding folders [module]/tests:
+
+  - acceptance:
+     location for this module's 'Cest' tests
+     can be several files & several tests per file
+     eg: someTestsCest.php
+
+  - acceptance/helpers
+     generic usefull functions supporting the module
+     exposed in 'actor' to all tests for all modules
+     does not contain 'actor' so needs to be passed "$I" by test code
+     eg: Helper implements -->  function login($I,$username,$password) 
+         Any Cest can say --> $I->login($I,$username,$password);
+
+  - acceptance/steps
+     allow extension to 'actor' specifically for this module's 'Cest' tests
+     controls actor by "$this->" and exposes as "$I->" in Cest code
+     eg: Cest implements -->  function testAnAspect(\Step\Acceptance\[NameOfStepActorClass] $I) 
+         Cest has $I with functions from acceptance/steps/[NameOfStepActorClass].php
+         Step implements -->  function doSpecialModuleThing($withThis,$andThat)
+         Cest can say --> $I->doSpecialModuleThing($thisIs,$thatWas)
+
+TestRunner also provides:
+'BOILERPLATE_TEST_DIRECTORY' (testing CM5/$WEB)
+
+Finding folder [boilerplate]:
+
+  - CmfiveUI.php:
+     base class of all test actors per acceptance.suite.dist.yml
+     generic usefull functions related to page elements, CSS, conversions, Cmfive housekeeping
+     nothing module specific in here!
+
+  - acceptance:
+     basic 'Cest' to confirm CM5 is up
+
+  - acceptance/steps
+     none needed
+
+  - acceptance/helpers
+     "CmfiveSite.php" containing universal support for all modules
+     eg: login , clickCmfiveNavbar
+
+
+------------------------------------------------------------------------------

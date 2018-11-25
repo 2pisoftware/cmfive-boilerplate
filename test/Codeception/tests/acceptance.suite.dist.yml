@@ -1,0 +1,27 @@
+
+# Codeception Test Suite Configuration
+#
+# Suite for acceptance tests.
+# Perform tests in browser using the WebDriver or PhpBrowser.
+# If you need both WebDriver and PHPBrowser tests - create a separate suite.
+
+class_name: CmfiveUI
+
+modules:
+  enabled:
+    - WebDriver:
+        url: http://cmfive.local
+        browser: chrome
+        wait: 60
+        port: 4444 
+        
+#extensions:
+#  enabled:
+#    - Codeception\Extension\RunProcess:
+#       - cd C:\cm5\cmfive-boilerplate && php cmfive.php install migrations 
+
+
+ 
+
+
+  

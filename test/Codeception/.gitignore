@@ -1,0 +1,14 @@
+
+!.gitignore
+
+/tests/_support/
+/tests/_output/
+/tests/acceptance
+/tests/acceptance.suite.yml
+
+### Composer ###
+composer.phar
+composer.lock
+/vendor/
+
+
