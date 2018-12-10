@@ -138,7 +138,7 @@ function chaseModules($module_name) {
     $w = new Web();
     $w->initDB();
     // $w->startSession();
-    $_SESSION = [];
+    // $_SESSION = [];
 
     	// Read all modules directories for any tests that need to be copied over
 		if ($module_name === 'all') {

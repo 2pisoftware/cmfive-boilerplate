@@ -1,9 +1,47 @@
 
+*** Pull Codeception test branch cm5 boilerplate&core from git
+*** Make sure Webdriver service is running (see cmfive-boilerplate\test\Codeception\readme.md)
+
+
+---------------------------------------------------------------------
+TestRunner for Codeception:
+---------------------------------------------------------------------
+
+From "boilerplate", use cmfiveTest.php.
+Can do:
+ - execute cmfiveTests.php
+   - build & show all tests
+ - execute cmfiveTests.php run 
+   - build & run all tests
+- execute cmfiveTests.php run [module]_[MyTest]Cest.php
+   - build all but run only [MyTest]
+- eg: execute cmfiveTests.php run boilerplate_HelperCest.php
+   - build all and show all currently available Cest helper functions
+
+Extend with:
+cmfive-boilerplate\test\Codeception\tests\boilerplate\CmfiveUI.php
+    --> base actor for all tests --> add functions supporting component/CSS level (not module actions!)
+cmfive-boilerplate\test\Codeception\tests\boilerplate\acceptance\helpers\CmfiveSite.php
+    --> base helper for all tests --> add functions related to instances & services (not CM5 features!)
+
+Make tests:
+General folder layout for tests (see cmfive-boilerplate\system\modules\admin\tests)
+ /acceptance --> main Codeception test container
+    - [MyTest]Cest.php files go in here
+ /acceptance/helpers 
+    - helpers go in here to be shared with other modules
+ /acceptance/steps
+    - custom actors go in here if needed, not shared with other modules
+
+---------------------------------------------------------------------
+TestRunner mechanical details:
+---------------------------------------------------------------------
+
 TestRunner (boilerplate/cmfiveTests.php) will seek from:
 'PROJECT_MODULE_DIRECTORY' (testing CRM)
 'SYSTEM_MODULE_DIRECTORY' (testing CORE)
 
-Finding folders [module]/tests:
+Finding folders system/[module]/tests:
 
   - acceptance:
      location for this module's 'Cest' tests
@@ -26,6 +64,15 @@ Finding folders [module]/tests:
          Cest can say --> $I->doSpecialModuleThing($thisIs,$thatWas)
 
 TestRunner also provides:
+'WORKFLOWS_TEST_DIRECTORY' (abstract compound tests on CORE)
+
+Finding folders system/tests/[workflows]:
+
+  - acceptance
+  - acceptance/helpers
+  - acceptance/steps
+
+And:
 'BOILERPLATE_TEST_DIRECTORY' (testing CM5/$WEB)
 
 Finding folder [boilerplate]:
