@@ -6,6 +6,8 @@
 /tests/acceptance
 /tests/acceptance.suite.yml
 
+codeception.yml
+
 ### Composer ###
 composer.phar
 composer.lock
