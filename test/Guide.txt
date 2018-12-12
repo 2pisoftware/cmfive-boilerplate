@@ -1,5 +1,6 @@
 
 *** Pull Codeception test branch cm5 boilerplate&core from git
+*** Setup Codeception
 *** Make sure Webdriver service is running (see cmfive-boilerplate\test\Codeception\readme.md)
 
 
