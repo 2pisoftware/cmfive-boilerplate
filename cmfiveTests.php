@@ -26,6 +26,14 @@ defined('SHARED_CORE') || define('SHARED_CORE', 'workflows');
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
+// so we can find modules & some CM5 functions...
+if (!class_exists('Web')) {
+    require('system/web.php');
+}
+
+// before anything else happens, check testrunner is allowed!
+allowRunner();
+
 // consider more&better options:
 // - purge all YES/NO
 // - run one only .php by name
@@ -57,6 +65,13 @@ if ($argc > 1) {
         }
     }     
    
+
+function allowRunner()  {
+    $w = new Web();
+    if((Config::get('tests'))["testrunner" ]=="ENABLED"){return;}; 
+    echo "\nTESTRUNNER IS NOT ENABLED\n";
+    die();
+}
 
 function launchCodecept($param) {
       try {
@@ -132,9 +147,7 @@ function chaseModules($module_name) {
     
     $moduleCapabilities = [];
 
-    if (!class_exists('Web')) {
-        require('system/web.php');
-    }
+    
     $w = new Web();
     $w->initDB();
     // $w->startSession();

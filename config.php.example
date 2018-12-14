@@ -37,6 +37,12 @@ Config::append('email', array(
     "password"	=> '<password>',
 ));
 
+//========== TestRunner Configuration ==========================
+//========== must be "ENABLED" to run ==========================
+Config::set("tests", array(
+    "testrunner"  => ""
+));
+
 //======= define openssl encryption key and initialization vector ============
 Config::set('system.encryption', [
     'key' => '',
