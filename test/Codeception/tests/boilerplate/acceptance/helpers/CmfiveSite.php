@@ -14,7 +14,7 @@ class CmfiveSite extends \Codeception\Module
       echo "\n\nRIGHT NOW I SHOULD RESET ALL MYSQL TABLES\n\n";
     }
 
-    public function login($I,$username,$password) {
+    public function login($I, $username,$password) {
         $I->amOnPage('/auth/login');
         // skip form filling if already logged in
         if (strpos('/auth/login',$I->grabFromCurrentUrl())!==false) {
@@ -24,16 +24,18 @@ class CmfiveSite extends \Codeception\Module
             $I->click('Login');
     }
   }
+  	public function logout($I) {
+		$I->amOnPage('/auth/logout');
+	}
 
 
   public function clickCmfiveNavbar($I,$category,$link) {
         $I->click($category,"section.top-bar-section ul.left");
         $I->moveMouseOver(['css' => '#topnav_'.strtolower($category)]);
         $I->waitForText($link);
-    $I->wait(.5);
-        $I->click($link);
+        $I->click($link, '#topnav_'.strtolower($category));
     }
-	
+
   public function waitForBackendToRefresh($I) {
     $I->waitForElementNotVisible('.loading_overlay',14);
   }

@@ -2,26 +2,27 @@
 1) Clone/pull/download: https://github.com/2pisoftware/cmfive-boilerplate/tree/feature/codeceptionTesting
  - Position it nicely for WebServer to find
  - Make symlinks etc as required
- - Apply other usual CM5 setup steps!
- 
+ - Apply other usual cmfive setup steps!
+
 2) Have a fresh "composer.phar" in --> cmfive-boilerplate\test\Codeception
-3) Execute in --> cmfive-boilerplate\test\Codeception : "php composer.phar require codeception/codeception --dev" 
+3) Execute in --> cmfive-boilerplate\test\Codeception : "php composer.phar require codeception/codeception --dev"
+   'n' to opt to use a composer.json unique to tests (wont be overwritten when the system generates a new composer.json)
 4) Execute in --> cmfive-boilerplate\test\Codeception : "vendor/bin/codecept bootstrap"
  - make sure there is no 'old' cmfive-boilerplate\test\Codeception\codeception.yml --> delete it first if you see one
- 
+
 5) Check suitability for versions & OS of Selenium support in --> cmfive-boilerplate\test\Services
  - ready to go for Windows/Chrome = run "LaunchChromeSelenium.bat"
- 
-5) Check cmfive-boilerplate\test\Codeception\tests\acceptance.suite.dist.yml:
-			"modules:
-			  enabled:
-				- WebDriver:
-					url: http://cmfive.local
-					browser: chrome
-					wait: 60
-					port: 4444 "
- - needs to match your CM5_WebServer & Browser & WebDriver
- 
+
+5) Check cmfive-boilerplate\test\Codeception\tests\acceptance.suite.yml:
+	"modules:
+	  enabled:
+		- WebDriver:
+			url: http://cmfive.local
+			browser: chrome
+			wait: 60
+			port: 4444 "
+ - needs to match your cmfive WebServer & Browser & WebDriver
+
  6) Execute in --> cmfive-boilerplate:
   - "php cmfiveTests.php" to see TestRunner collect & build all module tests
   - "php cmfiveTests.php run boilerplate_HelperCest.php" to see TestRunner launch 'self test' & show all Helper functions

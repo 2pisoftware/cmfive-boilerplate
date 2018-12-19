@@ -19,7 +19,7 @@ defined('HELP_DIRECTORY') || define('HELP_DIRECTORY', DS .'acceptance'. DS .'hel
 defined('CEST_DESTINATION') || define('CEST_DESTINATION',   TEST_DIRECTORY . DS . 'tests' . DS .'acceptance');
 defined('STEP_DESTINATION') || define('STEP_DESTINATION',   TEST_DIRECTORY . DS . 'tests' . DS .'_support'. DS .'step'. DS .'acceptance');
 defined('HELP_DESTINATION') || define('HELP_DESTINATION',   TEST_DIRECTORY . DS . 'tests' . DS .'_support'. DS .'Helper');
- 
+
 defined('SHARED_SOURCE') || define('SHARED_SOURCE', 'boilerplate');
 defined('SHARED_CORE') || define('SHARED_CORE', 'workflows');
 
@@ -39,56 +39,56 @@ allowRunner();
 // - run one only .php by name
 // - add Codecept params: build/--debug/--steps etc.
 // - NICE would be to list all functions in Helpers!
-// purge&rebuild all but run for only single Cest? 
+// purge&rebuild all but run for only single Cest?
     // longhand command look like:
     // launchCodecept("run acceptance boilerplate_BoilerCest.php --steps --debug");
 
 purgeTestCode();
 $found=chaseModules("all");
 registerHelpers($found);
-reportModules($found); 
+reportModules($found);
 
 
 echo "\n --- To launch: --- \ncmfiveTests [run] [module_testfile.php]\n\n";
 $codeCeptCommand="run --steps --debug acceptance --no-colors";
 
-if ($argc > 1) { 
+if ($argc > 1) {
     switch (strtolower($argv[1])) {
         case "run":
-            if($argc > 2) { $codeCeptCommand .= "  " . $argv[2]; } 
+            if($argc > 2) { $codeCeptCommand .= "  " . $argv[2]; }
             //else {   }
             launchCodecept($codeCeptCommand);
-            break; 
+            break;
         case "clean":
             purgeTestCode();
             break;
         }
-    }     
-   
+    }
+
 
 function allowRunner()  {
     $w = new Web();
-    if((Config::get('tests'))["testrunner" ]=="ENABLED"){return;}; 
+    if((Config::get('tests'))["testrunner" ]=="ENABLED"){return;};
     echo "\nTESTRUNNER IS NOT ENABLED\n";
     die();
 }
 
 function launchCodecept($param) {
-      try {
+    try {
         $runner = "cd " . TEST_DIRECTORY . " && vendor". DS ."bin". DS ."codecept ".$param;
-         
-        echo "\n\n" . $runner; 
+
+        echo "\n\n" . $runner;
         echo shell_exec($runner);
-         
-        } catch (Exception $e) {
+
+    } catch (Exception $e) {
         echo $e->getMessage();
-                }
+    }
 }
 
 function purgeTestCode() {
 
     if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-        echo exec('del ' . CEST_DESTINATION . DS . '*Cest.php');        
+        echo exec('del ' . CEST_DESTINATION . DS . '*Cest.php');
         echo exec('del ' . STEP_DESTINATION . DS . '*.php');
         echo exec('del ' . HELP_DESTINATION . DS . '*.php');
         echo exec('del ' . HELP_DESTINATION . DS . '..' . DS . '*.php');
@@ -99,7 +99,7 @@ function purgeTestCode() {
         echo exec('rm -f ' . HELP_DESTINATION . DS . '..' . DS . '*.php');
     }
 
-}            
+}
 
 
 function reportModules($moduleCapabilities) {
@@ -107,33 +107,33 @@ function reportModules($moduleCapabilities) {
     echo "\nRefreshed:";
     foreach($moduleCapabilities as $capabilities => $capability) {
         echo "\n --- ".$capabilities." ---";
-     
-    foreach($capability  as $module => $resources) {
-        echo "\n".$module.":";
-        foreach ($resources as $resource){
-            echo " ".$resource;
-        }  
-        } 
+
+	    foreach($capability  as $module => $resources) {
+	        echo "\n".$module.":";
+	        foreach ($resources as $resource){
+	            echo " ".$resource;
+	        }
+        }
     } echo "\n";
 }
 
 function registerHelpers($moduleCapabilities) {
-     
+
     $destPath = BOILERPLATE_TEST_DIRECTORY . DS . "acceptance.suite.yml";
     $HelperYML = fopen($destPath, "w");
-     
+
     if(!$HelperYML) {return;}
 
         $hdr = "modules:\n            enabled:\n";
         fwrite($HelperYML, $hdr);
 
-    foreach($moduleCapabilities as $capabilities => $capability) { 
+    foreach($moduleCapabilities as $capabilities => $capability) {
         if($capabilities=="Helpers"){
             foreach($capability  as $resources) {
-        foreach ($resources as $resource){ 
+        foreach ($resources as $resource){
             fwrite($HelperYML, "                        -  Helper\\".$resource."\n");
-                            }  
-                            } 
+                            }
+                            }
                         }
     };
 
@@ -144,10 +144,10 @@ function registerHelpers($moduleCapabilities) {
 
 
 function chaseModules($module_name) {
-    
+
     $moduleCapabilities = [];
 
-    
+
     $w = new Web();
     $w->initDB();
     // $w->startSession();
@@ -161,7 +161,7 @@ function chaseModules($module_name) {
 		} else {
 			$availableTests[] =  getTestsForModule($module_name);
         }
-        
+
         $availableTests[] =  getTestsForModule(SHARED_SOURCE);
         $availableTests[] =  getTestsForModule(SHARED_CORE);
            // var_dump($availableTests);  die();
@@ -170,7 +170,7 @@ function chaseModules($module_name) {
          foreach($moduleTest as $module => $fileShift) {
              foreach($fileShift as $file) {
              if (!empty($fileShift)) {
-                    
+
                   try {
                     //echo  "\nCopying " . $file['source'] . " : ";
                       copy($file['source'], $file['dest']);
@@ -195,27 +195,27 @@ function chaseModules($module_name) {
          }
     return $moduleCapabilities;
     }
-     
-    
- 
-  
+
+
+
+
 
 function getTestsForModule($module) {
 
     	$availableTests = [];
-		
+
 		// Check modules folder
 		$module_path =   PROJECT_MODULE_DIRECTORY . DS . $module . DS . "tests"  ;
         $system_module_path =  SYSTEM_MODULE_DIRECTORY . DS . $module . DS . "tests";
         $boiler_path = BOILERPLATE_TEST_DIRECTORY . DS . $module;
         $workflow_path = WORKFLOWS_TEST_DIRECTORY . DS . $module;
         $test_paths = [$module_path, $system_module_path,$boiler_path,$workflow_path];
-        
+
         $extended_paths = array( CEST_DIRECTORY, STEP_DIRECTORY, HELP_DIRECTORY );
-        $dest_paths = array ( 
-            CEST_DIRECTORY => CEST_DESTINATION , 
-            STEP_DIRECTORY => STEP_DESTINATION , 
-            HELP_DIRECTORY => HELP_DESTINATION 
+        $dest_paths = array (
+            CEST_DIRECTORY => CEST_DESTINATION ,
+            STEP_DIRECTORY => STEP_DESTINATION ,
+            HELP_DIRECTORY => HELP_DESTINATION
                         );
 
         $findActor="";
@@ -224,7 +224,7 @@ function getTestsForModule($module) {
         $extended_paths[] = $findActor;
         $dest_paths[$findActor] =  HELP_DESTINATION . DS . "..";
         }
- 
+
 		if (empty($availableTests[$module])) {
 			$availableTests[$module] = [];
 		}
@@ -234,54 +234,54 @@ function getTestsForModule($module) {
                 $test_path = $base_path . $ext;
                 $full_path = ROOT_PATH . DS . $test_path;
                  //echo $full_path."\n";
-			if (is_dir($full_path)) { 
+			if (is_dir($full_path)) {
 				foreach(scandir($full_path) as $file) {
                     if ( (!is_dir($full_path . DS . $file))
-                        && (strtolower(pathinfo($file,PATHINFO_EXTENSION)=="php")) ) { 
+                        && (strtolower(pathinfo($file,PATHINFO_EXTENSION)=="php")) ) {
                         $modFile = $file;
                          $details = [];
-                        
+
                      if($ext==HELP_DIRECTORY) {  $details['helper']=rtrim($file,".php"); }
-                     if($ext==CEST_DIRECTORY) {  
+                     if($ext==CEST_DIRECTORY) {
                         $modFile = $module . "_" . $file;
                         $details['cest']= $modFile; }
-                     if($ext==STEP_DIRECTORY) { 
-                        $modFile = $module . "_" . $file;  
+                     if($ext==STEP_DIRECTORY) {
+                        $modFile = $module . "_" . $file;
                             $details['actor'] = rtrim($file,".php"); }
                      if($ext==$findActor) {  $details['actor'] = rtrim($file,".php"); }
-                        $details['source'] = $full_path . DS . $file; 
+                        $details['source'] = $full_path . DS . $file;
                         $details['dest'] = ROOT_PATH . DS . $dest_paths[$ext] . DS . $modFile;
-                     
+
 					 $availableTests[$module][$test_path ."::". $file] =  $details;
 						 					}
                                 }
-                            }  
+                            }
                     }
                 }
 		return $availableTests;
     }
-   
- 
- 
- 
+
+
+
+
 // function buildHelperYML(){
 
 //     $destPath = BOILERPLATE_TEST_DIRECTORY . DS . "acceptance.suite.yml";
 //     $HelperYML = fopen($destPath, "w");
 //     if(!$HelperYML) {return;}
-    
+
 //         $hdr = "modules:\n            enabled:\n";
 //         fwrite($HelperYML, $hdr);
-//             $full_path = ROOT_PATH . DS . HELP_DESTINATION;  
+//             $full_path = ROOT_PATH . DS . HELP_DESTINATION;
 //            // echo $full_path."\n";
 
-//         if (is_dir($full_path)) { 
+//         if (is_dir($full_path)) {
 //         foreach(scandir($full_path) as $file) {
-//             if (!is_dir($full_path . DS . $file)) { 
+//             if (!is_dir($full_path . DS . $file)) {
 //                 fwrite($HelperYML, "                        -  Helper\\".rtrim($file,".php")."\n");
 //                // echo $file."\n";
 //                                         }
 //                                     }
 //                         }
-//             fclose($HelperYML); 
+//             fclose($HelperYML);
 // }

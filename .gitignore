@@ -19,3 +19,5 @@ nbproject/
 composer.json
 composer.lock
 system
+
+codeception.yml

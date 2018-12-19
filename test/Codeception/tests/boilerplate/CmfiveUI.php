@@ -18,8 +18,8 @@ class CmfiveUI extends \Codeception\Actor
 {
     use _generated\CmfiveUIActions;
 
-	
- 
+
+
 
  /**
   	 * Fill a form from an array of data
@@ -139,13 +139,9 @@ public function findTableRowMatching($columnNumber,$matchValue) {
 		}
 
 		public function fillAutocomplete($field,$value) {
-		//	echo "<pre>"; var_dump('wooah autocomplete'); die;
-				$this->fillField("#".$field,$value);
-				$this->waitForElement("#acp_".$field,2);
-				// down
-				$this->pressKey("#acp_".$field,"\xEE\x80\x95");
-				// select
-				$this->executeJS('$("#acp_".$field).show(); $("#acp_".$field).click();');
+            $this->executeJS("$('#acp_{$field}').autocomplete('search', '{$value}')");
+            $this->waitForText($value);
+            $this->click($value, '.ui-menu-item');
 		}
 
 

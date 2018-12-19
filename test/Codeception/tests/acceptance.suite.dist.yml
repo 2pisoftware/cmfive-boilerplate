@@ -14,14 +14,8 @@ modules:
         browser: chrome
         wait: 60
         port: 4444 
-        
+    - Asserts
 #extensions:
 #  enabled:
 #    - Codeception\Extension\RunProcess:
-#       - cd C:\cm5\cmfive-boilerplate && php cmfive.php install migrations 
-
-
- 
-
-
-  
+#       - cd C:\cm5\cmfive-boilerplate && php cmfive.php install migrations

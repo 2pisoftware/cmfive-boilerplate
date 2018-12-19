@@ -1,7 +1,7 @@
 
 *** Pull Codeception test branch cm5 boilerplate&core from git
 *** Setup Codeception
-*** Make sure Webdriver service is running (see cmfive-boilerplate\test\Codeception\readme.md)
+*** Make sure Webdriver service is running (see cmfive-boilerplate\test\Codeception\readme.txt)
 
 
 ---------------------------------------------------------------------
@@ -12,7 +12,7 @@ From "boilerplate", use cmfiveTest.php.
 Can do:
  - execute cmfiveTests.php
    - build & show all tests
- - execute cmfiveTests.php run 
+ - execute cmfiveTests.php run
    - build & run all tests
 - execute cmfiveTests.php run [module]_[MyTest]Cest.php
    - build all but run only [MyTest]
@@ -23,13 +23,13 @@ Extend with:
 cmfive-boilerplate\test\Codeception\tests\boilerplate\CmfiveUI.php
     --> base actor for all tests --> add functions supporting component/CSS level (not module actions!)
 cmfive-boilerplate\test\Codeception\tests\boilerplate\acceptance\helpers\CmfiveSite.php
-    --> base helper for all tests --> add functions related to instances & services (not CM5 features!)
+    --> base helper for all tests --> add functions related to instances & services (not cmfive features!)
 
 Make tests:
 General folder layout for tests (see cmfive-boilerplate\system\modules\admin\tests)
  /acceptance --> main Codeception test container
     - [MyTest]Cest.php files go in here
- /acceptance/helpers 
+ /acceptance/helpers
     - helpers go in here to be shared with other modules
  /acceptance/steps
     - custom actors go in here if needed, not shared with other modules
@@ -53,13 +53,13 @@ Finding folders system/[module]/tests:
      generic usefull functions supporting the module
      exposed in 'actor' to all tests for all modules
      does not contain 'actor' so needs to be passed "$I" by test code
-     eg: Helper implements -->  function login($I,$username,$password) 
+     eg: Helper implements -->  function login($I,$username,$password)
          Any Cest can say --> $I->login($I,$username,$password);
 
   - acceptance/steps
      allow extension to 'actor' specifically for this module's 'Cest' tests
      controls actor by "$this->" and exposes as "$I->" in Cest code
-     eg: Cest implements -->  function testAnAspect(\Step\Acceptance\[NameOfStepActorClass] $I) 
+     eg: Cest implements -->  function testAnAspect(\Step\Acceptance\[NameOfStepActorClass] $I)
          Cest has $I with functions from acceptance/steps/[NameOfStepActorClass].php
          Step implements -->  function doSpecialModuleThing($withThis,$andThat)
          Cest can say --> $I->doSpecialModuleThing($thisIs,$thatWas)
