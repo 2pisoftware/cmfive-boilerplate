@@ -1,63 +1,130 @@
 #!/bin/php
 <?php
 
+if(!(isset($argc)&&isset($argv))) {echo "No action is possible.";exit();}
+
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-if ($argc >= 3) {
-    switch($argv[1]) {
-        case "install":
-            switch($argv[2]) {
-                case "core":
-                    echo "Installing core libraries...\n\n";
-                    installCoreLibraries();
-                    exit(0);
-                case "migration":
-                case "migrations":
-                    echo "Installing migrations...\n\n";
-                    installMigrations();
-                    exit(0);
-                default:
-                    echo "\nUnknown command\n";
-                    exit(0);
-            }
-            break;
-        case "seed":
-            switch($argv[2]) {
-                case "admin":
-                    if ($argc < 8) {
-                        echo "Error: missing required number of parameters to seed user\nUsage: php cmfive.php seed admin '<firstname>' '<surname>' '<email>' '<username>' '<password>'";
-                        exit(1);
-                    }
+$menuMaker = [ 
+    ['option' => "Install core libraries" , 'message' => "Installing core libraries"
+             , 'function' => "installCoreLibraries" , 'param' => null ],
+    ['option' => "Install database migrations" , 'message' => "Installing migrations"
+             , 'function' => "installMigrations" , 'param' => null  ],
+    ['option' => "Seed admin user" , 'message' => "Setting up admin user"
+             , 'function' => "seedAdminUser" , 'param' => null  ],
+    ['option' => "Generate encryption keys" , 'message' => "Generating encryption keys" 
+             , 'function' => "generateEncryptionKeys" , 'param' => null  ],
+    ];
 
-                    echo "Seeding admin user...\n\n";
-                    seedAdminUser(array_slice($argv, 3));
-                    exit(0);
-                default:
-                    echo "Unknown seed command\n";
-                    exit(1);
+$cmdMaker = [ 
+    'install' => [
+         [ 'request' => "core" , 'message' => "Installing core libraries"
+          , 'function' => "installCoreLibraries" , 'args' => false ],
+        [ 'request' => "migration" , 'message' => "Installing migrations"
+        , 'function' => "installMigrations" , 'args' => false  ],
+        [ 'request' => "migrations" , 'message' => "Installing migrations"
+        , 'function' => "installMigrations" , 'args' => false  ]  ] ,
+    'seed' => [
+        [ 'request' =>  "admin" , 'message' => "Setting up admin user"
+              , 'function' => "cmdSeedAdminUser" , 'args' => true   ]    ] 
+              // need to mimic: seedAdminUser(array_slice($argv, 3));
+    
+    ];
+    
+    include "cmfiveDB.php";
+    include "cmfiveTests.php";
+
+if ($argc >= 3) {
+    
+    foreach($cmdMaker as $command => $does) {
+        foreach($does as $doing) {
+            if(($argv[1]==$command)&&($argv[2]==$doing['request'])) {
+             echo $command . " - " . $doing['message'] . "...\n\n";
+             if($doing['args']) {
+                 $shft = $argv; array_shift($shft);
+                 $doing['function']($argc-1,$shft);
+                } else  {
+                    $doing['function']();
+                }
+             exit(0);
             }
-        default:
-            echo "\nUnknown command\n";
-            exit(1);
     }
+    }
+    echo "\nUnknown command\n";
+        exit(1);
+   
 }
 
-function printMenu() {
-    echo "****************************";
-    echo "\n      Cmfive Installer";
-    echo "\n****************************\n";
+/////////////////////////////////////////////////////////////////////
+
+$menuMaker[] = 
+['option' => "List command options" , 'message' => "Command line options" 
+, 'function' => "synopsis"  , 'param' => null  ]; 
+$menuMaker[] = 
+['option' => "Exit (0)" , 'message' => "Exiting" 
+, 'function' => "justQuit"  , 'param' => null  ]; 
+
+while(true) {
+    printMenu($menuMaker);
+
+    $command = readConsoleLine();
+    if($command=="0"){justQuit();}
+
+    $sel=intval($command);
+    
+    if(($sel>0)&&($sel<=count($menuMaker))) {
+        $sel--;
+        echo $menuMaker[$sel]['message']."...\n\n";
+        if(!$menuMaker[$sel]['param']) {
+                $menuMaker[$sel]['function']();
+        } else {
+            $menuMaker[$sel]['function']($menuMaker[$sel]['param']);
+        }
+    } else {
+        echo "Command not found, please try again\n";
+                 echo "\n";
+    } 
+}
+
+/////////////////////////////////////////////////////////////////////
+
+function justQuit() { exit(0); }
+
+function printMenu($menu) {
+
+    echo   "*************************************";
+    echo "\n      Cmfive Installation Tools";
+    echo "\n*************************************\n";
 
     if (!file_exists("config.php")) {
         echo "You need to set up your config.php file first (see example)\n";
-        exit(0);
+        justQuit();
     }
+           
+    $i=1;    
+    foreach ($menu as $menuEntry) {
+        //var_dump($menuEntry);
+        echo $i.") ".$menuEntry['option']."\n";
+        $i++;
+    }
+}
 
-    echo " 1) Install core libraries\n";
-    echo " 2) Install database migrations\n";
-    echo " 3) Seed admin user\n";
-    echo " 4) Generate encryption keys\n";
-    echo " 0) Exit\n";
+function synopsis() {
+    
+    global $cmdMaker;
+
+    foreach($cmdMaker as $command => $does) {
+        foreach($does as $doing) { 
+             echo //__FILE__ 
+             $_SERVER['SCRIPT_NAME']. " " . $command . " " . $doing['request'] ;
+             if($doing['args']) {
+                 echo " [args...]";
+                } echo " - (" . $doing['message'] . ")\n";
+             
+    }
+    }
+    echo "\n";
 }
 
 function installCoreLibraries() {
@@ -148,8 +215,15 @@ function installMigrations() {
     }
 }
 
-function seedAdminUser($parameters = []) {
+function cmdSeedAdminUser($pCount,$parameters = []) { 
+    $parameters=array_slice($parameters,2);
+    $pCount = count($parameters); 
+    seedAdminUser( $parameters);
+    };
 
+function seedAdminUser( $parameters = []) { 
+    // $parameters=array_slice($parameters,2);
+    //  $pCount = count($parameters); 
     if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
         echo exec('del .\cache\config.cache');
     } else {
@@ -221,34 +295,4 @@ function readConsoleLine($prompt = "Command: ") {
     return $command;
 }
 
-while(true) {
-    printMenu();
-
-    $command = readConsoleLine();
-
-    switch(intval($command)) {
-        case 1:
-            echo "Installing core libraries...\n\n";
-            installCoreLibraries();
-            break;
-        case 2:
-            echo "Installing migrations...\n\n";
-            installMigrations();
-            break;
-        case 3:
-            echo "Setting up admin user...\n\n";
-            seedAdminUser();
-            break;
-        case 4:
-            echo "Generating encryption keys...\n\n";
-            generateEncryptionKeys();
-            break;
-        case 0:
-            echo "Exiting...";
-            exit(0);
-            break;
-        default:
-            echo "Command not found, please try again\n";
-            echo "\n";
-    }
-}
+ 

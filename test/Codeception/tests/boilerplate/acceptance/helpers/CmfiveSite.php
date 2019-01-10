@@ -3,16 +3,31 @@ namespace Helper;
 
 // here you can define custom actions
 // all public methods declared in helper class will be available in $I
-
+ 
 class CmfiveSite extends \Codeception\Module
 {
 
     // should have things like 'login'/auth ... create&delete user REAL basics.
-
+  
   // HOOK: before test
   public function _before(\Codeception\TestCase $test) {
-      echo "\n\nRIGHT NOW I SHOULD RESET ALL MYSQL TABLES\n\n";
+    $this->getTestDB();
+    $this->runMigrations();
     }
+
+ public function getTestDB() { 
+  $rootDIR = substr(getcwd(), 0, strpos(getcwd(), "test"));
+  $DBcommand = "cd ".$rootDIR." && php ".$rootDIR."cmfiveDB.php test";
+  echo "Refreshing TestDB: "; //.$DBcommand."\n"; 
+  echo (shell_exec($DBcommand)."\n");
+ }
+
+ public function runMigrations() {
+  $rootDIR = substr(getcwd(), 0, strpos(getcwd(), "test"));
+  $Mcommand = "cd ".$rootDIR." && php ".$rootDIR."cmfive.php install migrations";;
+   echo "Applying migrations to TestDB: "; //.$Mcommand."\n";
+   echo (shell_exec($Mcommand)."\n");
+}
 
     public function login($I, $username,$password) {
         $I->amOnPage('/auth/login');

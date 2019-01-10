@@ -3,7 +3,10 @@
  - Position it nicely for WebServer to find
  - Make symlinks etc as required
  - Apply other usual cmfive setup steps!
-
+ --> Install
+     - Use "cmfive.php" to seed administrator as "ADMIN" "ADMIN"
+     - Use "cmfiveDB.php sample" to preserve a clean test database
+	 
 2) Have a fresh "composer.phar" in --> cmfive-boilerplate\test\Codeception
 3) Execute in --> cmfive-boilerplate\test\Codeception : "php composer.phar require codeception/codeception --dev"
    'n' to opt to use a composer.json unique to tests (wont be overwritten when the system generates a new composer.json)
@@ -13,7 +16,7 @@
 5) Check suitability for versions & OS of Selenium support in --> cmfive-boilerplate\test\Services
  - ready to go for Windows/Chrome = run "LaunchChromeSelenium.bat"
 
-5) Check cmfive-boilerplate\test\Codeception\tests\acceptance.suite.yml:
+5) Check cmfive-boilerplate\test\Codeception\tests\acceptance.suite.dist.yml:
 	"modules:
 	  enabled:
 		- WebDriver:
