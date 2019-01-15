@@ -13,6 +13,6 @@ class BoilerCest
 	 
 
     function testAuthIsUp($I) {
-		  $I->login($I,'admin', 'admin');
+		  $I->loginAsAdmin($I);
       }
 }

@@ -24,8 +24,13 @@ defined('HELP_DESTINATION') || define('HELP_DESTINATION',   TEST_DIRECTORY . DS 
  
 defined('SHARED_SOURCE') || define('SHARED_SOURCE', 'boilerplate');
 defined('SHARED_CORE') || define('SHARED_CORE', 'workflows');
+$sharedParam = [
+    'testAdminUsername' => 'admin' ,
+    'testAdminPassword' => 'admin' ,
+    'testAdminFirstname' => 'admin' ,
+    'testAdminLastname' => 'admin' ];
 
-defined('DEBUG_RUN') || define('DEBUG_RUN', "run --steps --debug acceptance --no-colors");
+defined('DEBUG_RUN') || define('DEBUG_RUN', "run --steps --debug --no-colors acceptance");
 
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
@@ -77,6 +82,8 @@ function moduleRunner($runModule) {
         $found=chaseModules("all");
         registerHelpers($found);
 
+        $silent=false;
+
     foreach($found as $capabilities => $capability) {
         if($capabilities=="Tests") { 
      
@@ -84,8 +91,9 @@ function moduleRunner($runModule) {
             if($module==$runModule) {
             foreach ($resources as $resource){
                 $codeCeptCommand= DEBUG_RUN . "  " . $resource;
-                echo $codeCeptCommand."\n";
-                launchCodecept($codeCeptCommand);
+                $packBar = "\nO".str_repeat("-",strlen($codeCeptCommand)+2)."O\n";
+                echo $packBar."| ".$codeCeptCommand." |".$packBar;
+                $silent=launchCodecept($codeCeptCommand,$silent);
             }
         }
         }  
@@ -103,7 +111,7 @@ function genericRunner($argc,$argv) {
     registerHelpers($found);
     reportModules($found); 
    
-    echo "\n --- To launch: --- \ncmfiveTests [run] [module_testfile.php]\n\n";
+    echo "\n --- To launch: --- \ncmfiveTests [run] [module_testfile.php] [silent]\n\n";
     $codeCeptCommand= DEBUG_RUN ;
 
     if ($argc > 1) { 
@@ -130,10 +138,16 @@ function allowRunner()  {
 
 function launchCodecept($param,$silent=false) { 
 
+    $OK="NO";
+
     if(!$silent) {
         echo "\nWARNING - Running tests will invalidate your current database.\n";
-        $OK = getUserInput('Enter "OK" to continue: ' );
-    } else $OK = "OK";
+        echo "(You can silence this warning for subsequent tests.)\n";
+        $OK = getUserInput('Enter "OK" or "silent" to continue: ' );
+    } 
+    
+    if($OK == 'silent'){$silent=true;}
+    if($silent){$OK="OK";}
 
     if($OK=="OK") {
          try {
@@ -146,6 +160,9 @@ function launchCodecept($param,$silent=false) {
         echo $e->getMessage();
                 }
             }
+
+    return $silent;
+
 }
 
 function purgeTestCode() {
@@ -169,6 +186,7 @@ function reportModules($moduleCapabilities) {
 
     echo "\nRefreshed:";
     foreach($moduleCapabilities as $capabilities => $capability) {
+    if($capabilities!="Paths") {
         echo "\n --- ".$capabilities." ---";
      
     foreach($capability  as $module => $resources) {
@@ -177,12 +195,15 @@ function reportModules($moduleCapabilities) {
             echo " ".$resource;
         }  
         } 
+    }
     } echo "\n";
 }
 
 function registerHelpers($moduleCapabilities) {
-    // nb: extend this? So helpers know where module path is, hence could feed test data (CSV,SQL etc)
-    // https://codeception.com/docs/06-ModulesAndHelpers#Dynamic-Configuration-With-Params
+    // Helpers can know where module path is, 
+    // hence could feed test data (CSV,SQL etc)
+
+    global $sharedParam;
 
     $destPath = BOILERPLATE_TEST_DIRECTORY . DS . "acceptance.suite.yml";
     $HelperYML = fopen($destPath, "w");
@@ -190,20 +211,31 @@ function registerHelpers($moduleCapabilities) {
     if(!$HelperYML) {return;}
 
         $hdr = "modules:\n            enabled:\n";
-        fwrite($HelperYML, $hdr);
-
+        fwrite($HelperYML, $hdr); 
+        
     foreach($moduleCapabilities as $capabilities => $capability) { 
         if($capabilities=="Helpers"){
-            foreach($capability  as $resources) {
+            foreach($capability  as $handler => $resources) {
         foreach ($resources as $resource){ 
-            fwrite($HelperYML, "                        -  Helper\\".$resource."\n");
+            fwrite($HelperYML, "                        -  Helper\\".$resource.":\n");
             // per notes above, can insert required values here...
+            $from = $moduleCapabilities['Paths'][$handler][0];
+            $from = substr($from,0,strpos($from,"acceptance"))."acceptance" . DS;
+            fwrite($HelperYML, "                                    "
+                                ."basePath: {$from}\n");
+            if($handler == SHARED_SOURCE) {
+                foreach($sharedParam as $key => $value) {
+                fwrite($HelperYML, "                                    "
+                                    ."{$key}: '{$value}'\n");   
+                }
+            }
+            fwrite($HelperYML, "\n");
                             }  
                             } 
                         }
     };
 
-    fclose($HelperYML);
+    fclose($HelperYML); 
 }
 
 
@@ -231,7 +263,7 @@ function chaseModules($module_name) {
 
         foreach($availableTests as $moduleTest) {
          foreach($moduleTest as $module => $fileShift) {
-             foreach($fileShift as $file) {
+             foreach($fileShift as $from => $file) {
              if (!empty($fileShift)) {
                     
                   try {
@@ -249,6 +281,7 @@ function chaseModules($module_name) {
                      if(isset($file['actor'])){
                             //echo  $module . " extends ".$file['actor'] . "\n";
                             $moduleCapabilities['Actors'][$module][] =  $file['actor'];}
+                    $moduleCapabilities['Paths'][$module][] = $from;
                   } catch (Exception $e) {
                     echo $e->getMessage();
                   }

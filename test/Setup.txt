@@ -4,7 +4,7 @@
  - Make symlinks etc as required
  - Apply other usual cmfive setup steps!
  --> Install
-     - Use "cmfive.php" to seed administrator as "ADMIN" "ADMIN"
+     - Use "cmfive.php" to seed administrator as usr="ADMIN" pwd="ADMIN" 1stName="ADMIN"  2ndName="ADMIN" 
      - Use "cmfiveDB.php sample" to preserve a clean test database
 	 
 2) Have a fresh "composer.phar" in --> cmfive-boilerplate\test\Codeception

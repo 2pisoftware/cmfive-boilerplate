@@ -7,8 +7,16 @@ namespace Helper;
 class CmfiveSite extends \Codeception\Module
 {
 
-    // should have things like 'login'/auth ... create&delete user REAL basics.
+    // should have SHARED basics.
   
+        // auth details
+        protected $requiredFields = 
+  [ 'basePath' ,
+  'testAdminUsername' ,
+	'testAdminPassword' ,
+	'testAdminFirstname' ,
+  'testAdminLastname' ];
+
   // HOOK: before test
   public function _before(\Codeception\TestCase $test) {
     $this->getTestDB();
@@ -39,6 +47,18 @@ class CmfiveSite extends \Codeception\Module
             $I->click('Login');
     }
   }
+
+  public function loginAsAdmin($I) {
+    $this->login($I, $this->config['testAdminUsername'],$this->config['testAdminPassword']);
+  }
+
+
+  public function getAdminUserName(){ return $this->config['testAdminUsername']; }
+  public function getAdminPassword(){ return $this->config['testAdminPassword']; }
+  public function getAdminFirstName(){ return $this->config['testAdminFirstname']; }
+  public function getAdminLastName(){ return $this->config['testAdminLastname']; }
+  
+
   	public function logout($I) {
 		$I->amOnPage('/auth/logout');
 	}
@@ -54,6 +74,12 @@ class CmfiveSite extends \Codeception\Module
   public function waitForBackendToRefresh($I) {
     $I->waitForElementNotVisible('.loading_overlay',14);
   }
+
+  public function skipConfirmation($I) {
+  // disable dialog
+  $I->executeJS('window.confirm = function(){return true;}');
+  }
+
 
    public function getCodeceptionModuleList() {
      return $this->getModules();
