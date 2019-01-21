@@ -17,8 +17,9 @@ class HelperCest
         $class = new ReflectionClass($module);
         $methods = $class->getMethods();
         foreach($methods as $method) { 
-        if(strpos($method->class, "Helper") !== false ) {
+        if(strpos($method->class, "Helper") !== false ) {  
             echo $method->class."::".$method->name."\n";
+            //" --> ".$method->getDocComment()."\n";
         }
         } 
       }

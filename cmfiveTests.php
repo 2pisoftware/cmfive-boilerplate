@@ -27,21 +27,28 @@ defined('SHARED_CORE') || define('SHARED_CORE', 'workflows');
 $sharedParam = [
     'testAdminUsername' => 'admin' ,
     'testAdminPassword' => 'admin' ,
+    'testAdminEmail' => '.@.' ,
     'testAdminFirstname' => 'admin' ,
-    'testAdminLastname' => 'admin' ];
+    'testAdminLastname' => 'admin' ,
+    'setupCommand' => 'cmfive.php' ,
+    'DBCommand' => 'cmfiveTestDB.php' ];
 
 defined('DEBUG_RUN') || define('DEBUG_RUN', "run --steps --debug --no-colors acceptance");
 
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-// so we can find modules & some CM5 functions...
-if (!class_exists('Web')) {
-    require('system/web.php');
-}
+
+    // so we can find modules & some CM5 functions...
+    if (!class_exists('Web')) {
+        require('system/web.php');
+    }
 
 // before anything else happens, check testrunner is allowed!
-allowRunner();
+if(allowRunner()) {
+
+    include "cmfiveTestDB.php";
+
 if(!isset($menuMaker)) { genericRunner($argc,$argv); }
 else { 
     offerMenuTests();
@@ -51,15 +58,22 @@ else {
     $cmdMaker['tests'][] =  
                   [ 'request' =>  "run" , 'message' => "Launching TestRunner"
                         , 'function' => "genericRunner" , 'args' => true   ];
+    $cmdMaker['testDB'][] =  
+       [ 'request' =>  "setup" , 'message' => "Batched TestRunner DB setup"
+              , 'function' => "genericRunner" , 'args' => true   ];
      }
 
- 
+    }
 
 function offerMenuTests() {
     global $menuMaker;
     $menuMaker[] = 
     ['option' => "Build TestRunner (show info)" , 'message' => "TestRunner info" 
     , 'function' => "infoRunner" , 'param' => null  ]; 
+    $menuMaker[] = 
+    ['option' => "Setup empty TestRunner DB and Administrator" 
+    , 'message' => "Batched TestRunner DB setup" 
+    , 'function' => "DBRunner" , 'param' => null  ]; 
 
     $found=chaseModules("all"); 
     foreach($found as $capabilities => $capability) {
@@ -103,6 +117,7 @@ function moduleRunner($runModule) {
 
 function infoRunner() { genericRunner(null,null); }
 function testRunner() { genericRunner(2,["","run"]); }
+function DBRunner() { genericRunner(2,["","setup"]); }
 
 function genericRunner($argc,$argv) {
         
@@ -125,16 +140,44 @@ function genericRunner($argc,$argv) {
             case "clean":
                 purgeTestCode();
                 break;
+            case "setup":
+                batchTestSetup();
+                break;
             }
         }     
 }
 
 function allowRunner()  {
     $w = new Web();
-    if((Config::get('tests'))["testrunner" ]=="ENABLED"){return;}; 
-    echo "\nTESTRUNNER IS NOT ENABLED\n";
-    die();
+    if((Config::get('tests'))["testrunner" ]=="ENABLED"){return true;}; 
+    //echo "\nTESTRUNNER IS NOT ENABLED\n\n";
+    return false;
 }
+
+
+
+function batchTestSetup() {
+
+    global $sharedParam;
+
+    $Mcommand = [
+       "cmfive.php DB backup" ,
+       "cmfiveTestDB.php purge" ,
+       "cmfive.php install migrations" ,
+       "cmfive.php seed admin "
+            .$sharedParam['testAdminUsername']." "
+            .$sharedParam['testAdminPassword']." "
+            .$sharedParam['testAdminEmail']." "
+            .$sharedParam['testAdminFirstname']." "
+            .$sharedParam['testAdminLastname'] ,
+        "cmfive.php DB sample"
+    ];
+    foreach ($Mcommand as $command) {
+     echo "Batching: ".$command ."\n";
+     echo (shell_exec("php ".$command)."\n");
+    }
+}
+
 
 function launchCodecept($param,$silent=false) { 
 
@@ -143,10 +186,10 @@ function launchCodecept($param,$silent=false) {
     if(!$silent) {
         echo "\nWARNING - Running tests will invalidate your current database.\n";
         echo "(You can silence this warning for subsequent tests.)\n";
-        $OK = getUserInput('Enter "OK" or "silent" to continue: ' );
+        $OK = getUserInput('Enter "OK" or "SILENCE" to continue: ' );
     } 
     
-    if($OK == 'silent'){$silent=true;}
+    if($OK == 'SILENCE'){$silent=true;}
     if($silent){$OK="OK";}
 
     if($OK=="OK") {

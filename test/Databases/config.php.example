@@ -1,0 +1,20 @@
+<?php
+
+return array( 
+        'outputExt' => 'sql',
+
+        'commandPath' => array(
+            'unix' => '',
+            'windows' => 'C:\\Ampps\\mysql\\bin\\'
+        ) ,
+        'backupCommand' => array(
+            'unix' => 'mysqldump -u $username -p\'$password\' $dbname > $filename',
+            'windows' => 'mysqldump.exe -u $username -p$password $dbname > $filename'
+        ) ,
+        'restoreCommand' => array(
+            'unix' => 'mysql -u $username -p\'$password\' $dbname < $filename.gz',
+            'windows' => 'mysql.exe -u $username -p$password $dbname < $filename'
+        )
+   
+        
+);

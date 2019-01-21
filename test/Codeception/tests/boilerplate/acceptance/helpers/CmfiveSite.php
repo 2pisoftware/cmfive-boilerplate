@@ -1,13 +1,14 @@
 <?php
+
 namespace Helper;
 
 // here you can define custom actions
 // all public methods declared in helper class will be available in $I
- 
+
+
 class CmfiveSite extends \Codeception\Module
 {
-
-    // should have SHARED basics.
+      // should have SHARED basics.
   
         // auth details
         protected $requiredFields = 
@@ -15,27 +16,62 @@ class CmfiveSite extends \Codeception\Module
   'testAdminUsername' ,
 	'testAdminPassword' ,
 	'testAdminFirstname' ,
-  'testAdminLastname' ];
+  'testAdminLastname' ,
+  'setupCommand' ,
+  'DBCommand' ];
 
   // HOOK: before test
   public function _before(\Codeception\TestCase $test) {
     $this->getTestDB();
-    $this->runMigrations();
+    //$this->_wipeTestDB(); 
+    $this->runMigrations();   
+    //$this->createTestAdminUser();
     }
 
- public function getTestDB() { 
+private function _useCmFiveSetup($param) {
   $rootDIR = substr(getcwd(), 0, strpos(getcwd(), "test"));
-  $DBcommand = "cd ".$rootDIR." && php ".$rootDIR."cmfiveDB.php test";
-  echo "Refreshing TestDB: "; //.$DBcommand."\n"; 
-  echo (shell_exec($DBcommand)."\n");
- }
+  $Mcommand = "cd ".$rootDIR." && php ".$rootDIR
+      .$this->config['setupCommand']." ".$param;
+   echo "Running: ".$param ."\n";
+    echo (shell_exec($Mcommand)."\n");
+}
 
- public function runMigrations() {
+private function _useCmFiveDB($param) {
   $rootDIR = substr(getcwd(), 0, strpos(getcwd(), "test"));
-  $Mcommand = "cd ".$rootDIR." && php ".$rootDIR."cmfive.php install migrations";;
-   echo "Applying migrations to TestDB: "; //.$Mcommand."\n";
+  $Mcommand = "cd ".$rootDIR." && php ".$rootDIR
+     .$this->config['DBCommand']." ".$param;
+   echo "DB task: ".$param ."\n";
    echo (shell_exec($Mcommand)."\n");
 }
+
+ public function runMigrations() {
+  $this->_useCmFiveSetup("install migrations");
+}
+
+/** Seed database with expected admin user profile */
+public function createTestAdminUser() {
+  $adminAccount = 
+  " ".$this->config['testAdminUsername'].
+  " ".$this->config['testAdminPassword']. 
+  " ".$this->config['testAdminEmail'].
+  " ".$this->config['testAdminFirstname'].
+  " ".$this->config['testAdminLastname'];
+  $this->_useCmFiveSetup("seed admin ".$adminAccount);
+}
+
+private function _wipeTestDB() { 
+  $this->_useCmFiveDB("purge");
+}
+
+public function getTestDB() { 
+  $this->_useCmFiveDB("test");
+ }
+
+ public function putTestDB() { 
+  $this->_useCmFiveDB("sample");
+ }
+
+ 
 
     public function login($I, $username,$password) {
         $I->amOnPage('/auth/login');

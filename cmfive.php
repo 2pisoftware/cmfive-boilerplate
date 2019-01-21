@@ -31,8 +31,8 @@ $cmdMaker = [
               // need to mimic: seedAdminUser(array_slice($argv, 3));
     
     ];
+ 
     
-    include "cmfiveDB.php";
     include "cmfiveTests.php";
 
 if ($argc >= 3) {

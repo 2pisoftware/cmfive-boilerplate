@@ -1,16 +1,15 @@
 
 *** Pull Codeception test branch cm5 boilerplate&core from git
 --> Install
-     - Use "cmfive.php" to seed administrator as "ADMIN" "ADMIN"
-     - Use "cmfiveDB.php sample" to preserve a clean test database
+     - Use "cmfive.php" for TestRunner functions & as wrapper for command line tools
 *** Setup Codeception
 *** Make sure Webdriver service is running (see cmfive-boilerplate\test\Codeception\readme.txt)
 --> RUN
      - use "cmfive.php" for easy launch
-     --> BACK UP YOUR DATABASE BEFORE TESTS!
+     --> BACK UP YOUR ORIGINAL DATABASE BEFORE TESTS!
      --> RESTORE AFTER TESTS
-     - use "cmfiveTests.php" to run tests manually
-     --> Use "cmfiveDB.php [backup] [restore]" to manage DB manually
+     --> "cmfiveTests.php" has commandline functions wrapped by cmfive.php
+     --> "cmfiveTestDB.php" has commandline functions wrapped by cmfive.php
 
 ---------------------------------------------------------------------
 TestRunner for Codeception:
