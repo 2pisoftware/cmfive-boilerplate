@@ -14,7 +14,7 @@
 	       - BE SURE YOU CAN ACCESS A BACKUP if keeping an existing DB configured
      - Create/Check cmfive-boilerplate\test\Databases\config.php
 	       - use example to correctly configure DB executable commands and paths
-		   - leave parameters as-is; these will be filled in from cmfive-boilerplate\config.php
+		   - leave parameters as-is; these will be auto-filled from cmfive-boilerplate\config.php
 		   - these settings do not override any settings elsewhere (eg: in Admin module config)
 	 - Run : "Setup empty TestRunner DB and Administrator"
 	       - once only

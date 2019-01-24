@@ -12,7 +12,7 @@ return array(
             'windows' => 'mysqldump.exe -u $username -p$password $dbname > $filename'
         ) ,
         'restoreCommand' => array(
-            'unix' => 'mysql -u $username -p\'$password\' $dbname < $filename.gz',
+            'unix' => 'mysql -u $username -p\'$password\' $dbname < $filename',
             'windows' => 'mysql.exe -u $username -p$password $dbname < $filename'
         )
    

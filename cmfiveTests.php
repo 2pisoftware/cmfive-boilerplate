@@ -12,8 +12,6 @@ defined('SYSTEM_MODULE_DIRECTORY') || define('SYSTEM_MODULE_DIRECTORY', 'system'
 defined('WORKFLOWS_TEST_DIRECTORY') || define('WORKFLOWS_TEST_DIRECTORY', 'system' . DS . 'tests');
 defined('BOILERPLATE_TEST_DIRECTORY') || define('BOILERPLATE_TEST_DIRECTORY', TEST_DIRECTORY . DS . 'tests');
 
-
-
 defined('CEST_DIRECTORY') || define('CEST_DIRECTORY', DS .'acceptance');
 defined('STEP_DIRECTORY') || define('STEP_DIRECTORY', DS .'acceptance'. DS .'steps');
 defined('HELP_DIRECTORY') || define('HELP_DIRECTORY', DS .'acceptance'. DS .'helpers');
