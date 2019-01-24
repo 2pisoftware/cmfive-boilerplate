@@ -10,7 +10,7 @@ class HelperCest
     {
     }
 
-    function ListAllHelpers($I) {
+    public function ListAllHelpers($I) {
         $active = $I->getCodeceptionModuleList();
         echo "\n --- Helper Functions ---\n";
         foreach ($active as $module) {

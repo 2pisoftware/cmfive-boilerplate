@@ -11,14 +11,19 @@ class CmfiveSite extends \Codeception\Module
       // should have SHARED basics.
   
         // auth details
-        protected $requiredFields = 
-  [ 'basePath' ,
-  'testAdminUsername' ,
-	'testAdminPassword' ,
-	'testAdminFirstname' ,
-  'testAdminLastname' ,
-  'setupCommand' ,
-  'DBCommand' ];
+        protected $requiredFields =   [
+            'basePath' ,
+            'testAdminUsername' ,
+            'testAdminPassword' ,
+            'testAdminFirstname' ,
+            'testAdminLastname' ,
+            'setupCommand' ,
+            'DBCommand' ,
+            'DB_Hostname' ,
+            'DB_Username' ,
+            'DB_Password' ,
+            'DB_Database' ,
+            'DB_Driver' ];
 
   // HOOK: before test
   public function _before(\Codeception\TestCase $test) {
@@ -59,7 +64,7 @@ public function createTestAdminUser() {
   $this->_useCmFiveSetup("seed admin ".$adminAccount);
 }
 
-private function _wipeTestDB() { 
+public function _wipeTestDB() { 
   $this->_useCmFiveDB("purge");
 }
 
@@ -71,7 +76,6 @@ public function getTestDB() {
   $this->_useCmFiveDB("sample");
  }
 
- 
 
     public function login($I, $username,$password) {
         $I->amOnPage('/auth/login');
@@ -94,6 +98,13 @@ public function getTestDB() {
   public function getAdminFirstName(){ return $this->config['testAdminFirstname']; }
   public function getAdminLastName(){ return $this->config['testAdminLastname']; }
   
+  public function getDB_Settings() {
+    $DB_set=[];
+    foreach($this->config as $key => $value) {
+      if(substr($key,0,3)=="DB_") {$DB_set[$key]=$value;}
+    }
+    return $DB_set;
+  }
 
   	public function logout($I) {
 		$I->amOnPage('/auth/logout');
@@ -120,6 +131,22 @@ public function getTestDB() {
    public function getCodeceptionModuleList() {
      return $this->getModules();
    }
+
+   
+//  public function doAdHocDebugCommand($I) {
+//   $command = '';
+//   if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+//       $command = stream_get_line(STDIN, 1024, PHP_EOL);
+//   } else {
+//       $command = readline($prompt);
+//   }
+//   $tryToDo = explode('(' , rtrim($command, ')')); 
+//   $func=array_shift($tryToDo)  ;
+//   $param = explode(',' , $tryToDo[0]); 
+//   // THIS ALMOST WORKS! 
+//   // (need to escape from strings back to arg types...)
+//   call_user_func_array(array($I, $func), $param);
+// }
 
 }
 

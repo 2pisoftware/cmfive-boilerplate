@@ -24,6 +24,8 @@ defined('HELP_DESTINATION') || define('HELP_DESTINATION',   TEST_DIRECTORY . DS 
  
 defined('SHARED_SOURCE') || define('SHARED_SOURCE', 'boilerplate');
 defined('SHARED_CORE') || define('SHARED_CORE', 'workflows');
+
+// special parameters to push into .yml, hence find in boilerplate helpers
 $sharedParam = [
     'testAdminUsername' => 'admin' ,
     'testAdminPassword' => 'admin' ,
@@ -31,7 +33,15 @@ $sharedParam = [
     'testAdminFirstname' => 'admin' ,
     'testAdminLastname' => 'admin' ,
     'setupCommand' => 'cmfive.php' ,
-    'DBCommand' => 'cmfiveTestDB.php' ];
+    'DBCommand' => 'cmfiveTestDB.php'  ];
+
+$loadedParam = [
+    'DB_Hostname' =>    "database.hostname" ,
+    'DB_Username' =>    "database.username" ,
+    'DB_Password' =>    "database.password" ,
+    'DB_Database' =>    "database.database" ,
+    'DB_Driver' =>    "database.driver"  
+  ];
 
 defined('DEBUG_RUN') || define('DEBUG_RUN', "run --steps --debug --no-colors acceptance");
 
@@ -245,9 +255,8 @@ function reportModules($moduleCapabilities) {
 function registerHelpers($moduleCapabilities) {
     // Helpers can know where module path is, 
     // hence could feed test data (CSV,SQL etc)
-
-    global $sharedParam;
-
+    // $sharedParam & registerBoilerplateParametersmake it work
+    
     $destPath = BOILERPLATE_TEST_DIRECTORY . DS . "acceptance.suite.yml";
     $HelperYML = fopen($destPath, "w");
      
@@ -267,10 +276,7 @@ function registerHelpers($moduleCapabilities) {
             fwrite($HelperYML, "                                    "
                                 ."basePath: {$from}\n");
             if($handler == SHARED_SOURCE) {
-                foreach($sharedParam as $key => $value) {
-                fwrite($HelperYML, "                                    "
-                                    ."{$key}: '{$value}'\n");   
-                }
+                registerBoilerplateParameters($HelperYML);
             }
             fwrite($HelperYML, "\n");
                             }  
@@ -282,6 +288,20 @@ function registerHelpers($moduleCapabilities) {
 }
 
 
+function registerBoilerplateParameters($spoolTo) {
+
+    global $sharedParam;
+    global $loadedParam;
+     
+    foreach($sharedParam as $key => $value) {
+        fwrite($spoolTo, "                                    "
+                            ."{$key}: '{$value}'\n"); 
+        }  
+        foreach($loadedParam as $key => $conf)  { 
+            fwrite($spoolTo, "                                    "
+                                ."{$key}: '".Config::get($conf)."'\n"); 
+        }
+    }
 
 
 function chaseModules($module_name) {
