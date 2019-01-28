@@ -46,17 +46,11 @@ defined('DEBUG_RUN') || define('DEBUG_RUN', "run --steps --debug --no-colors acc
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-
-    // so we can find modules & some CM5 functions...
-    if (!class_exists('Web')) {
-        require('system/web.php');
-    }
-
 // before anything else happens, check testrunner is allowed!
 if(allowRunner()) {
 
     include "cmfiveTestDB.php";
-
+   
 if(!isset($menuMaker)) { genericRunner($argc,$argv); }
 else { 
     offerMenuTests();
@@ -156,13 +150,24 @@ function genericRunner($argc,$argv) {
 }
 
 function allowRunner()  {
+    $webFind = "system/web.php"; 
+    if(chaseWeb($webFind)) {
+        if (!class_exists('Web')) {
+            require("system/web.php");
+        }
     $w = new Web();
     if((Config::get('tests'))["testrunner" ]=="ENABLED"){return true;}; 
-    //echo "\nTESTRUNNER IS NOT ENABLED\n\n";
+    } 
     return false;
 }
 
-
+function chaseWeb($webFind) {
+     // so we can find modules & some CM5 functions...
+    if (is_readable($webFind)  && !is_dir($webFind)) { 
+             return true;
+        }
+        return false;
+}
 
 function batchTestSetup() {
 

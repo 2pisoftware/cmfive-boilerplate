@@ -127,7 +127,34 @@ function synopsis() {
     echo "\n";
 }
 
+
+function stepOneYieldsWeb() {
+    // so we can find modules & some CM5 functions...
+    $webFind="system/web.php";
+   if (is_readable($webFind)  && !is_dir($webFind)) { 
+            if (!class_exists('Web')) {
+                require($webFind);
+            }
+            return true;
+       }
+       echo "\nOrder of steps is important - can't find CORE INSTALL";
+       echo "\nMake sure to locate CORE and arrange SYSTEM symlink\n\n";
+       
+       return false;
+}
+
+
 function installCoreLibraries() {
+
+        // name     : 2pisoftware/cmfive-core
+        // descrip. :
+        // keywords :
+        // versions : * master
+        // type     : library
+        // source   : [git] https://github.com/2pisoftware/cmfive-core develop
+        // dist     : []
+        // names    : 2pisoftware/cmfive-core
+    
     $composer_string = <<<COMPOSER
     {
         "name": "cmfive-boilerplate",
@@ -143,14 +170,14 @@ function installCoreLibraries() {
         },
         "repositories": [
             {
-                "type":"package",
+                "type": "package",
                 "package": {
                 "name": "2pisoftware/cmfive-core",
-                "version":"master",
+                "version": "master",
                 "source": {
                     "url": "https://github.com/2pisoftware/cmfive-core",
                     "type": "git",
-                    "reference":"develop"
+                    "reference": "master"
                     }
                 }
             }
@@ -172,9 +199,10 @@ COMPOSER;
         echo exec('rm -f cache/config.cache');
     }
 
-    if (!class_exists('Web')) {
-        require('system/web.php');
-    }
+     // if (!class_exists('Web')) {
+    //     require('system/web.php');
+    // }
+    if(!stepOneYieldsWeb()){return false;}
     $w = new Web();
 
     $dependencies_array = array();
@@ -198,9 +226,10 @@ function installMigrations() {
         echo exec('rm -f cache/config.cache');
     }
 
-    if (!class_exists('Web')) {
-        require('system/web.php');
-    }
+     // if (!class_exists('Web')) {
+    //     require('system/web.php');
+    // }
+    if(!stepOneYieldsWeb()){return false;}
     $w = new Web();
     $w->initDB();
     // $w->startSession();
@@ -230,9 +259,11 @@ function seedAdminUser( $parameters = []) {
         echo exec('rm -f cache/config.cache');
     }
 
-    if (!class_exists('Web')) {
-        require('system/web.php');
-    }
+    // if (!class_exists('Web')) {
+    //     require('system/web.php');
+    // }
+    if(!stepOneYieldsWeb()){return false;}
+
     $w = new Web();
     $w->initDB();
 

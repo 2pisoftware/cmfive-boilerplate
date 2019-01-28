@@ -12,14 +12,15 @@ defined('TESTDB_DIRECTORY') || define('TESTDB_DIRECTORY', 'test'. DS . 'Database
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-// so we can find modules & some CM5 functions...
-if (!class_exists('Web')) {
-    require('system/web.php');
-}  
 
-if(allowTestDB()) {
+if(allowTestDB())  {
 
     $testDBConfig = include(TESTDB_DIRECTORY.DS."config.php");
+
+    // so we can find modules & some CM5 functions...
+    if (!class_exists('Web')) {
+        require('system/web.php');
+    }  
 
 if(!isset($menuMaker)) { genericRunnerDB($argc,$argv); }
 else { 
@@ -38,11 +39,24 @@ else {
     }
 
 
-function allowTestDB()  {
+function allowTestDB()  { 
+        $webFind = "system/web.php"; 
+        if(chaseWebForDB($webFind)) {
+            if (!class_exists('Web')) {
+                require("system/web.php");
+            }
         $w = new Web();
         if((Config::get('tests'))["testrunner" ]=="ENABLED"){return true;}; 
-        //echo "\nTESTING IS NOT ENABLED\n\n";
+        } 
         return false;
+    }
+    
+    function chaseWebForDB($webFind) {
+         // so we can find modules & some CM5 functions...
+        if (is_readable($webFind)  && !is_dir($webFind)) { 
+                 return true;
+            }
+            return false;
     }
 
 function offerMenuDB() {
