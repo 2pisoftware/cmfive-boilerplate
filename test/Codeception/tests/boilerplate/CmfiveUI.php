@@ -18,9 +18,6 @@ class CmfiveUI extends \Codeception\Actor
 {
     use _generated\CmfiveUIActions;
 
-
-
-
  /**
   	 * Fill a form from an array of data
   	 * Assume that id attribute of form inputs match $data keys
@@ -58,7 +55,10 @@ class CmfiveUI extends \Codeception\Actor
 	}
 
 public function findTableRowMatching($columnNumber,$matchValue) {
-			$rows=$this->grabMultiple('.tablesorter tbody tr td:nth-child('.$columnNumber.')');
+			$rows=$this->grabMultiple('.tablesorter tbody tr td:nth-child('.$columnNumber.')'); 
+			if(count($rows)==0) { // but what if it was a resized non-sorting table??
+					$rows=$this->grabMultiple("//table/tbody/tr/td[".$columnNumber."]");
+					} 
 			if (is_array($rows))  {
 					foreach ($rows as  $k=>$v) {
 							$thisndex=$k + 1;
@@ -113,6 +113,7 @@ public function findTableRowMatching($columnNumber,$matchValue) {
 				$dateFormatted=date('d/m/Y H:i',$date);
 				$finalDateFormatted=date('d/m/Y',$date);
 				$this->executeJS('return $("#'.$field.'").datepicker("setDate","'.$dateFormatted.'");');
+				$this->wait(1);
 				$this->seeInField('#'.$field,$finalDateFormatted);
 		}
 
@@ -124,6 +125,7 @@ public function findTableRowMatching($columnNumber,$matchValue) {
 				$dateFormatted=date('d/m/Y H:i',$date);
 				$finalDateTimeFormatted=date('d/m/Y h:i a',$date);
 				$this->executeJS('return $("#'.$field.'").datepicker("setDate","'.$dateFormatted.'");');
+				$this->wait(1);
 				$this->seeInField('#'.$field,$finalDateTimeFormatted);
 		}
 
@@ -135,6 +137,7 @@ public function findTableRowMatching($columnNumber,$matchValue) {
 				$dateFormatted=date('d/m/Y H:i',$date);
 				$finalTimeFormatted=date('h:i a',$date);
 				$this->executeJS('return $("#'.$field.'").datepicker("setDate","'.$dateFormatted.'");');
+				$this->wait(1);
 				$this->seeInField('#'.$field,$finalTimeFormatted);
 		}
 

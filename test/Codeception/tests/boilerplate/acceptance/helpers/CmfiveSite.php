@@ -28,9 +28,7 @@ class CmfiveSite extends \Codeception\Module
   // HOOK: before test
   public function _before(\Codeception\TestCase $test) {
     $this->getTestDB();
-    //$this->_wipeTestDB(); 
-    $this->runMigrations();   
-    //$this->createTestAdminUser();
+    $this->runMigrations();  
     }
 
 private function _useCmFiveSetup($param) {
@@ -116,6 +114,7 @@ public function getTestDB() {
         $I->moveMouseOver(['css' => '#topnav_'.strtolower($category)]);
         $I->waitForText($link);
         $I->click($link, '#topnav_'.strtolower($category));
+        $I->wait(1);
     }
 
   public function waitForBackendToRefresh($I) {
