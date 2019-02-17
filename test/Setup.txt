@@ -1,8 +1,12 @@
 
-1) Clone/pull/download: https://github.com/2pisoftware/cmfive-boilerplate/tree/feature/codeceptionTesting
+1) Clone/pull/download: https://github.com/2pisoftware/cmfive-boilerplate
+    - use branch master if just running tests
+    - use branch /feature/codeceptionTesting for test & testrunner dev
  - Position it nicely for WebServer to find
+ - Match it to a CORE install (cmfive.php step[1] will clone MASTER from scratch)
+    - use branch /feature/codeceptionTesting for test & testrunner dev 
  - Make symlinks etc as required
- - Apply other usual cmfive setup steps!
+ - Apply any other usual cmfive setup steps!
 
  2) cm5 --> Install
     - TestRunner will need a 'volatile' database to work into:

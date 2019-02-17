@@ -2,6 +2,9 @@
 /cache/
 /lib/
 /uploads/
+/storage/log
+
+desktop.ini
 
 # IDE Fluff
 .settings
