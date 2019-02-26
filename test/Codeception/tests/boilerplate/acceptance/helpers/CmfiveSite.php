@@ -32,7 +32,8 @@ class CmfiveSite extends \Codeception\Module
     }
 
 private function _useCmFiveSetup($param) {
-  $rootDIR = substr(getcwd(), 0, strpos(getcwd(), "test"));
+  $rootDIR = $this->config['boilerplatePath'].DIRECTORY_SEPARATOR; 
+            // UGLY! -> substr(getcwd(), 0, strpos(getcwd(), "test"));
   $Mcommand = "cd ".$rootDIR." && php ".$rootDIR
       .$this->config['setupCommand']." ".$param;
    echo "Running: ".$param ."\n";
@@ -40,7 +41,8 @@ private function _useCmFiveSetup($param) {
 }
 
 private function _useCmFiveDB($param) {
-  $rootDIR = substr(getcwd(), 0, strpos(getcwd(), "test"));
+  $rootDIR = $this->config['boilerplatePath'].DIRECTORY_SEPARATOR; 
+  // UGLY! -> substr(getcwd(), 0, strpos(getcwd(), "test"));
   $Mcommand = "cd ".$rootDIR." && php ".$rootDIR
      .$this->config['DBCommand']." ".$param;
    echo "DB task: ".$param ."\n";

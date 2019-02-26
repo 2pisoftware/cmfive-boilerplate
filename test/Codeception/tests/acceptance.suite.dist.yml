@@ -10,7 +10,7 @@ class_name: CmfiveUI
 modules:
   enabled:
     - WebDriver:
-        url: http://attendance2dev
+        url: http://cmfive.local
         browser: chrome
         wait: 60
         port: 4444 
