@@ -32,6 +32,7 @@ $sharedParam = [
     'testAdminLastname' => 'admin' ,
     'setupCommand' => 'cmfive.php' ,
     'DBCommand' => 'cmfiveTestDB.php'  ];
+$sharedParam['boilerplatePath'] = getcwd();
 
 $loadedParam = [
     'DB_Hostname' =>    "database.hostname" ,

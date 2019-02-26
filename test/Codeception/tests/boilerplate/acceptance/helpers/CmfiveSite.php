@@ -1,6 +1,8 @@
 <?php
 
 namespace Helper;
+use PDO;
+
 
 // here you can define custom actions
 // all public methods declared in helper class will be available in $I
@@ -19,6 +21,7 @@ class CmfiveSite extends \Codeception\Module
             'testAdminLastname' ,
             'setupCommand' ,
             'DBCommand' ,
+            'boilerplatePath' ,
             'DB_Hostname' ,
             'DB_Username' ,
             'DB_Password' ,
@@ -106,6 +109,10 @@ public function getTestDB() {
     return $DB_set;
   }
 
+  public function getInstallPath() {
+    return $this->config['boilerplatePath'];
+    }
+
   	public function logout($I) {
 		$I->amOnPage('/auth/logout');
 	}
@@ -133,21 +140,44 @@ public function getTestDB() {
      return $this->getModules();
    }
 
-   
-//  public function doAdHocDebugCommand($I) {
-//   $command = '';
-//   if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-//       $command = stream_get_line(STDIN, 1024, PHP_EOL);
-//   } else {
-//       $command = readline($prompt);
-//   }
-//   $tryToDo = explode('(' , rtrim($command, ')')); 
-//   $func=array_shift($tryToDo)  ;
-//   $param = explode(',' , $tryToDo[0]); 
-//   // THIS ALMOST WORKS! 
-//   // (need to escape from strings back to arg types...)
-//   call_user_func_array(array($I, $func), $param);
-// }
+   public function getPDOforCmfive() {
+     return $this->getPDOConnection($this->getDB_Settings());
+   }
+
+   public function getPDOConnection($dbInfo) {
+     // this gets us raw DB from cmfive config ... but only handles MYSQL! 
+		$port = isset($dbInfo['DB_Port']) && !empty($dbInfo['DB_Port']) ? ";port=".$dbInfo['DB_Port'] : "";
+		$url = "{$dbInfo['DB_Driver']}:host={$dbInfo['DB_Hostname']};dbname={$dbInfo['DB_Database']}{$port}";
+		return new \PDO($url,$dbInfo['DB_Username'],$dbInfo['DB_Password']
+				, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
+   }
+    
+   /*
+    switch ($config['driver']) {
+			  //Postgresql:  "pgsql:host=%s;port=%d;dbname=%s;user=%s;password=%s"
+			  // host=xyzhost 
+				// port=nnnn
+				// database=whatever
+				// user=postgres
+				// password=postgres 
+        case 'pgsql':
+				$port = isset($config['port']) && !empty($config['port']) ? ";port=".$config['port'] : "";
+				$url = "{$config['driver']}:host={$config['host']}{$port};dbname={$config['database']}";
+				parent::__construct($url,$config["username"],$config["password"], null); 
+				break;
+				
+		 	case 'sqlsrv':
+				$port = isset($config['port']) && !empty($config['port']) ? ",".$config['port'] : "";
+				$url = "{$config['driver']}:Server={$config['hostname']}{$port};Database={$config['database']}";
+				parent::__construct($url,$config["username"],$config["password"], null); 
+				break;
+				
+			default: //mysql
+				$port = isset($config['port']) && !empty($config['port']) ? ";port=".$config['port'] : "";
+				$url = "{$config['driver']}:host={$config['hostname']};dbname={$config['database']}{$port}";
+				parent::__construct($url,$config["username"],$config["password"], array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
+		
+		} 	*/	 
 
 }
 
