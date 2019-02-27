@@ -31,7 +31,9 @@ $sharedParam = [
     'testAdminFirstname' => 'admin' ,
     'testAdminLastname' => 'admin' ,
     'setupCommand' => 'cmfive.php' ,
-    'DBCommand' => 'cmfiveTestDB.php'  ];
+    'DBCommand' => 'cmfiveTestDB.php' ,
+    'cmfiveModuleList' => '' ];
+
 $sharedParam['boilerplatePath'] = getcwd();
 
 $loadedParam = [
@@ -310,6 +312,8 @@ function registerBoilerplateParameters($spoolTo) {
 
 function chaseModules($module_name) {
     
+    global $sharedParam;
+
     $moduleCapabilities = [];  
     $w = new Web();
     $w->initDB();
@@ -318,12 +322,14 @@ function chaseModules($module_name) {
     	// Read all modules directories for any tests that need to be copied over
 		if ($module_name === 'all') {
 			foreach($w->modules() as $module) {
-				$availableTests[] =  getTestsForModule($module);
+                $availableTests[] =  getTestsForModule($module);
+                $sharedParam['cmfiveModuleList'] .= ":".$module;
 			}
 		} else {
 			$availableTests[] =  getTestsForModule($module_name);
         }
         
+        $sharedParam['cmfiveModuleList'] .= ":";
         $availableTests[] =  getTestsForModule(SHARED_SOURCE);
         $availableTests[] =  getTestsForModule(SHARED_CORE);
            // var_dump($availableTests);  die();

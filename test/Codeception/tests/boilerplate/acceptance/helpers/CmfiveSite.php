@@ -26,7 +26,8 @@ class CmfiveSite extends \Codeception\Module
             'DB_Username' ,
             'DB_Password' ,
             'DB_Database' ,
-            'DB_Driver' ];
+            'DB_Driver' ,
+            'cmfiveModuleList' ];
 
   // HOOK: before test
   public function _before(\Codeception\TestCase $test) {
@@ -136,9 +137,21 @@ public function getTestDB() {
   }
 
 
+   public function canUseCmfiveModule($module) {
+
+     $modules = $this->config['cmfiveModuleList'];
+     if(strpos($modules,":".$module.":")) {return true;}
+     return false;
+
+   }
+
    public function getCodeceptionModuleList() {
      return $this->getModules();
    }
+
+   public function getCmfiveModuleList() {
+    return $this->config['cmfiveModuleList'];
+  }
 
    public function getPDOforCmfive() {
      return $this->getPDOConnection($this->getDB_Settings());
