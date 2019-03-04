@@ -140,9 +140,9 @@ function adaptDBcommand($task,$targetDB) {
         $command = $path.str_replace(
                 array('$username', '$password', '$dbname', '$filename'), 
                 array( 
-                       Config::get('database.username'),
-                       Config::get('database.password'), 
-                       Config::get('database.database'), 
+                       '"'.Config::get('database.username').'"',
+                       '"'.Config::get('database.password').'"', 
+                       '"'.Config::get('database.database').'"', 
                        $targetDB), 
                       $command);  
         return $command; }
@@ -191,7 +191,7 @@ function backupDB($filedir) {
     $filename = "{$datestamp}.{$backupformat}";
 
     $command = adaptDBcommand("backup",$filedir . DS . $filename);
-
+    //var_dump($command);die();
     if (!empty($command)) { 
         
         echo (shell_exec($command)."\n");

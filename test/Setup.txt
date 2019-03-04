@@ -1,8 +1,12 @@
 
-1) Clone/pull/download: https://github.com/2pisoftware/cmfive-boilerplate/tree/feature/codeceptionTesting
+1) Clone/pull/download: https://github.com/2pisoftware/cmfive-boilerplate
+    - use branch master if just running tests
+    - use branch /feature/codeceptionTesting for test & testrunner dev
  - Position it nicely for WebServer to find
+ - Match it to a CORE install (cmfive.php step[1] will clone MASTER from scratch)
+    - use branch /feature/codeceptionTesting for test & testrunner dev 
  - Make symlinks etc as required
- - Apply other usual cmfive setup steps!
+ - Apply any other usual cmfive setup steps!
 
  2) cm5 --> Install
     - TestRunner will need a 'volatile' database to work into:
@@ -16,10 +20,11 @@
 	       - use example to correctly configure DB executable commands and paths
 		   - leave parameters as-is; these will be auto-filled from cmfive-boilerplate\config.php
 		   - these settings do not override any settings elsewhere (eg: in Admin module config)
+		 - CHECK THE CONFIG WORKS -> test for backup and restore, examine files in cmfive-boilerplate\backups
 	 - Run : "Setup empty TestRunner DB and Administrator"
 	       - once only
-	       - backs up standing DB
-		   - deletes all data
+	       - backs up standing DB -> BUT ONLY IF backup config.php is correct!
+		   - deletes all data -> CAN ONLY BE RECOVERED if your backup is good!
 		   - runs all migrations & seeds test Admin user
 		   - grabs snapshot of new 'empty' database to use for tests
 	 - Run : "Restore database" to restore previously standing DB

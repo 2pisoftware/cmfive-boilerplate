@@ -4,10 +4,12 @@
 /tests/_support/
 /tests/_output/
 /tests/acceptance
+
 /tests/acceptance.suite.yml
 /tests/acceptance.suite.dist.yml
 
 codeception.yml
+
 
 ### Composer ###
 composer.phar
