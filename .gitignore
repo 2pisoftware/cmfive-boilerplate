@@ -3,6 +3,7 @@
 /lib/
 /uploads/
 /storage/log
+/storage/session
 
 desktop.ini
 
