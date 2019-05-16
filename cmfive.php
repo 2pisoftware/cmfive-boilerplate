@@ -9,6 +9,8 @@ error_reporting(E_ALL);
 $menuMaker = [ 
     ['option' => "Install core libraries" , 'message' => "Installing core libraries"
              , 'function' => "installCoreLibraries" , 'param' => null ],
+    ['option' => "Update third party core dependencies" , 'message' => "Installing 3rd party libraries"
+             , 'function' => "installThirdPartyLibraries" , 'param' => null ],
     ['option' => "Install database migrations" , 'message' => "Installing migrations"
              , 'function' => "installMigrations" , 'param' => null  ],
     ['option' => "Seed admin user" , 'message' => "Setting up admin user"
@@ -146,6 +148,30 @@ function stepOneYieldsWeb() {
 
 function installCoreLibraries() {
 
+    $composer_json = sketchComposerForCore();
+
+    file_put_contents('./composer.json', json_encode($composer_json,JSON_PRETTY_PRINT));
+
+    echo exec('php composer.phar install');
+
+    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        echo exec('mklink /D system composer\vendor\2pisoftware\cmfive-core\system');
+        //echo exec('del .\cache\config.cache');
+    } else {
+        echo exec('ln -s composer/vendor/2pisoftware/cmfive-core/system system');
+        //echo exec('rm -f cache/config.cache');
+    }
+
+     // if (!class_exists('Web')) {
+    //     require('system/web.php');
+    // }
+
+     installThirdPartyLibraries($composer_json);
+
+     }
+
+     function sketchComposerForCore() {
+         
         // name     : 2pisoftware/cmfive-core
         // descrip. :
         // keywords :
@@ -185,29 +211,26 @@ function installCoreLibraries() {
     }
 COMPOSER;
 
-    $composer_json = json_decode($composer_string, true);
+    return json_decode($composer_string, true);
+     }
 
-    file_put_contents('./composer.json', json_encode($composer_json,JSON_PRETTY_PRINT));
+function installThirdPartyLibraries($composer_json = null) {
 
-    echo exec('php composer.phar install');
+    if(!stepOneYieldsWeb()){return false;}
 
     if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-        echo exec('mklink /D system composer\vendor\2pisoftware\cmfive-core\system');
         echo exec('del .\cache\config.cache');
     } else {
-        echo exec('ln -s composer/vendor/2pisoftware/cmfive-core/system system');
         echo exec('rm -f cache/config.cache');
     }
 
-     // if (!class_exists('Web')) {
-    //     require('system/web.php');
-    // }
-    if(!stepOneYieldsWeb()){return false;}
     $w = new Web();
+
+    if(!$composer_json) {$composer_json = sketchComposerForCore();}
 
     $dependencies_array = array();
     foreach($w->modules() as $module) {
-    	$dependencies = Config::get("{$module}.dependencies");
+    	$dependencies = Config::get("{$module}.dependencies"); var_dump($dependencies);
     	if (!empty($dependencies)) {
     		$dependencies_array = array_merge($dependencies, $dependencies_array);
     	}
