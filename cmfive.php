@@ -230,7 +230,7 @@ function installThirdPartyLibraries($composer_json = null) {
 
     $dependencies_array = array();
     foreach($w->modules() as $module) {
-    	$dependencies = Config::get("{$module}.dependencies"); var_dump($dependencies);
+    	$dependencies = Config::get("{$module}.dependencies"); //var_dump($dependencies);
     	if (!empty($dependencies)) {
     		$dependencies_array = array_merge($dependencies, $dependencies_array);
     	}
