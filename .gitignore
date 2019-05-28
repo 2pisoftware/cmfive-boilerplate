@@ -4,6 +4,7 @@
 /uploads/
 /storage/log
 /storage/session
+/log
 
 desktop.ini
 
@@ -23,5 +24,6 @@ nbproject/
 composer.json
 composer.lock
 system
+/test/Codeception
 
 codeception.yml
