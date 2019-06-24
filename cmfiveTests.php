@@ -24,6 +24,7 @@ defined('SHARED_SOURCE') || define('SHARED_SOURCE', 'boilerplate');
 defined('SHARED_CORE') || define('SHARED_CORE', 'workflows');
 
 // special parameters to push into .yml, hence find in boilerplate helpers
+// 'shared' are explicitly declared
 $sharedParam = [
     'testAdminUsername' => 'admin' ,
     'testAdminPassword' => 'admin' ,
@@ -36,12 +37,14 @@ $sharedParam = [
 
 $sharedParam['boilerplatePath'] = getcwd();
 
+// 'loaded' will come from cmfive config
 $loadedParam = [
     'DB_Hostname' =>    "database.hostname" ,
     'DB_Username' =>    "database.username" ,
     'DB_Password' =>    "database.password" ,
     'DB_Database' =>    "database.database" ,
-    'DB_Driver' =>    "database.driver"  
+    'DB_Driver' =>      "database.driver"  ,
+    'UA_TestConfig' =>  "tests.config"
   ];
 
 defined('DEBUG_RUN') || define('DEBUG_RUN', "run --steps --debug --no-colors acceptance");
@@ -304,8 +307,15 @@ function registerBoilerplateParameters($spoolTo) {
                             ."{$key}: '{$value}'\n"); 
         }  
         foreach($loadedParam as $key => $conf)  { 
+            //should be isarray vs string on 'config' then encode as req'd
+            $configTyped = Config::get($conf);
+            if(is_array($configTyped)) {
+                $configTyped = json_encode($configTyped);
+            }
+            if(is_string($configTyped)) {
             fwrite($spoolTo, "                                    "
-                                ."{$key}: '".Config::get($conf)."'\n"); 
+                                ."{$key}: '".$configTyped."'\n"); 
+            }
         }
     }
 

@@ -9,14 +9,16 @@ error_reporting(E_ALL);
 $menuMaker = [ 
     ['option' => "Install core libraries" , 'message' => "Installing core libraries"
              , 'function' => "installCoreLibraries" , 'param' => null ],
-    ['option' => "Update third party core dependencies" , 'message' => "Installing 3rd party libraries"
-             , 'function' => "installThirdPartyLibraries" , 'param' => null ],
+    
     ['option' => "Install database migrations" , 'message' => "Installing migrations"
              , 'function' => "installMigrations" , 'param' => null  ],
     ['option' => "Seed admin user" , 'message' => "Setting up admin user"
              , 'function' => "seedAdminUser" , 'param' => null  ],
     ['option' => "Generate encryption keys" , 'message' => "Generating encryption keys" 
              , 'function' => "generateEncryptionKeys" , 'param' => null  ],
+
+    ['option' => "Update third party core dependencies" , 'message' => "Installing 3rd party libraries"
+             , 'function' => "installThirdPartyLibraries" , 'param' => null ],
     ];
 
 $cmdMaker = [ 

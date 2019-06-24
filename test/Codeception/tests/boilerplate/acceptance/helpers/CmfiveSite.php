@@ -27,7 +27,9 @@ class CmfiveSite extends \Codeception\Module
             'DB_Password' ,
             'DB_Database' ,
             'DB_Driver' ,
-            'cmfiveModuleList' ];
+            'cmfiveModuleList' ,
+            'UA_TestConfig'
+          ];
 
   // HOOK: before test
   public function _before(\Codeception\TestCase $test) {
@@ -96,6 +98,16 @@ public function getTestDB() {
     $this->login($I, $this->config['testAdminUsername'],$this->config['testAdminPassword']);
   }
 
+
+  public function getUA_TestConfig(){ 
+    
+    $configJson = $this->config['UA_TestConfig'];
+    if(empty($configJson)) {
+      return [];
+    } else {
+      return json_decode($configJson,true);
+    }
+   }
 
   public function getAdminUserName(){ return $this->config['testAdminUsername']; }
   public function getAdminPassword(){ return $this->config['testAdminPassword']; }
