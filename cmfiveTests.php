@@ -82,6 +82,10 @@ function offerMenuTests() {
     ['option' => "Setup empty TestRunner DB and Administrator" 
     , 'message' => "Batched TestRunner DB setup" 
     , 'function' => "DBRunner" , 'param' => null  ]; 
+    $menuMaker[] = 
+    ['option' => "Show Composer module dependencies"     
+    , 'message' => "Showing Composer module dependencies:" 
+    , 'function' => "moduleDependencies" , 'param' => null  ]; 
 
     $found=chaseModules("all"); 
     foreach($found as $capabilities => $capability) {
@@ -242,6 +246,21 @@ function purgeTestCode() {
     }
 
 }            
+
+function moduleDependencies() {
+         
+    $w = new Web();
+    $w->initDB();
+
+    foreach($w->modules() as $module) {
+    	$dependencies = Config::get("{$module}.dependencies"); 
+    	if (!empty($dependencies)) {
+            echo "Module: ".$module;
+            foreach ($dependencies as $req => $ver ) { echo " / ".$req."->".$ver; }
+            echo "\n";
+    	}  
+    } echo "\n";
+}
 
 
 function reportModules($moduleCapabilities) {
