@@ -332,11 +332,12 @@ function generateEncryptionKeys() {
     }
 
     $key_token = bin2hex($key_token);
-    $key_iv = bin2hex($key_iv);
+    //$key_iv = bin2hex($key_iv);
 
-    echo "Encryption keys generated\n";
-    file_put_contents('config.php', "\nConfig::set('system.encryption', [\n\t'key' => '{$key_token}',\n\t'iv' => '{$key_iv}'\n]);", FILE_APPEND);
-    echo "Keys written to project config\n\n";
+    echo "Encryption key generated\n";
+    //file_put_contents('config.php', "\nConfig::set('system.encryption', [\n\t'key' => '{$key_token}',\n\t'iv' => '{$key_iv}'\n]);", FILE_APPEND);
+    file_put_contents('config.php', "\nConfig::set('system.encryption', [\n\t'key' => '{$key_token}'\n]);", FILE_APPEND);
+    echo "Key written to project config\n\n";
 }
 
 function readConsoleLine($prompt = "Command: ") {
