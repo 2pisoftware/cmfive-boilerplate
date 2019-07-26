@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Cmfive_PHPCS" xsi:noNamespaceSchemaLocation="phpcs.xsd">
+	<description>The coding standard for Cmfive.</description>
+
+	<rule ref="PSR2" />
+
+	<rule ref="PSR1">
+		<exclude name="PSR1.Classes.ClassDeclaration" />
+	</rule>
+
+</ruleset>
