@@ -3,15 +3,21 @@
 	<description>The coding standard for Cmfive.</description>
 
 	<rule ref="PSR2">
-        <!-- Cmfive requires the use of underscore prefixes to determine 
+        <!-- Cmfive requires the use of underscore prefixes to determine
              which properties should be inserted into the DB -->
         <exclude name="PSR2.Classes.PropertyDeclaration" />
     </rule>
 
 	<rule ref="PSR1">
-        <!-- Cmfive classes aren't using namespaces and requiring such 
-             would take a very long time to rectify -->
+        <!-- Cmfive classes aren't using namespaces and requiring such
+             would take a very long time to implement -->
 		<exclude name="PSR1.Classes.ClassDeclaration" />
 	</rule>
 
+	<rule ref="Generic.Files.LineLength">
+		<properties>
+			<property name="lineLimit" value="200"/>
+			<property name="absoluteLineLimit" value="0"/>
+		</properties>
+	</rule>
 </ruleset>
