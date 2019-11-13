@@ -9,10 +9,15 @@ class_name: CmfiveUI
 
 modules:
   enabled:
+    - Db:
+       dsn: 'mysql:host=localhost;dbname=probuild_dev'
+       user: 'admin'
+       password: 'admin'
+       cleanup: true
+       populate: true
     - WebDriver:
         url: http://cmfive.local
         browser: chrome
         wait: 60
-        port: 4444 
+        port: 4444
     - Asserts
-
