@@ -27,3 +27,5 @@ system
 /test/Codeception
 
 codeception.yml
+
+test/Services/chromedriver
