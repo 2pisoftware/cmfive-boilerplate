@@ -1,98 +1,117 @@
 #!/bin/php
 <?php
 
-if(!(isset($argc)&&isset($argv))) {echo "No action is possible.";exit();}
+if (!(isset($argc) && isset($argv))) {
+    echo "No action is possible.";
+    exit();
+}
 
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-$menuMaker = [ 
-    ['option' => "Install core libraries" , 'message' => "Installing core libraries"
-             , 'function' => "installCoreLibraries" , 'param' => null ],
-    ['option' => "Install database migrations" , 'message' => "Installing migrations"
-             , 'function' => "installMigrations" , 'param' => null  ],
-    ['option' => "Seed admin user" , 'message' => "Setting up admin user"
-             , 'function' => "seedAdminUser" , 'param' => null  ],
-    ['option' => "Generate encryption keys" , 'message' => "Generating encryption keys" 
-             , 'function' => "generateEncryptionKeys" , 'param' => null  ],
-    ];
+$menuMaker = [
+    [
+        'option' => "Install core libraries", 'message' => "Installing core libraries", 'function' => "installCoreLibraries", 'param' => null
+    ],
+    [
+        'option' => "Install database migrations", 'message' => "Installing migrations", 'function' => "installMigrations", 'param' => null
+    ],
+    [
+        'option' => "Seed admin user", 'message' => "Setting up admin user", 'function' => "seedAdminUser", 'param' => null
+    ],
+    [
+        'option' => "Generate encryption keys", 'message' => "Generating encryption keys", 'function' => "generateEncryptionKeys", 'param' => null
+    ],
+];
 
-$cmdMaker = [ 
+$cmdMaker = [
     'install' => [
-         [ 'request' => "core" , 'message' => "Installing core libraries"
-          , 'function' => "installCoreLibraries" , 'args' => false ],
-        [ 'request' => "migration" , 'message' => "Installing migrations"
-        , 'function' => "installMigrations" , 'args' => false  ],
-        [ 'request' => "migrations" , 'message' => "Installing migrations"
-        , 'function' => "installMigrations" , 'args' => false  ]  ] ,
+        [
+            'request' => "core", 'message' => "Installing core libraries", 'function' => "installCoreLibraries", 'args' => false
+        ],
+        [
+            'request' => "migration", 'message' => "Installing migrations", 'function' => "installMigrations", 'args' => false
+        ],
+        [
+            'request' => "migrations", 'message' => "Installing migrations", 'function' => "installMigrations", 'args' => false
+        ]
+    ],
     'seed' => [
-        [ 'request' =>  "admin" , 'message' => "Setting up admin user"
-              , 'function' => "cmdSeedAdminUser" , 'args' => true   ]    ] 
-              // need to mimic: seedAdminUser(array_slice($argv, 3));
-    
-    ];
- 
-    
-    include "cmfiveTests.php";
+        [
+            'request' =>  "admin", 'message' => "Setting up admin user", 'function' => "cmdSeedAdminUser", 'args' => true
+        ]
+    ]
+    // need to mimic: seedAdminUser(array_slice($argv, 3));
+
+];
+
+
+include "cmfiveTests.php";
 
 if ($argc >= 3) {
-    
-    foreach($cmdMaker as $command => $does) {
-        foreach($does as $doing) {
-            if(($argv[1]==$command)&&($argv[2]==$doing['request'])) {
-             echo $command . " - " . $doing['message'] . "...\n\n";
-             if($doing['args']) {
-                 $shft = $argv; array_shift($shft);
-                 $doing['function']($argc-1,$shft);
-                } else  {
+    foreach ($cmdMaker as $command => $does) {
+        foreach ($does as $doing) {
+            if (($argv[1] == $command) && ($argv[2] == $doing['request'])) {
+                echo $command . " - " . $doing['message'] . "...\n\n";
+                if ($doing['args']) {
+                    $shft = $argv;
+                    array_shift($shft);
+                    $doing['function']($argc - 1, $shft);
+                } else {
                     $doing['function']();
                 }
-             exit(0);
+                exit(0);
             }
-    }
+        }
     }
     echo "\nUnknown command\n";
-        exit(1);
-   
+    exit(1);
 }
 
 /////////////////////////////////////////////////////////////////////
 
-$menuMaker[] = 
-['option' => "List command options" , 'message' => "Command line options" 
-, 'function' => "synopsis"  , 'param' => null  ]; 
-$menuMaker[] = 
-['option' => "Exit (0)" , 'message' => "Exiting" 
-, 'function' => "justQuit"  , 'param' => null  ]; 
+$menuMaker[] =
+    [
+        'option' => "List command options", 'message' => "Command line options", 'function' => "synopsis", 'param' => null
+    ];
+$menuMaker[] =
+    [
+        'option' => "Exit (0)", 'message' => "Exiting", 'function' => "justQuit", 'param' => null
+    ];
 
-while(true) {
+while (true) {
     printMenu($menuMaker);
 
     $command = readConsoleLine();
-    if($command=="0"){justQuit();}
+    if ($command == "0") {
+        justQuit();
+    }
 
-    $sel=intval($command);
-    
-    if(($sel>0)&&($sel<=count($menuMaker))) {
+    $sel = intval($command);
+
+    if (($sel > 0) && ($sel <= count($menuMaker))) {
         $sel--;
-        echo $menuMaker[$sel]['message']."...\n\n";
-        if(!$menuMaker[$sel]['param']) {
-                $menuMaker[$sel]['function']();
+        echo $menuMaker[$sel]['message'] . "...\n\n";
+        if (!$menuMaker[$sel]['param']) {
+            $menuMaker[$sel]['function']();
         } else {
             $menuMaker[$sel]['function']($menuMaker[$sel]['param']);
         }
     } else {
         echo "Command not found, please try again\n";
-                 echo "\n";
-    } 
+        echo "\n";
+    }
 }
 
 /////////////////////////////////////////////////////////////////////
 
-function justQuit() { exit(0); }
+function justQuit()
+{
+    exit(0);
+}
 
-function printMenu($menu) {
-
+function printMenu($menu)
+{
     echo   "*************************************";
     echo "\n      Cmfive Installation Tools";
     echo "\n*************************************\n";
@@ -101,60 +120,61 @@ function printMenu($menu) {
         echo "You need to set up your config.php file first (see example)\n";
         justQuit();
     }
-           
-    $i=1;    
+
+    $i = 1;
     foreach ($menu as $menuEntry) {
         //var_dump($menuEntry);
-        echo $i.") ".$menuEntry['option']."\n";
+        echo $i . ") " . $menuEntry['option'] . "\n";
         $i++;
     }
 }
 
-function synopsis() {
-    
+function synopsis()
+{
     global $cmdMaker;
 
-    foreach($cmdMaker as $command => $does) {
-        foreach($does as $doing) { 
-             echo //__FILE__ 
-             $_SERVER['SCRIPT_NAME']. " " . $command . " " . $doing['request'] ;
-             if($doing['args']) {
-                 echo " [args...]";
-                } echo " - (" . $doing['message'] . ")\n";
-             
-    }
+    foreach ($cmdMaker as $command => $does) {
+        foreach ($does as $doing) {
+            echo //__FILE__
+                $_SERVER['SCRIPT_NAME'] . " " . $command . " " . $doing['request'];
+            if ($doing['args']) {
+                echo " [args...]";
+            }
+            echo " - (" . $doing['message'] . ")\n";
+        }
     }
     echo "\n";
 }
 
 
-function stepOneYieldsWeb() {
+function stepOneYieldsWeb()
+{
     // so we can find modules & some CM5 functions...
-    $webFind="system/web.php";
-   if (is_readable($webFind)  && !is_dir($webFind)) { 
-            if (!class_exists('Web')) {
-                require($webFind);
-            }
-            return true;
-       }
-       echo "\nOrder of steps is important - can't find CORE INSTALL";
-       echo "\nMake sure to locate CORE and arrange SYSTEM symlink\n\n";
-       
-       return false;
+    $webFind = "system/web.php";
+    if (is_readable($webFind)  && !is_dir($webFind)) {
+        if (!class_exists('Web')) {
+            require($webFind);
+        }
+        return true;
+    }
+    echo "\nOrder of steps is important - can't find CORE INSTALL";
+    echo "\nMake sure to locate CORE and arrange SYSTEM symlink\n\n";
+
+    return false;
 }
 
 
-function installCoreLibraries() {
+function installCoreLibraries()
+{
+    // name     : 2pisoftware/cmfive-core
+    // descrip. :
+    // keywords :
+    // versions : * master
+    // type     : library
+    // source   : [git] https://github.com/2pisoftware/cmfive-core develop
+    // dist     : []
+    // names    : 2pisoftware/cmfive-core
 
-        // name     : 2pisoftware/cmfive-core
-        // descrip. :
-        // keywords :
-        // versions : * master
-        // type     : library
-        // source   : [git] https://github.com/2pisoftware/cmfive-core develop
-        // dist     : []
-        // names    : 2pisoftware/cmfive-core
-    
     $composer_string = <<<COMPOSER
     {
         "name": "cmfive-boilerplate",
@@ -187,7 +207,7 @@ COMPOSER;
 
     $composer_json = json_decode($composer_string, true);
 
-    file_put_contents('./composer.json', json_encode($composer_json,JSON_PRETTY_PRINT));
+    file_put_contents('./composer.json', json_encode($composer_json, JSON_PRETTY_PRINT));
 
     echo exec('php composer.phar install');
 
@@ -199,37 +219,36 @@ COMPOSER;
         echo exec('rm -f cache/config.cache');
     }
 
-     // if (!class_exists('Web')) {
-    //     require('system/web.php');
-    // }
-    if(!stepOneYieldsWeb()){return false;}
+    if (!stepOneYieldsWeb()) {
+        return false;
+    }
     $w = new Web();
 
     $dependencies_array = array();
-    foreach($w->modules() as $module) {
-    	$dependencies = Config::get("{$module}.dependencies");
-    	if (!empty($dependencies)) {
-    		$dependencies_array = array_merge($dependencies, $dependencies_array);
-    	}
+    foreach ($w->modules() as $module) {
+        $dependencies = Config::get("{$module}.dependencies");
+        if (!empty($dependencies)) {
+            $dependencies_array = array_merge($dependencies, $dependencies_array);
+        }
     }
 
     $composer_json['require'] = array_merge($composer_json['require'], $dependencies_array);
-    file_put_contents('./composer.json', json_encode($composer_json,JSON_PRETTY_PRINT));
+    file_put_contents('./composer.json', json_encode($composer_json, JSON_PRETTY_PRINT));
 
     echo exec('php composer.phar update');
 }
 
-function installMigrations() {
+function installMigrations()
+{
     if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
         echo exec('del .\cache\config.cache');
     } else {
         echo exec('rm -f cache/config.cache');
     }
 
-     // if (!class_exists('Web')) {
-    //     require('system/web.php');
-    // }
-    if(!stepOneYieldsWeb()){return false;}
+    if (!stepOneYieldsWeb()) {
+        return false;
+    }
     $w = new Web();
     $w->initDB();
     // $w->startSession();
@@ -244,25 +263,24 @@ function installMigrations() {
     }
 }
 
-function cmdSeedAdminUser($pCount,$parameters = []) { 
-    $parameters=array_slice($parameters,2);
-    $pCount = count($parameters); 
-    seedAdminUser( $parameters);
-    };
+function cmdSeedAdminUser($pCount, $parameters = [])
+{
+    $parameters = array_slice($parameters, 2);
+    $pCount = count($parameters);
+    seedAdminUser($parameters);
+};
 
-function seedAdminUser( $parameters = []) { 
-    // $parameters=array_slice($parameters,2);
-    //  $pCount = count($parameters); 
+function seedAdminUser($parameters = [])
+{
     if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
         echo exec('del .\cache\config.cache');
     } else {
         echo exec('rm -f cache/config.cache');
     }
 
-    // if (!class_exists('Web')) {
-    //     require('system/web.php');
-    // }
-    if(!stepOneYieldsWeb()){return false;}
+    if (!stepOneYieldsWeb()) {
+        return false;
+    }
 
     $w = new Web();
     $w->initDB();
@@ -294,7 +312,8 @@ function seedAdminUser( $parameters = []) {
     echo "Admin user setup successful\n";
 }
 
-function generateEncryptionKeys() {
+function generateEncryptionKeys()
+{
     $key_token = '';
     $key_iv = '';
 
@@ -314,7 +333,8 @@ function generateEncryptionKeys() {
     echo "Keys written to project config\n\n";
 }
 
-function readConsoleLine($prompt = "Command: ") {
+function readConsoleLine($prompt = "Command: ")
+{
     $command = '';
     if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
         echo $prompt;
@@ -325,5 +345,3 @@ function readConsoleLine($prompt = "Command: ") {
 
     return $command;
 }
-
- 
