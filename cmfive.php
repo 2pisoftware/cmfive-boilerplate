@@ -45,7 +45,6 @@ $cmdMaker = [
 
 ];
 
-
 include "cmfiveTests.php";
 
 if ($argc >= 3) {
@@ -123,7 +122,6 @@ function printMenu($menu)
 
     $i = 1;
     foreach ($menu as $menuEntry) {
-        //var_dump($menuEntry);
         echo $i . ") " . $menuEntry['option'] . "\n";
         $i++;
     }
@@ -146,7 +144,6 @@ function synopsis()
     echo "\n";
 }
 
-
 function stepOneYieldsWeb()
 {
     // so we can find modules & some CM5 functions...
@@ -163,9 +160,41 @@ function stepOneYieldsWeb()
     return false;
 }
 
-
 function installCoreLibraries()
 {
+    // name     : 2pisoftware/cmfive-core
+    // descrip. :
+    // keywords :
+    // versions : * master
+    // type     : library
+    // source   : [git] https://github.com/2pisoftware/cmfive-core develop
+    // dist     : []
+    // names    : 2pisoftware/cmfive-core
+
+    $composer_json = sketchComposerForCore();
+
+    file_put_contents('./composer.json', json_encode($composer_json, JSON_PRETTY_PRINT));
+
+    echo exec('php composer.phar install');
+
+    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        echo exec('mklink /D system composer\vendor\2pisoftware\cmfive-core\system');
+        //echo exec('del .\cache\config.cache');
+    } else {
+        echo exec('ln -s composer/vendor/2pisoftware/cmfive-core/system system');
+        //echo exec('rm -f cache/config.cache');
+    }
+
+    // if (!class_exists('Web')) {
+    //     require('system/web.php');
+    // }
+
+    installThirdPartyLibraries($composer_json);
+}
+
+function sketchComposerForCore()
+{
+
     // name     : 2pisoftware/cmfive-core
     // descrip. :
     // keywords :
@@ -205,28 +234,31 @@ function installCoreLibraries()
     }
 COMPOSER;
 
-    $composer_json = json_decode($composer_string, true);
+    return json_decode($composer_string, true);
+}
 
-    file_put_contents('./composer.json', json_encode($composer_json, JSON_PRETTY_PRINT));
-
-    echo exec('php composer.phar install');
-
-    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-        echo exec('mklink /D system composer\vendor\2pisoftware\cmfive-core\system');
-        echo exec('del .\cache\config.cache');
-    } else {
-        echo exec('ln -s composer/vendor/2pisoftware/cmfive-core/system system');
-        echo exec('rm -f cache/config.cache');
-    }
+function installThirdPartyLibraries($composer_json = null)
+{
 
     if (!stepOneYieldsWeb()) {
         return false;
     }
+
+    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        echo exec('del .\cache\config.cache');
+    } else {
+        echo exec('rm -f cache/config.cache');
+    }
+
     $w = new Web();
+
+    if (!$composer_json) {
+        $composer_json = sketchComposerForCore();
+    }
 
     $dependencies_array = array();
     foreach ($w->modules() as $module) {
-        $dependencies = Config::get("{$module}.dependencies");
+        $dependencies = Config::get("{$module}.dependencies"); //var_dump($dependencies);
         if (!empty($dependencies)) {
             $dependencies_array = array_merge($dependencies, $dependencies_array);
         }
@@ -326,11 +358,12 @@ function generateEncryptionKeys()
     }
 
     $key_token = bin2hex($key_token);
-    $key_iv = bin2hex($key_iv);
+    //$key_iv = bin2hex($key_iv);
 
-    echo "Encryption keys generated\n";
-    file_put_contents('config.php', "\nConfig::set('system.encryption', [\n\t'key' => '{$key_token}',\n\t'iv' => '{$key_iv}'\n]);", FILE_APPEND);
-    echo "Keys written to project config\n\n";
+    echo "Encryption key generated\n";
+    //file_put_contents('config.php', "\nConfig::set('system.encryption', [\n\t'key' => '{$key_token}',\n\t'iv' => '{$key_iv}'\n]);", FILE_APPEND);
+    file_put_contents('config.php', "\nConfig::set('system.encryption', [\n\t'key' => '{$key_token}'\n]);", FILE_APPEND);
+    echo "Key written to project config\n\n";
 }
 
 function readConsoleLine($prompt = "Command: ")

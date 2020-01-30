@@ -1,116 +1,124 @@
 #!/bin/php
 <?php
 
-
-if(!(isset($argc)&&isset($argv))) {echo "No action is possible.";exit();}
+if (!(isset($argc) && isset($argv))) {
+    echo "No action is possible.";
+    exit();
+}
 
 defined('DS') || define('DS', DIRECTORY_SEPARATOR);
-defined('BACKUP_DIRECTORY') || define('BACKUP_DIRECTORY',  'backups' );  
-defined('TESTDB_DIRECTORY') || define('TESTDB_DIRECTORY', 'test'. DS . 'Databases');
-
+defined('BACKUP_DIRECTORY') || define('BACKUP_DIRECTORY', 'backups');
+defined('TESTDB_DIRECTORY') || define('TESTDB_DIRECTORY', 'test' . DS . 'Databases');
 
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-
-if(allowTestDB())  {
-
-    $testDBConfig = include(TESTDB_DIRECTORY.DS."config.php");
+if (allowTestDB()) {
+    $testDBConfig = include(TESTDB_DIRECTORY . DS . "config.php");
 
     // so we can find modules & some CM5 functions...
     if (!class_exists('Web')) {
         require('system/web.php');
-    }  
-
-if(!isset($menuMaker)) { genericRunnerDB($argc,$argv); }
-else { 
-    offerMenuDB(); 
-    $cmdMaker['DB'] = [  
-    [ 'request' =>  "backup" , 'message' => "Backing up database"
-          , 'function' => "genericRunnerDB" , 'args' => true   ] ,
-          [ 'request' =>  "restore" , 'message' => "Restoring latest backup"
-          , 'function' => "genericRunnerDB" , 'args' => true   ] ,
-          [ 'request' =>  "sample" , 'message' => "Backing up database as test sample"
-          , 'function' => "genericRunnerDB" , 'args' => true   ] ,
-          [ 'request' =>  "test" , 'message' => "Restoring test sample database"
-          , 'function' => "genericRunnerDB" , 'args' => true   ]  
-    ];  
-     }
     }
 
+    if (!isset($menuMaker)) {
+        genericRunnerDB($argc, $argv);
+    } else {
+        offerMenuDB();
+        $cmdMaker['DB'] = [
+            [
+                'request' =>  "backup", 'message' => "Backing up database", 'function' => "genericRunnerDB", 'args' => true
+            ],
+            [
+                'request' =>  "restore", 'message' => "Restoring latest backup", 'function' => "genericRunnerDB", 'args' => true
+            ],
+            [
+                'request' =>  "sample", 'message' => "Backing up database as test sample", 'function' => "genericRunnerDB", 'args' => true
+            ],
+            [
+                'request' =>  "test", 'message' => "Restoring test sample database", 'function' => "genericRunnerDB", 'args' => true
+            ]
+        ];
+    }
+}
 
-function allowTestDB()  { 
-        $webFind = "system/web.php"; 
-        if(chaseWebForDB($webFind)) {
-            if (!class_exists('Web')) {
-                require("system/web.php");
-            }
+function allowTestDB()
+{
+    $webFind = "system/web.php";
+    if (chaseWebForDB($webFind)) {
+        if (!class_exists('Web')) {
+            require("system/web.php");
+        }
         $w = new Web();
-        if((Config::get('tests'))["testrunner" ]=="ENABLED"){return true;}; 
-        } 
-        return false;
+        if ((Config::get('tests'))["testrunner"] == "ENABLED") {
+            return true;
+        };
     }
-    
-    function chaseWebForDB($webFind) {
-         // so we can find modules & some CM5 functions...
-        if (is_readable($webFind)  && !is_dir($webFind)) { 
-                 return true;
-            }
-            return false;
-    }
+    return false;
+}
 
-function offerMenuDB() {
+function chaseWebForDB($webFind)
+{
+    // so we can find modules & some CM5 functions...
+    if (is_readable($webFind)  && !is_dir($webFind)) {
+        return true;
+    }
+    return false;
+}
+
+function offerMenuDB()
+{
     global $menuMaker;
-    $menuMaker[] = 
-    ['option' => "Backup database" , 'message' => "Backing up database"
-    , 'function' => "backup" , 'param' => null  ];
-    $menuMaker[] = 
-    ['option' => "Restore database" , 'message' => "Restoring database"
-    , 'function' => "restoreFromBackups" , 'param' => null  ];
+    $menuMaker[] =
+        [
+            'option' => "Backup database", 'message' => "Backing up database", 'function' => "backup", 'param' => null
+        ];
+    $menuMaker[] =
+        [
+            'option' => "Restore database", 'message' => "Restoring database", 'function' => "restoreFromBackups", 'param' => null
+        ];
+}
 
-    }
- 
+function genericRunnerDB($argc, $argv)
+{
 
-function genericRunnerDB($argc,$argv) {
-    
-    if ($argc > 1) { 
+    if ($argc > 1) {
         switch (strtolower($argv[1])) {
-            case "backup": 
-            backup();
-                break; 
+            case "backup":
+                backup();
+                break;
             case "restore":
-            restoreFromBackups();
+                restoreFromBackups();
                 break;
             case "sample":
-            backupToTest();
+                backupToTest();
                 break;
             case "test":
-            restoreFromTest();
+                restoreFromTest();
                 break;
             case "purge":
                 purgeDB();
-                    break;
-            }
-        }  else
-        { echo "\n\nPlease use cmfive.php to manage database functions.\n\n"; }
-
+                break;
+        }
+    } else {
+        echo "\n\nPlease use cmfive.php to manage database functions.\n\n";
+    }
 }
 
-
-function forceReConfig() {
-    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') { 
+function forceReConfig()
+{
+    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
         echo exec('del .\cache\config.cache');
-    } else { 
+    } else {
         echo exec('rm -f cache/config.cache');
     }
 }
 
-
-function findDBcommand() {
-   
+function findDBcommand()
+{
     global $testDBConfig;
 
-    $command = NULL;
+    $command = null;
     if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
         $command['backup'] =  $testDBConfig['backupCommand']['windows'];
     } else {
@@ -131,42 +139,46 @@ function findDBcommand() {
     return $command;
 }
 
-function adaptDBcommand($task,$targetDB) {
-   
-    $command = findDBcommand()[$task]; 
-    $path = findDBcommand()['path']; 
-    echo "\n".$command."\nfrom: ".$path."\nfor: ".$targetDB."\n";
+function adaptDBcommand($task, $targetDB)
+{
+    $command = findDBcommand()[$task];
+    $path = findDBcommand()['path'];
+    echo "\n" . $command . "\nfrom: " . $path . "\nfor: " . $targetDB . "\n";
     if (!empty($command)) {
-        $command = $path.str_replace(
-                array('$username', '$password', '$dbname', '$filename'), 
-                array( 
-                       '"'.Config::get('database.username').'"',
-                       '"'.Config::get('database.password').'"', 
-                       '"'.Config::get('database.database').'"', 
-                       $targetDB), 
-                      $command);  
-        return $command; }
-        else { return null; }
+        $command = $path . str_replace(
+            array('$username', '$password', '$dbname', '$filename'),
+            array(
+                '"' . Config::get('database.username') . '"',
+                '"' . Config::get('database.password') . '"',
+                '"' . Config::get('database.database') . '"',
+                $targetDB
+            ),
+            $command
+        );
+        return $command;
+    } else {
+        return null;
+    }
 }
 
-function findBestDB($filedir,$filesep) {
-     //echo $filedir."\n";
-    $bestDB = ""; $bestTime = DateTime::createFromFormat("Y-m-d-H-i", "0-0-0-0-0");
+function findBestDB($filedir, $filesep)
+{
+    $bestDB = "";
+    $bestTime = DateTime::createFromFormat("Y-m-d-H-i", "0-0-0-0-0");
 
     $dir = new DirectoryIterator($filedir);
     foreach ($dir as $fileinfo) {
         if (!$fileinfo->isDot()) {
             $filename = $fileinfo->getFilename();
             try {
-                $datepart = substr($filename, 0, strpos($filename, ".".$filesep));
+                $datepart = substr($filename, 0, strpos($filename, "." . $filesep));
                 $backuptime = DateTime::createFromFormat("Y-m-d-H-i", $datepart);
-                if ($backuptime) { 
-                    if($backuptime>$bestTime) {
+                if ($backuptime) {
+                    if ($backuptime > $bestTime) {
                         $bestTime = $backuptime;
                         $bestDB = $filename;
                     }
-                    }
-                
+                }
             } catch (Exception $e) {
                 // Invalid timestamp
             }
@@ -175,109 +187,82 @@ function findBestDB($filedir,$filesep) {
     return $bestDB;
 }
 
-function backup() { 
+function backup()
+{
     backupDB(ROOT_PATH . DS . BACKUP_DIRECTORY);
 }
 
-function backupToTest() {
+function backupToTest()
+{
     backupDB(ROOT_PATH . DS . TESTDB_DIRECTORY);
 }
 
-function backupDB($filedir) {
-    
+function backupDB($filedir)
+{
     $datestamp = date("Y-m-d-H-i");
-    
+
     $backupformat = findDBcommand()['output'];
     $filename = "{$datestamp}.{$backupformat}";
 
-    $command = adaptDBcommand("backup",$filedir . DS . $filename);
-    //var_dump($command);die();
-    if (!empty($command)) { 
-        
-        echo (shell_exec($command)."\n");
-        echo ("Backup completed to: {$filedir} : {$filename}"."\n");
-       
-    } else {
-        echo("Could not find backup command in TestDB configuration.\n");
-    }
-    echo("\n");
-}
-
-function restoreFromBackups() {
-    restoreDB(ROOT_PATH . DS . BACKUP_DIRECTORY );
-}
-
-function restoreFromTest() {
-        restoreDB(ROOT_PATH . DS . TESTDB_DIRECTORY );
-}
-
-function restoreDB($filedir) { 
-
-    // toDo? : User CONFIRM - CheckFileExists - forceBackupBeforeRestore
-        
-    $targetDB = findBestDB($filedir,Config::get('admin.database.output'));
-   
-    $command = adaptDBcommand("restore",$filedir . DS . $targetDB);
+    $command = adaptDBcommand("backup", $filedir . DS . $filename);
 
     if (!empty($command)) {
-        echo (shell_exec($command)."\n");
-        forceReConfig();
-        echo ("Restored: {$filedir} : {$targetDB}"."\n");
-       
+        echo (shell_exec($command) . "\n");
+        echo ("Backup completed to: {$filedir} : {$filename}" . "\n");
     } else {
-        echo("Could not find backup command in TestDB configuration.\n");
+        echo ("Could not find backup command in TestDB configuration.\n");
     }
-
-  
-  echo("\n");
+    echo ("\n");
 }
 
-function purgeDB(){
-    
-   $w = new Web();
- 
-       $w->initDB(); 
+function restoreFromBackups()
+{
+    restoreDB(ROOT_PATH . DS . BACKUP_DIRECTORY);
+}
 
-       $query = "SET FOREIGN_KEY_CHECKS = 0;";
-       $result=$w->db->sql($query)->execute(); 
-  
-       $query = "SELECT     table_name "
-         ."FROM information_schema.tables "
-         ."WHERE table_schema = '".Config::get('database')["database"]."'"; 
-         
-       $result=$result=$w->db->sql($query)->fetchall();
-       foreach($result as $table) {
-           $tb= $table['table_name']; //var_dump($tb);
-          // if(!strpos($tb,"migration"==0)) {
-           $query = "DROP TABLE IF EXISTS ".$tb.";";
-            $result=$w->db->sql($query)->execute(); 
-            //}
-       } 
- 
-       $query = "SET FOREIGN_KEY_CHECKS = 1;";
-       $result=$w->db->sql($query)->execute();
+function restoreFromTest()
+{
+    restoreDB(ROOT_PATH . DS . TESTDB_DIRECTORY);
+}
 
+function restoreDB($filedir)
+{
+    $targetDB = findBestDB($filedir, Config::get('admin.database.output'));
+
+    $command = adaptDBcommand("restore", $filedir . DS . $targetDB);
+
+    if (!empty($command)) {
+        echo (shell_exec($command) . "\n");
+        forceReConfig();
+        echo ("Restored: {$filedir} : {$targetDB}" . "\n");
+    } else {
+        echo ("Could not find backup command in TestDB configuration.\n");
     }
-// function installMigrations() {
-//     if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-//         echo exec('del .\cache\config.cache');
-//     } else {
-//         echo exec('rm -f cache/config.cache');
-//     }
 
-//     if (!class_exists('Web')) {
-//         require('system/web.php');
-//     }
-//     $w = new Web();
-//     $w->initDB();
-//     // $w->startSession();
-//     $_SESSION = [];
 
-//     try {
-//         $w->Migration->installInitialMigration();
-//         $w->Migration->runMigrations("all");
-//         echo "Migrations have run\n";
-//     } catch (Exception $e) {
-//         echo $e->getMessage();
-//     }
-// }
+    echo ("\n");
+}
+
+function purgeDB()
+{
+    $w = new Web();
+
+    $w->initDB();
+
+    $query = "SET FOREIGN_KEY_CHECKS = 0;";
+    $result = $w->db->sql($query)->execute();
+
+    $query = "SELECT     table_name "
+        . "FROM information_schema.tables "
+        . "WHERE table_schema = '" . Config::get('database')["database"] . "'";
+
+    $result = $result = $w->db->sql($query)->fetchall();
+    foreach ($result as $table) {
+        $tb = $table['table_name'];
+        $query = "DROP TABLE IF EXISTS " . $tb . ";";
+        $result = $w->db->sql($query)->execute();
+    }
+
+    $query = "SET FOREIGN_KEY_CHECKS = 1;";
+    $result = $w->db->sql($query)->execute();
+}
