@@ -104,6 +104,15 @@ class CmfiveSite extends \Codeception\Module
     }
 
 
+  public function getUA_TestConfig(){ 
+    
+    $configJson = $this->config['UA_TestConfig'];
+    if(empty($configJson)) {
+      return [];
+    } else {
+      return json_decode($configJson,true);
+    }
+   }
     public function getAdminUserName()
     {
         return $this->config['testAdminUsername'];
