@@ -45,7 +45,6 @@ $cmdMaker = [
 
 ];
 
-
 include "cmfiveTests.php";
 
 if ($argc >= 3) {
@@ -123,7 +122,6 @@ function printMenu($menu)
 
     $i = 1;
     foreach ($menu as $menuEntry) {
-        //var_dump($menuEntry);
         echo $i . ") " . $menuEntry['option'] . "\n";
         $i++;
     }
@@ -146,7 +144,6 @@ function synopsis()
     echo "\n";
 }
 
-
 function stepOneYieldsWeb()
 {
     // so we can find modules & some CM5 functions...
@@ -163,7 +160,6 @@ function stepOneYieldsWeb()
     return false;
 }
 
-
 function installCoreLibraries()
 {
     // name     : 2pisoftware/cmfive-core
@@ -177,7 +173,7 @@ function installCoreLibraries()
 
     $composer_json = sketchComposerForCore();
 
-    file_put_contents('./composer.json', json_encode($composer_json,JSON_PRETTY_PRINT));
+    file_put_contents('./composer.json', json_encode($composer_json, JSON_PRETTY_PRINT));
 
     echo exec('php composer.phar install');
 
@@ -189,25 +185,25 @@ function installCoreLibraries()
         //echo exec('rm -f cache/config.cache');
     }
 
-     // if (!class_exists('Web')) {
+    // if (!class_exists('Web')) {
     //     require('system/web.php');
     // }
 
-     installThirdPartyLibraries($composer_json);
+    installThirdPartyLibraries($composer_json);
+}
 
-     }
+function sketchComposerForCore()
+{
 
-     function sketchComposerForCore() {
-         
-        // name     : 2pisoftware/cmfive-core
-        // descrip. :
-        // keywords :
-        // versions : * master
-        // type     : library
-        // source   : [git] https://github.com/2pisoftware/cmfive-core develop
-        // dist     : []
-        // names    : 2pisoftware/cmfive-core
-    
+    // name     : 2pisoftware/cmfive-core
+    // descrip. :
+    // keywords :
+    // versions : * master
+    // type     : library
+    // source   : [git] https://github.com/2pisoftware/cmfive-core develop
+    // dist     : []
+    // names    : 2pisoftware/cmfive-core
+
     $composer_string = <<<COMPOSER
     {
         "name": "cmfive-boilerplate",
@@ -239,11 +235,14 @@ function installCoreLibraries()
 COMPOSER;
 
     return json_decode($composer_string, true);
-     }
+}
 
-function installThirdPartyLibraries($composer_json = null) {
+function installThirdPartyLibraries($composer_json = null)
+{
 
-    if(!stepOneYieldsWeb()){return false;}
+    if (!stepOneYieldsWeb()) {
+        return false;
+    }
 
     if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
         echo exec('del .\cache\config.cache');
@@ -253,14 +252,16 @@ function installThirdPartyLibraries($composer_json = null) {
 
     $w = new Web();
 
-    if(!$composer_json) {$composer_json = sketchComposerForCore();}
+    if (!$composer_json) {
+        $composer_json = sketchComposerForCore();
+    }
 
     $dependencies_array = array();
-    foreach($w->modules() as $module) {
-    	$dependencies = Config::get("{$module}.dependencies"); //var_dump($dependencies);
-    	if (!empty($dependencies)) {
-    		$dependencies_array = array_merge($dependencies, $dependencies_array);
-    	}
+    foreach ($w->modules() as $module) {
+        $dependencies = Config::get("{$module}.dependencies"); //var_dump($dependencies);
+        if (!empty($dependencies)) {
+            $dependencies_array = array_merge($dependencies, $dependencies_array);
+        }
     }
 
     $composer_json['require'] = array_merge($composer_json['require'], $dependencies_array);
