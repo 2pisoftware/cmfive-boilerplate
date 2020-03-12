@@ -1,0 +1,85 @@
+# Cmfive v2.x requires PHP7.0 and MySQL 5.7
+version: '3'
+
+services:
+  webapp:
+    # image: php/7.2-apache
+    container_name: php-apache
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    build:
+      context: .
+      dockerfile: ./.build/Dockerfile
+    volumes:
+      - ./:/var/www:rw,delegated
+      # - ./.build/apache/000-default.conf:/etc/apache2/sites-enabled/000-default.conf:rw
+      - ./.build/certs/:/etc/apache2/ssl/
+    network_mode: "host"
+    restart: unless-stopped
+    working_dir: /var/www
+  #PHP Service
+#   app:
+#     build:
+#       context: .
+#       dockerfile: ./.build/Dockerfile
+#     image: digitalocean.com/php
+#     container_name: app
+#     restart: unless-stopped
+#     tty: true
+#     ports:
+#       - "9000:9000"
+#     environment:
+#       SERVICE_NAME: app
+#       SERVICE_TAGS: dev
+#     working_dir: /var/www
+#     volumes:
+#       - ./:/var/www
+#       - ./.build/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+#     network_mode: "host"
+#       # - app-network
+
+#   #Nginx Service
+#   webserver:
+#     image: nginx:alpine
+#     container_name: webserver
+#     restart: unless-stopped
+#     tty: true
+#     ports:
+#       - "9001:9001"
+#       # - "9001:9001"
+#     volumes:
+#       - ./:/var/www
+#       - ./.build/nginx/conf.d/:/etc/nginx/conf.d/
+#       - ./.build/certs/:/etc/nginx/certs
+#     network_mode: "host"
+#       # - app-network
+
+#   #MySQL Service - uncomment if you need a mysql container
+#   # db:
+#   #   image: mysql:5.7.22
+#   #   container_name: db
+#   #   restart: unless-stopped
+#   #   tty: true
+#   #   ports:
+#   #     - "3309:3306"
+#   #   environment:
+#   #     MYSQL_DATABASE: cmfive
+#   #     MYSQL_ROOT_PASSWORD: cmfive
+#   #     SERVICE_TAGS: dev
+#   #     SERVICE_NAME: mysql
+#   #   volumes:
+#   #     - dbdata:/var/lib/mysql
+#   #     - ./.build/mysql/my.cnf:/etc/mysql/my.cnf
+#   #   networks:
+#   #     - app-network
+  
+# #Docker Networks
+# # networks:
+# #   app-network:
+# #     network_mode: host
+
+# #Volumes
+# volumes:
+#   dbdata:
+#     driver: local
