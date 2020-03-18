@@ -89,6 +89,8 @@ class CmfiveSite extends \Codeception\Module
     public function login($I, $username, $password)
     {
         $I->amOnPage('/auth/login');
+        $I->wait(2);
+
         // skip form filling if already logged in
         if (strpos('/auth/login', $I->grabFromCurrentUrl()) !== false) {
             $I->waitForElement('#login');
@@ -96,6 +98,8 @@ class CmfiveSite extends \Codeception\Module
             $I->fillField('password', $password);
             $I->click('Login');
         }
+
+        $I->wait(2);
     }
 
     public function loginAsAdmin($I)
@@ -104,15 +108,16 @@ class CmfiveSite extends \Codeception\Module
     }
 
 
-  public function getUA_TestConfig(){ 
-    
-    $configJson = $this->config['UA_TestConfig'];
-    if(empty($configJson)) {
-      return [];
-    } else {
-      return json_decode($configJson,true);
+    public function getUA_TestConfig()
+    {
+        $configJson = $this->config['UA_TestConfig'];
+        if (empty($configJson)) {
+            return [];
+        } else {
+            return json_decode($configJson, true);
+        }
     }
-   }
+
     public function getAdminUserName()
     {
         return $this->config['testAdminUsername'];
