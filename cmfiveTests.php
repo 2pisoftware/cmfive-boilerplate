@@ -389,7 +389,6 @@ function chaseModules($module_name)
     $sharedParam['cmfiveModuleList'] .= ":";
     $availableTests[] =  getTestsForModule(SHARED_SOURCE);
     $availableTests[] =  getTestsForModule(SHARED_CORE);
-    // var_dump($availableTests);  die();
 
     foreach ($availableTests as $moduleTest) {
         foreach ($moduleTest as $module => $fileShift) {

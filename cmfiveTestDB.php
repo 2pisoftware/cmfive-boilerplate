@@ -145,16 +145,29 @@ function adaptDBcommand($task, $targetDB)
     $path = findDBcommand()['path'];
     echo "\n" . $command . "\nfrom: " . $path . "\nfor: " . $targetDB . "\n";
     if (!empty($command)) {
+        $hostname = explode(":", Config::get("database.hostname"));
+        $port = "3306";
+
+        if ($hostname !== false && !empty($hostname[1])) {
+            $port = $hostname[1];
+            $hostname = $hostname[0];
+        } else {
+            $hostname = Config::get("database.hostname", "localhost");
+        }
+
         $command = $path . str_replace(
-            array('$username', '$password', '$dbname', '$filename'),
+            array('$username', '$hostname', '$port', '$password', '$dbname', '$filename'),
             array(
-                '"' . Config::get('database.username') . '"',
-                '"' . Config::get('database.password') . '"',
-                '"' . Config::get('database.database') . '"',
+                Config::get('database.username'),
+                $hostname,
+                $port,
+                Config::get('database.password'),
+                Config::get('database.database'),
                 $targetDB
             ),
             $command
         );
+
         return $command;
     } else {
         return null;
