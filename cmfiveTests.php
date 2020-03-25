@@ -96,6 +96,8 @@ function offerMenuTests()
         ];
 
     $found = chaseModules("all");
+    ksort($found["Tests"]);
+
     foreach ($found as $capabilities => $capability) {
         if ($capabilities == "Tests") {
             foreach ($capability as $module => $resources) {
@@ -166,7 +168,7 @@ function genericRunner($argc, $argv)
                 if ($argc > 2) {
                     $codeCeptCommand .= "  " . $argv[2];
                 }
-                //else {   }
+
                 launchCodecept($codeCeptCommand, $silent);
                 break;
             case "clean":
@@ -417,6 +419,7 @@ function chaseModules($module_name)
             }
         }
     }
+
     return $moduleCapabilities;
 }
 
@@ -431,12 +434,12 @@ function getTestsForModule($module)
     $workflow_path = WORKFLOWS_TEST_DIRECTORY . DS . $module;
     $test_paths = [$module_path, $system_module_path, $boiler_path, $workflow_path];
 
-    $extended_paths = array(CEST_DIRECTORY, STEP_DIRECTORY, HELP_DIRECTORY);
-    $dest_paths = array(
+    $extended_paths = [CEST_DIRECTORY, STEP_DIRECTORY, HELP_DIRECTORY];
+    $dest_paths = [
         CEST_DIRECTORY => CEST_DESTINATION,
         STEP_DIRECTORY => STEP_DESTINATION,
         HELP_DIRECTORY => HELP_DESTINATION
-    );
+    ];
 
     $findActor = "";
     if ($module == SHARED_SOURCE) {
@@ -453,7 +456,7 @@ function getTestsForModule($module)
         foreach ($extended_paths as $ext) {
             $test_path = $base_path . $ext;
             $full_path = ROOT_PATH . DS . $test_path;
-            //echo $full_path."\n";
+
             if (is_dir($full_path)) {
                 foreach (scandir($full_path) as $file) {
                     if ((!is_dir($full_path . DS . $file))
