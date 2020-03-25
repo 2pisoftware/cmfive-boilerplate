@@ -156,15 +156,15 @@ function adaptDBcommand($task, $targetDB)
         }
 
         $command = $path . str_replace(
-            array('$username', '$hostname', '$port', '$password', '$dbname', '$filename'),
-            array(
+            ['$username', '$hostname', '$port', '$password', '$dbname', '$filename'],
+            [
                 Config::get('database.username'),
                 $hostname,
                 $port,
                 Config::get('database.password'),
                 Config::get('database.database'),
                 $targetDB
-            ),
+            ],
             $command
         );
 
