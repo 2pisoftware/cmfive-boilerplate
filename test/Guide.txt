@@ -9,7 +9,7 @@
      --> BACK UP YOUR ORIGINAL DATABASE BEFORE TESTS!
      --> RESTORE AFTER TESTS
      --> "cmfiveTests.php" has commandline functions wrapped by cmfive.php
-     --> "cmfiveTestDB.php" has commandline functions wrapped by cmfive.php
+     --> "cmfiveToolsDB.php" has commandline functions wrapped by cmfive.php
 
 ---------------------------------------------------------------------
 TestRunner for Codeception:

@@ -21,11 +21,13 @@ class CmfiveSite extends \Codeception\Module
         'DBCommand',
         'boilerplatePath',
         'DB_Hostname',
+        'DB_Port',
         'DB_Username',
         'DB_Password',
         'DB_Database',
         'DB_Driver',
-        'cmfiveModuleList'
+        'cmfiveModuleList',
+        'UA_TestConfig'
     ];
 
     // HOOK: before test
@@ -41,7 +43,9 @@ class CmfiveSite extends \Codeception\Module
         $Mcommand = "cd " . $rootDIR . " && php " . $rootDIR
             . $this->config['setupCommand'] . " " . $param;
         echo "Running: " . $param . "\n";
-        echo (shell_exec($Mcommand) . "\n");
+        $exit = shell_exec($Mcommand);
+        echo $exit . "\n";
+        return $exit;
     }
 
     private function _useCmFiveDB($param)
@@ -50,7 +54,9 @@ class CmfiveSite extends \Codeception\Module
         $Mcommand = "cd " . $rootDIR . " && php " . $rootDIR
             . $this->config['DBCommand'] . " " . $param;
         echo "DB task: " . $param . "\n";
-        echo (shell_exec($Mcommand) . "\n");
+        $exit = shell_exec($Mcommand);
+        echo $exit. "\n";
+        return $exit;
     }
 
     public function runMigrations()
@@ -77,7 +83,7 @@ class CmfiveSite extends \Codeception\Module
 
     public function getTestDB()
     {
-        $this->_useCmFiveDB("test");
+        $this->assertNotContains("WARNING", $this->_useCmFiveDB("test"));
     }
 
     public function putTestDB()
