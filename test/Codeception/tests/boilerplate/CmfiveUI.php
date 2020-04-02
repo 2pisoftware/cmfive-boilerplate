@@ -93,6 +93,7 @@ class CmfiveUI extends \Codeception\Actor
     {
         $this->executeInSelenium(
             function (\Facebook\WebDriver\Remote\RemoteWebDriver $webDriver) use ($selector, $content) {
+                $webDriver->wait(3);
                 $webDriver->switchTo()->frame(
                     $webDriver->findElement($selector)
                 );

@@ -70,6 +70,7 @@ Config::set("tests",
         "port" => "4444",
         "capabilities" => 
             [
+            "acceptInsecureCerts" => true,
             "goog:chromeOptions" => "w3c: false"
             ]
         ],
