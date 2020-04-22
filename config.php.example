@@ -19,10 +19,27 @@ Config::set("system.timezone", "Australia/Sydney");
 
 Config::set("database", array(
     "hostname"  => getenv('DB_HOST') ? : "localhost",
+    "port"  => getenv('DB_PORT') ? : "",
     "username"  => getenv('DB_USERNAME') ? : "<username>",
     "password"  => getenv('DB_PASSWORD') ? : "<password>",
     "database"  => getenv('DB_DATABASE') ? : "<database>",
-    "driver"    => getenv('DB') ? : "mysql"
+    "driver"    => getenv('DB') ? : "mysql",
+    "backups" =>
+    [
+        'outputExt' => 'sql',
+        'commandPath' => [
+            'unix' => '/usr/bin/',
+            'windows' => '"C:\\Program Files\\MySQL\\MySQL Server 5.6\\bin\\'
+        ],
+        'backupCommand' => [
+            'unix' => 'mysqldump -u $username -h $hostname -P $port -p\'$password\' $dbname > $filename',
+            'windows' => 'mysqldump.exe" -h$hostname -P$port -u$username -p$password  $dbname > $filename'
+        ],
+        'restoreCommand' => [
+            'unix' => 'mysql -u $username -h $hostname -P $port -p\'$password\' $dbname < $filename',
+            'windows' => 'mysql.exe" -D$dbname -h$hostname -P$port -u$username -p$password < $filename'
+        ],
+    ]
 ));
 
 //=========== Email Layer Configuration =====================
@@ -39,9 +56,34 @@ Config::append('email', array(
 
 //========== TestRunner Configuration ==========================
 //========== must be "ENABLED" to run ==========================
-Config::set("tests", array(
-    "testrunner"  => ""
-));
+Config::set("tests",
+    [
+    "testrunner"  => "" ,
+    "config" => '' ,
+    "yaml" =>
+    [
+        "- WebDriver:" =>
+        [
+        "url" => "http://<site>",
+        "browser" => "chrome",
+        "wait" => "60",
+        "port" => "4444",
+        "capabilities" => 
+            [
+            "acceptInsecureCerts" => true,
+            "goog:chromeOptions" => "w3c: false"
+            ]
+        ],
+        "- Db:" =>
+        [
+         "dsn" => "mysql:host=localhost:3306;dbname=<database>",
+         "user" => "<username>",
+         "password" => "<password>",
+        ],
+        "- Asserts:" => "",
+    ]
+    ]
+);
 
 //======= define openssl encryption key and initialization vector ============
 Config::set('system.encryption', [

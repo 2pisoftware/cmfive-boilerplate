@@ -1,5 +1,5 @@
 
-* Check 'acceptance.suite.dist.yml' following content is right for your servers:
+* Check 'acceptance.suite.dist.yml' is prototyped in cmfive config.php, for your servers:
 ```
 class_name: CmfiveUI
 

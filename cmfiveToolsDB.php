@@ -14,12 +14,11 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 if (allowTestDB()) {
-    $testDBConfig = include(TESTDB_DIRECTORY . DS . "config.php");
-
-    // so we can find modules & some CM5 functions...
-    if (!class_exists('Web')) {
-        require('system/web.php');
-    }
+    // "allow" uses config, so this is already done:
+    // if (!class_exists('Web')) {
+    //     forceReConfig();
+    //     require('system/web.php');
+    // }
 
     if (!isset($menuMaker)) {
         genericRunnerDB($argc, $argv);
@@ -37,6 +36,9 @@ if (allowTestDB()) {
             ],
             [
                 'request' =>  "test", 'message' => "Restoring test sample database", 'function' => "genericRunnerDB", 'args' => true
+            ],
+            [
+                'request' =>  "check", 'message' => "Checking database availability", 'function' => "genericRunnerDB", 'args' => true
             ]
         ];
     }
@@ -47,14 +49,36 @@ function allowTestDB()
     $webFind = "system/web.php";
     if (chaseWebForDB($webFind)) {
         if (!class_exists('Web')) {
+            // DB leans heavily on config, so always reset it
+            forceReConfig();
             require("system/web.php");
         }
         $w = new Web();
         if ((Config::get('tests'))["testrunner"] == "ENABLED") {
+            if (!checkDBEnvironment()) {
+                echo "Please complete DB configuration in config.php per examples.\n";
+                return false;
+            }
             return true;
         };
     }
     return false;
+}
+
+function checkDBEnvironment()
+{
+    
+    if (Config::get("database.backups.commandPath")
+        && Config::get("database.backups.backupCommand")
+        && Config::get("database.backups.restoreCommand")
+    ) {
+        echo "Found: database backup configuration\n";
+    } else {
+        echo "Useful database backup configuration not found in config.php\n";
+        return false;
+    }
+    
+    return true;
 }
 
 function chaseWebForDB($webFind)
@@ -77,6 +101,10 @@ function offerMenuDB()
         [
             'option' => "Restore database", 'message' => "Restoring database", 'function' => "restoreFromBackups", 'param' => null
         ];
+    $menuMaker[] =
+        [
+            'option' => "Check databases", 'message' => "Checking database availability", 'function' => "checkAllBackups", 'param' => null
+        ];
 }
 
 function genericRunnerDB($argc, $argv)
@@ -95,6 +123,9 @@ function genericRunnerDB($argc, $argv)
                 break;
             case "test":
                 restoreFromTest();
+                break;
+            case "check":
+                checkAllBackups();
                 break;
             case "purge":
                 purgeDB();
@@ -116,26 +147,29 @@ function forceReConfig()
 
 function findDBcommand()
 {
-    global $testDBConfig;
+    
+    $testDBConfig = Config::get("database.backups");
 
     $command = null;
-    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-        $command['backup'] =  $testDBConfig['backupCommand']['windows'];
-    } else {
-        $command['backup'] =  $testDBConfig['backupCommand']['unix'];
+    if ($testDBConfig) {
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            $command['backup'] =  $testDBConfig['backupCommand']['windows'];
+        } else {
+            $command['backup'] =  $testDBConfig['backupCommand']['unix'];
+        }
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            $command['restore'] = $testDBConfig['restoreCommand']['windows'];
+        } else {
+            $command['restore'] = $testDBConfig['restoreCommand']['unix'];
+        }
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            $command['path'] =  $testDBConfig['commandPath']['windows'];
+        } else {
+            $command['path'] =  $testDBConfig['commandPath']['unix'];
+        }
+        $command['output'] = $testDBConfig['outputExt'];
     }
-    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-        $command['restore'] = $testDBConfig['restoreCommand']['windows'];
-    } else {
-        $command['restore'] = $testDBConfig['restoreCommand']['unix'];
-    }
-    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-        $command['path'] =  $testDBConfig['commandPath']['windows'];
-    } else {
-        $command['path'] =  $testDBConfig['commandPath']['unix'];
-    }
-    $command['output'] = $testDBConfig['outputExt'];
-    //var_dump($command);die();
+    
     return $command;
 }
 
@@ -146,15 +180,18 @@ function adaptDBcommand($task, $targetDB)
     echo "\n" . $command . "\nfrom: " . $path . "\nfor: " . $targetDB . "\n";
     if (!empty($command)) {
         $command = $path . str_replace(
-            array('$username', '$password', '$dbname', '$filename'),
-            array(
-                '"' . Config::get('database.username') . '"',
-                '"' . Config::get('database.password') . '"',
-                '"' . Config::get('database.database') . '"',
+            ['$username', '$hostname', '$port', '$password', '$dbname', '$filename'],
+            [
+                Config::get('database.username'),
+                Config::get("database.hostname", "localhost"), //$hostname,
+                Config::get("database.port", "3306"), //$port,
+                Config::get('database.password'),
+                Config::get('database.database'),
                 $targetDB
-            ),
+            ],
             $command
         );
+
         return $command;
     } else {
         return null;
@@ -163,7 +200,7 @@ function adaptDBcommand($task, $targetDB)
 
 function findBestDB($filedir, $filesep)
 {
-    $bestDB = "";
+    $bestDB = null;
     $bestTime = DateTime::createFromFormat("Y-m-d-H-i", "0-0-0-0-0");
 
     $dir = new DirectoryIterator($filedir);
@@ -210,7 +247,7 @@ function backupDB($filedir)
         echo (shell_exec($command) . "\n");
         echo ("Backup completed to: {$filedir} : {$filename}" . "\n");
     } else {
-        echo ("Could not find backup command in TestDB configuration.\n");
+        echo ("Could not find backup command in DB configuration.\n");
     }
     echo ("\n");
 }
@@ -225,20 +262,63 @@ function restoreFromTest()
     restoreDB(ROOT_PATH . DS . TESTDB_DIRECTORY);
 }
 
-function restoreDB($filedir)
+function checkABackup($path)
 {
-    $targetDB = findBestDB($filedir, Config::get('admin.database.output'));
+    $fileType = Config::get('admin.database.output');
+    $bkpDir = $path;
+    $bkpDB = findBestDB($bkpDir, $fileType);
+    $bkpSize = ($bkpDB)?filesize($bkpDir . DS . $bkpDB):0;
 
-    $command = adaptDBcommand("restore", $filedir . DS . $targetDB);
+    return $bkpSize;
+}
 
-    if (!empty($command)) {
-        echo (shell_exec($command) . "\n");
-        forceReConfig();
-        echo ("Restored: {$filedir} : {$targetDB}" . "\n");
-    } else {
-        echo ("Could not find backup command in TestDB configuration.\n");
+function checkAllBackups($message = true)
+{
+    $fileType = Config::get('admin.database.output');
+    $bkpDir = ROOT_PATH . DS . BACKUP_DIRECTORY;
+    $tstDir = ROOT_PATH . DS . TESTDB_DIRECTORY;
+    $bkpDB = findBestDB($bkpDir, $fileType);
+    $tstDB = findBestDB($tstDir, $fileType);
+    $bkpSize = ($bkpDB)?filesize($bkpDir . DS . $bkpDB):0;
+    $tstSize = ($tstDB)?filesize($tstDir . DS . $tstDB):0;
+
+    $minDB = 64000;
+
+    if ($message) {
+        echo "\nWorking backup is: ".($bkpDB ?? "NOT_FOUND")." at ".$bkpDir;
+        echo "\nFilesize: ".$bkpSize."\n";
+        echo "\nTest database is: ".($tstDB ?? "NOT_FOUND")." at ".$tstDir;
+        echo "\nFilesize: ".$tstSize."\n";
+        echo "\n\n";
     }
 
+    if (($bkpSize > $minDB) && ($tstSize > $minDB)) {
+        return true;
+    } else {
+        if ($message) {
+            echo "WARNING: be sure to create backups!\n\n";
+        }
+        return false;
+    }
+}
+
+function restoreDB($filedir)
+{
+    if (!checkAllBackups(false)) {
+        echo ("\nWARNING: Reliable test and backup databases NOT FOUND!\n");
+    } else {
+        $targetDB = findBestDB($filedir, Config::get('admin.database.output'));
+
+        $command = adaptDBcommand("restore", $filedir . DS . $targetDB);
+
+        if (!empty($command)) {
+            echo (shell_exec($command) . "\n");
+            forceReConfig(); // in case data supporting modules has changed!
+            echo ("Restored: {$filedir} : {$targetDB}" . "\n");
+        } else {
+            echo ("WARNING: Could not find restore command in DB configuration.\n");
+        }
+    }
 
     echo ("\n");
 }
