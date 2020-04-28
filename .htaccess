@@ -2,7 +2,7 @@
    RequestHeader unset Proxy
 </IfModule>
 
-Options All -Indexes
+Options +FollowSymLinks -Indexes
 
 # Turn on the RewriteEngine
 RewriteEngine On
