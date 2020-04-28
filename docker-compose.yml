@@ -22,3 +22,9 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - TZ=Australia/Sydney
+    volumes:
+    - dbdata:/var/lib/mysql
+
+volumes:
+  dbdata:
+    driver: local
