@@ -11,9 +11,12 @@ services:
       - ./:/var/www/html
     ports:
       - "3000:3000"
-    network_mode: "host"
+    networks: 
+      - default
     restart: unless-stopped
     working_dir: /var/www/html
+    links:
+      - mysqldb
   mysqldb:
     image: mysql:5.7.21
     container_name: mysql-5.7
@@ -24,7 +27,12 @@ services:
       - TZ=Australia/Sydney
     volumes:
     - dbdata:/var/lib/mysql
+    networks:
+      - default
 
 volumes:
   dbdata:
     driver: local
+
+networks: 
+  default:
