@@ -2,6 +2,18 @@
 version: '3'
 
 services:
+  mysqldb:
+    image: mysql:5.7.21
+    container_name: mysql-5.7
+    ports:
+      - "3308:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - TZ=Australia/Sydney
+    volumes:
+    - dbdata:/var/lib/mysql
+    networks:
+      - default
   webapp:
     build:
       context: ./.build/
@@ -17,18 +29,8 @@ services:
     working_dir: /var/www/html
     links:
       - mysqldb
-  mysqldb:
-    image: mysql:5.7.21
-    container_name: mysql-5.7
-    ports:
-      - "3308:3306"
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - TZ=Australia/Sydney
-    volumes:
-    - dbdata:/var/lib/mysql
-    networks:
-      - default
+  
+    
 
 volumes:
   dbdata:
