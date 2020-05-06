@@ -2,7 +2,19 @@
    RequestHeader unset Proxy
 </IfModule>
 
-Options All -Indexes
+Options -Indexes +FollowSymLinks
+
+# Deny direct access to PHP, json, lock, phar, example, xml, md, config files
+<Files ~ "\.(json|lock|phar|example|xml|md|config)$">
+    Order allow,deny
+    Deny from all
+</Files>
+
+# Deny access to filenames starting with dot(.)
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
 
 # Turn on the RewriteEngine
 RewriteEngine On
