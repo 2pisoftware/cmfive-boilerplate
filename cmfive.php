@@ -178,7 +178,7 @@ function installCoreLibraries()
     echo exec('php composer.phar install');
 
     if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-        echo exec('mklink /D system composer\vendor\2pisoftware\cmfive-core\system');
+        echo exec('mklink /J system composer\vendor\2pisoftware\cmfive-core\system');
         //echo exec('del .\cache\config.cache');
     } else {
         echo exec('ln -s composer/vendor/2pisoftware/cmfive-core/system system');
