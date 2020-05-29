@@ -63,12 +63,13 @@ Config::set("tests",
     "yaml" =>
     [
         "- WebDriver:" =>
-        [
-        "url" => "http://<site>",
+        [        
+        "url" => "http://webapp:3000",
         "browser" => "chrome",
         "wait" => "60",
+        "host" => "selenium314",
         "port" => "4444",
-        "capabilities" => 
+        "capabilities" =>
             [
             "acceptInsecureCerts" => true,
             "goog:chromeOptions" => "w3c: false"
