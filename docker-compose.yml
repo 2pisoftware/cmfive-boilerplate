@@ -2,9 +2,11 @@
 version: '3'
 
 services:
+
   mysqldb:
     image: mysql:5.7.21
     container_name: mysql-5.7
+    hostname: mysql-5.7
     ports:
       - "3308:3306"
     environment:
@@ -14,11 +16,15 @@ services:
     - dbdata:/var/lib/mysql
     networks:
       - default
+
   webapp:
     build:
       context: ./.build/
       dockerfile: Dockerfile
     container_name: nginx-php7.2
+    hostname: nginx-php7.2
+    environment:
+      - TZ=Australia/Sydney
     volumes:
       - ./:/var/www/html
     ports:
@@ -29,9 +35,21 @@ services:
     working_dir: /var/www/html
     links:
       - mysqldb
-  
-    
+      - seleniumsrv
 
+  seleniumsrv:
+    # promoting:
+    # docker run --net=cmfive-boilerplate_default --network-alias=selenium314 -p 4444:4444 selenium/standalone-chrome:3.14.0
+    image: selenium/standalone-chrome:3.14.0
+    container_name: selenium314
+    hostname: selenium314
+    ports:
+      - "4444:4444"
+    environment:
+      - TZ=Australia/Sydney
+    networks:
+      - default
+  
 volumes:
   dbdata:
     driver: local
