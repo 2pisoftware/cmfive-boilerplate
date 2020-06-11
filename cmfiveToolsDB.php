@@ -284,6 +284,9 @@ function checkAllBackups($message = true)
 
     $minDB = 64000;
 
+    $bkcmd = print_r(findDBcommand(), true);
+    echo str_replace("Array", "Execution:", $bkcmd);
+
     if ($message) {
         echo "\nWorking backup is: ".($bkpDB ?? "NOT_FOUND")." at ".$bkpDir;
         echo "\nFilesize: ".$bkpSize."\n";

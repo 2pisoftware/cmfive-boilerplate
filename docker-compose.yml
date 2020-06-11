@@ -13,7 +13,8 @@ services:
       - MYSQL_ROOT_PASSWORD=root
       - TZ=Australia/Sydney
     volumes:
-    - dbdata:/var/lib/mysql
+    - dbdata:/var/lib/mysql:delegated
+    # 'delegated' may be faster on mac or win?
     networks:
       - default
 
