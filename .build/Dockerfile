@@ -30,7 +30,10 @@ RUN apt-get install -y -o "APT::Acquire::Retries=6" \
     php7.2-mbstring
 
 # add any extras, to allow for DB commands & subnet examination etc
+
+RUN apt-get update
 RUN apt-get install -y -o "APT::Acquire::Retries=6" \
+    git \
     iputils-ping \
     curl \
     mysql-client-5.7
