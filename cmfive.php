@@ -179,22 +179,15 @@ function installCoreLibraries()
 
     if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
         echo exec('mklink /J system composer\vendor\2pisoftware\cmfive-core\system');
-        //echo exec('del .\cache\config.cache');
     } else {
         echo exec('ln -s composer/vendor/2pisoftware/cmfive-core/system system');
-        //echo exec('rm -f cache/config.cache');
     }
-
-    // if (!class_exists('Web')) {
-    //     require('system/web.php');
-    // }
 
     installThirdPartyLibraries($composer_json);
 }
 
 function sketchComposerForCore()
 {
-
     // name     : 2pisoftware/cmfive-core
     // descrip. :
     // keywords :
@@ -212,7 +205,7 @@ function sketchComposerForCore()
         "require": {
             "2pisoftware/cmfive-core": "dev-master"
         },
-    	"config": {
+        "config": {
             "vendor-dir": "composer/vendor",
             "cache-dir": "composer/cache",
             "bin-dir": "composer/bin"
@@ -234,12 +227,43 @@ function sketchComposerForCore()
     }
 COMPOSER;
 
+    if (PHP_MAJOR_VERSION === 7 && PHP_MINOR_VERSION === 0) {
+        $composer_string = <<<COMPOSER
+    {
+        "name": "cmfive-boilerplate",
+        "version": "1.0",
+        "description": "A boilerplate project layout for Cmfive",
+        "require": {
+            "2pisoftware/cmfive-core": "dev-legacy/PHP7.0"
+        },
+        "config": {
+            "vendor-dir": "composer/vendor",
+            "cache-dir": "composer/cache",
+            "bin-dir": "composer/bin"
+        },
+        "repositories": [
+            {
+                "type": "package",
+                "package": {
+                "name": "2pisoftware/cmfive-core",
+                "version": "dev-legacy/PHP7.0",
+                "source": {
+                    "url": "https://github.com/2pisoftware/cmfive-core",
+                    "type": "git",
+                    "reference": "legacy/PHP7.0"
+                    }
+                }
+            }
+        ]
+    }
+COMPOSER;
+    }
+
     return json_decode($composer_string, true);
 }
 
 function installThirdPartyLibraries($composer_json = null)
 {
-
     if (!stepOneYieldsWeb()) {
         return false;
     }
@@ -256,9 +280,9 @@ function installThirdPartyLibraries($composer_json = null)
         $composer_json = sketchComposerForCore();
     }
 
-    $dependencies_array = array();
+    $dependencies_array = [];
     foreach ($w->modules() as $module) {
-        $dependencies = Config::get("{$module}.dependencies"); //var_dump($dependencies);
+        $dependencies = Config::get("{$module}.dependencies");
         if (!empty($dependencies)) {
             $dependencies_array = array_merge($dependencies, $dependencies_array);
         }
@@ -283,7 +307,6 @@ function installMigrations()
     }
     $w = new Web();
     $w->initDB();
-    // $w->startSession();
     $_SESSION = [];
 
     try {
@@ -358,10 +381,8 @@ function generateEncryptionKeys()
     }
 
     $key_token = bin2hex($key_token);
-    //$key_iv = bin2hex($key_iv);
 
     echo "Encryption key generated\n";
-    //file_put_contents('config.php', "\nConfig::set('system.encryption', [\n\t'key' => '{$key_token}',\n\t'iv' => '{$key_iv}'\n]);", FILE_APPEND);
     file_put_contents('config.php', "\nConfig::set('system.encryption', [\n\t'key' => '{$key_token}'\n]);", FILE_APPEND);
     echo "Key written to project config\n\n";
 }
