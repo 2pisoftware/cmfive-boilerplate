@@ -38,7 +38,14 @@ class CmfiveUI extends \Codeception\Actor
                         $this->uncheckOption('#' . $fieldNameParts[1]);
                     }
                 } elseif (($fieldNameParts[0] == 'select' || $fieldNameParts[0] == 'radio') && count($fieldNameParts) > 1) {
+                    $this->wait(1);
+                    $this->waitForElement('#' . $fieldNameParts[1], 2);
+                    $this->wait(1);
+                    $this->waitForElement('#' . $fieldNameParts[1], 2);
+                    //$this->click("//select[@id='{$fieldNameParts[1]}']");
                     $this->selectOption('#' . $fieldNameParts[1], $fieldValue);
+                    // add a moment for response scripts to kick
+                    $this->wait(1);
                 } elseif ($fieldNameParts[0] == 'date' && count($fieldNameParts) > 1) {
                     $this->fillDatePicker($fieldNameParts[1], $fieldValue);
                 } elseif ($fieldNameParts[0] == 'datetime' && count($fieldNameParts) > 1) {
@@ -93,6 +100,7 @@ class CmfiveUI extends \Codeception\Actor
     {
         $this->executeInSelenium(
             function (\Facebook\WebDriver\Remote\RemoteWebDriver $webDriver) use ($selector, $content) {
+                $webDriver->wait(3);
                 $webDriver->switchTo()->frame(
                     $webDriver->findElement($selector)
                 );
@@ -137,7 +145,10 @@ class CmfiveUI extends \Codeception\Actor
     public function fillAutocomplete($field, $value)
     {
         $this->executeJS("$('#acp_{$field}').autocomplete('search', '{$value}')");
+        // pause & believe the UI entry exists
         $this->waitForText($value);
-        $this->click($value, '.ui-menu-item');
+        //$this->click($value, '.ui-menu-item');
+        // this way is more resilient regards 'focus' & timing?
+        $this->click("//li[contains(@class,'ui-menu-item')]/a[contains(text(),'{$value}')]");
     }
 }

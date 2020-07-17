@@ -1,6 +1,8 @@
 #!/bin/php
 <?php
 
+use Symfony\Component\Yaml\Yaml;
+
 if (!(isset($argc) && isset($argv))) {
     echo "No action is possible.";
     exit();
@@ -35,7 +37,7 @@ $sharedParam = [
     'testAdminFirstname' => 'admin',
     'testAdminLastname' => 'admin',
     'setupCommand' => 'cmfive.php',
-    'DBCommand' => 'cmfiveTestDB.php',
+    'DBCommand' => 'cmfiveToolsDB.php',
     'cmfiveModuleList' => ''
 ];
 
@@ -44,6 +46,7 @@ $sharedParam['boilerplatePath'] = getcwd();
 // 'loaded' will come from cmfive config
 $loadedParam = [
     'DB_Hostname' =>    "database.hostname",
+    'DB_Port'     =>    "database.port",
     'DB_Username' =>    "database.username",
     'DB_Password' =>    "database.password",
     'DB_Database' =>    "database.database",
@@ -58,7 +61,8 @@ error_reporting(E_ALL);
 
 // before anything else happens, check testrunner is allowed!
 if (allowRunner()) {
-    include "cmfiveTestDB.php";
+    include "cmfiveToolsDB.php";
+    echo "\n";
 
     if (!isset($menuMaker)) {
         genericRunner($argc, $argv);
@@ -117,6 +121,7 @@ function offerMenuTests()
 function moduleRunner($runModule)
 {
     purgeTestCode();
+    registerConfig();
     $found = chaseModules("all");
     registerHelpers($found);
 
@@ -154,6 +159,7 @@ function DBRunner()
 function genericRunner($argc, $argv)
 {
     purgeTestCode();
+    registerConfig();
     $found = chaseModules("all");
     registerHelpers($found);
     reportModules($found);
@@ -186,14 +192,42 @@ function allowRunner()
     $webFind = "system/web.php";
     if (chaseWeb($webFind)) {
         if (!class_exists('Web')) {
+            // Testrunner leans heavily on config, so always reset it
+            if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+                echo exec('del .\cache\config.cache');
+            } else {
+                echo exec('rm -f cache/config.cache');
+            }
             require("system/web.php");
         }
         $w = new Web();
-        if ((Config::get('tests'))["testrunner"] == "ENABLED") {
+        if (Config::get("tests.testrunner") == "ENABLED") {
+            if (!checkTestEnvironment()) {
+                echo "Configure Test Runner and database backup in config.php per examples.\n";
+                return false;
+            }
             return true;
-        };
+        }
     }
     return false;
+}
+
+function checkTestEnvironment()
+{
+    
+    if (Config::get("tests.yaml.- WebDriver:")
+        && Config::get("tests.yaml.- Db:")
+        && Config::get("database.backups.commandPath")
+        && Config::get("database.backups.backupCommand")
+        && Config::get("database.backups.restoreCommand")
+    ) {
+        echo "Found: Codeception configuration\n";
+    } else {
+        echo "Useful Codeception configuration not found in config.php\n";
+        return false;
+    }
+    
+    return true;
 }
 
 function chaseWeb($webFind)
@@ -209,9 +243,17 @@ function batchTestSetup()
 {
     global $sharedParam;
 
+    echo "Starting with backup.\n";
+    echo (shell_exec("php cmfive.php DB backup") . "\n");
+    
+    if (checkABackup(ROOT_PATH . DS . BACKUP_DIRECTORY) == 0) {
+        echo "Stopping, useful backup not confirmed.\n\n";
+        return;
+    }
+
     $Mcommand = [
-        "cmfive.php DB backup",
-        "cmfiveTestDB.php purge",
+        //"cmfive.php DB backup",
+        "cmfiveToolsDB.php purge",
         "cmfive.php install migrations",
         "cmfive.php seed admin "
             . $sharedParam['testAdminUsername'] . " "
@@ -308,6 +350,36 @@ function reportModules($moduleCapabilities)
     echo "\n";
 }
 
+
+function registerConfig()
+{
+    $destPath = BOILERPLATE_TEST_DIRECTORY . DS . "acceptance.suite.dist.yml";
+    $ConfigYML = fopen($destPath, "w");
+
+    if (!$ConfigYML) {
+        return;
+    }
+    
+    $codeceptionConfig = ["modules" => ["enabled" => Config::get("tests.yaml")]];
+    if (!$codeceptionConfig) {
+        return;
+    }
+    $hdr = "# Codeception Test Suite Configuration\n#\n".
+    "# Suite for acceptance tests.\n".
+    "# Perform tests in browser using the WebDriver or PhpBrowser.\n".
+    "# If you need both WebDriver and PHPBrowser tests - create a separate suite.\n\n".
+    "class_name: CmfiveUI\n\n";
+    
+    fwrite($ConfigYML, $hdr);
+
+    $setup = Yaml::dump($codeceptionConfig, 99);
+    $setup = str_replace("'-", "-", $setup);
+    $setup = str_replace(":':", ":", $setup);
+    fwrite($ConfigYML, $setup);
+    fclose($ConfigYML);
+}
+
+
 function registerHelpers($moduleCapabilities)
 {
     // Helpers can know where module path is,
@@ -365,6 +437,10 @@ function registerBoilerplateParameters($spoolTo)
         if (is_string($configTyped)) {
             fwrite($spoolTo, "                                    "
                 . "{$key}: '" . $configTyped . "'\n");
+        }
+        if (!isset($configTyped)) {
+            fwrite($spoolTo, "                                    "
+                . "{$key}: ''\n");
         }
     }
 }
