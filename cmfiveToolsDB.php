@@ -26,19 +26,19 @@ if (allowTestDB()) {
         offerMenuDB();
         $cmdMaker['DB'] = [
             [
-                'request' =>  "backup", 'message' => "Backing up database", 'function' => "genericRunnerDB", 'args' => true
+                'request' =>  "backup", 'message' => "Backing up database", 'function' => "genericRunnerDB", 'args' => true, 'implied' => true
             ],
             [
-                'request' =>  "restore", 'message' => "Restoring latest backup", 'function' => "genericRunnerDB", 'args' => true
+                'request' =>  "restore", 'message' => "Restoring latest backup", 'function' => "genericRunnerDB", 'args' => true, 'implied' => true
             ],
             [
-                'request' =>  "sample", 'message' => "Backing up database as test sample", 'function' => "genericRunnerDB", 'args' => true
+                'request' =>  "sample", 'message' => "Backing up database as test sample", 'function' => "genericRunnerDB", 'args' => true, 'implied' => true
             ],
             [
-                'request' =>  "test", 'message' => "Restoring test sample database", 'function' => "genericRunnerDB", 'args' => true
+                'request' =>  "test", 'message' => "Restoring test sample database", 'function' => "genericRunnerDB", 'args' => true, 'implied' => true
             ],
             [
-                'request' =>  "check", 'message' => "Checking database availability", 'function' => "genericRunnerDB", 'args' => true
+                'request' =>  "check", 'message' => "Checking database availability", 'function' => "genericRunnerDB", 'args' => true, 'implied' => true
             ]
         ];
     }
@@ -288,6 +288,9 @@ function checkAllBackups($message = true)
     echo str_replace("Array", "Execution:", $bkcmd);
 
     if ($message) {
+        echo "\nDatabase in use is "
+        .Config::get('database.database', "*MISSING*")
+        ." on ".Config::get("database.hostname", "*MISSING*")."\n";
         echo "\nWorking backup is: ".($bkpDB ?? "NOT_FOUND")." at ".$bkpDir;
         echo "\nFilesize: ".$bkpSize."\n";
         echo "\nTest database is: ".($tstDB ?? "NOT_FOUND")." at ".$tstDir;

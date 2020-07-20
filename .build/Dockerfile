@@ -36,7 +36,8 @@ RUN apt-get install -y -o "APT::Acquire::Retries=6" \
     git \
     iputils-ping \
     curl \
-    mysql-client-5.7
+    mysql-client-5.7 \
+    phpunit
 
 COPY fpm/* /etc/php/7.2/fpm/
 COPY supervisord.conf /etc/supervisord.conf

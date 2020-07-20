@@ -30,3 +30,5 @@ system
 codeception.yml
 
 test/Services/chromedriver
+test/unit
+test/Codeception/tests/acceptance.suite.dist.yml

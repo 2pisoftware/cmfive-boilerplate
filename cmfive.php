@@ -39,6 +39,14 @@ $cmdMaker = [
     'seed' => [
         [
             'request' =>  "admin", 'message' => "Setting up admin user", 'function' => "cmdSeedAdminUser", 'args' => true
+        ],
+        [
+            'request' =>  "encryption", 'message' => "Creating encryption keys", 'function' => "generateEncryptionKeys", 'args' => false
+        ]
+    ],
+    'cmfive' => [
+        [
+            'request' => "help", 'message' => "Command line options", 'function' => "synopsis", 'args' => false
         ]
     ]
     // need to mimic: seedAdminUser(array_slice($argv, 3));
@@ -135,7 +143,7 @@ function synopsis()
         foreach ($does as $doing) {
             echo //__FILE__
                 $_SERVER['SCRIPT_NAME'] . " " . $command . " " . $doing['request'];
-            if ($doing['args']) {
+            if ($doing['args'] && !isset($doing['implied'])) {
                 echo " [args...]";
             }
             echo " - (" . $doing['message'] . ")\n";
@@ -310,8 +318,8 @@ function installMigrations()
     $_SESSION = [];
 
     try {
-        $w->Migration->installInitialMigration();
-        $w->Migration->runMigrations("all");
+        MigrationService::getInstance($w)->installInitialMigration();
+        MigrationService::getInstance($w)->runMigrations("all");
         echo "Migrations have run\n";
     } catch (Exception $e) {
         echo $e->getMessage();
@@ -321,7 +329,7 @@ function installMigrations()
 function cmdSeedAdminUser($pCount, $parameters = [])
 {
     $parameters = array_slice($parameters, 2);
-    $pCount = count($parameters);
+    //$pCount = count($parameters);
     seedAdminUser($parameters);
 };
 
@@ -342,6 +350,14 @@ function seedAdminUser($parameters = [])
 
     // Set up fake session to stop warnings
     $_SESSION = [];
+
+    $findAdmin = AuthService::getInstance($w)->getObject("User", ["is_admin" => true]);
+    if (isset($findAdmin->id)) {
+        echo "\nOrder of steps is important - ADMIN USER EXISTS";
+        echo "\nSetup will not create multiple admin users\n\n";
+    
+        return false;
+    }
 
     $admin_contact = new Contact($w);
     $admin_contact->firstname = !empty($parameters[0]) ? $parameters[0] : readConsoleLine("Enter first name: ");
@@ -365,6 +381,7 @@ function seedAdminUser($parameters = [])
     $user_role->insert();
 
     echo "Admin user setup successful\n";
+    return true;
 }
 
 function generateEncryptionKeys()
@@ -374,10 +391,10 @@ function generateEncryptionKeys()
 
     if (PHP_VERSION_ID >= 70000) {
         $key_token = random_bytes(32);
-        $key_iv = random_bytes(8);
+        //$key_iv = random_bytes(8);
     } else {
         $key_token = openssl_random_pseudo_bytes(32);
-        $key_iv = openssl_random_pseudo_bytes(8);
+        //$key_iv = openssl_random_pseudo_bytes(8);
     }
 
     $key_token = bin2hex($key_token);
