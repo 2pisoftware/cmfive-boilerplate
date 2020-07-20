@@ -160,7 +160,7 @@ function unitRunner($runModule)
     purgeTestCode();
     $runModule = ltrim($runModule);
     $runModule = empty($runModule)?"all":$runModule;
-    $found = chaseModules($runModule);echo("lumpy");echo($runModule);echo("puppy");
+    $found = chaseModules($runModule);
 
     foreach ($found as $capabilities => $capability) {
         if ($capabilities == "UnitTests") {
@@ -202,8 +202,8 @@ function genericRunner($argc, $argv)
     registerHelpers($found);
     reportModules($found);
 
-    echo "\n --- To launch: --- \ncmfiveTests [run] [module_testfile.php] [silent]\n\n";
-    echo "\n --- Or: --- \ncmfiveTests [unit] [module_unitTestfile.php]\n\n";
+    echo "\n --- To launch: --- \ncmfiveTests [run] [module_testfile.php] [silent]";
+    echo "\n --- Or: --- \ncmfiveTests [unit] [module]\n\n";
 
     $codeCeptCommand = DEBUG_RUN;
 
