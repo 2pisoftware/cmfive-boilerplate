@@ -38,7 +38,8 @@ $cmdMaker = [
     ],
     'seed' => [
         [
-            'request' =>  "admin", 'message' => "Setting up admin user", 'function' => "cmdSeedAdminUser", 'args' => true
+            'request' =>  "admin", 'message' => "Setting up admin user", 'function' => "cmdSeedAdminUser", 'args' => true,
+            'hint' => "F_name L_name email user password"
         ],
         [
             'request' =>  "encryption", 'message' => "Creating encryption keys", 'function' => "generateEncryptionKeys", 'args' => false
@@ -144,7 +145,9 @@ function synopsis()
             echo //__FILE__
                 $_SERVER['SCRIPT_NAME'] . " " . $command . " " . $doing['request'];
             if ($doing['args'] && !isset($doing['implied'])) {
-                echo " [args...]";
+                echo " ["
+                .(isset($doing['hint'])?$doing['hint']:"args...")
+                ."]";
             }
             echo " - (" . $doing['message'] . ")\n";
         }

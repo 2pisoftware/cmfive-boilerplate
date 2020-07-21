@@ -77,11 +77,13 @@ if (allowRunner()) {
             ];
         $cmdMaker['tests'][] =
             [
-                'request' =>  "run", 'message' => "Launching TestRunner", 'function' => "genericRunner", 'args' => true
+                'request' =>  "run", 'message' => "Launching TestRunner", 'function' => "genericRunner", 'args' => true,
+                'hint' => "module_FileNameCest.php silent"
             ];
         $cmdMaker['tests'][] =
             [
-                'request' =>  "unit", 'message' => "Launching UnitTest", 'function' => "genericRunner", 'args' => true
+                'request' =>  "unit", 'message' => "Launching UnitTest", 'function' => "genericRunner", 'args' => true,
+                'hint' => "moduleName or all"
             ];
         $cmdMaker['testDB'][] =
             [
