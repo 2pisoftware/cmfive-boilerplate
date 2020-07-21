@@ -137,6 +137,7 @@ function moduleRunner($runModule)
     registerConfig();
     $found = chaseModules("all");
     registerHelpers($found);
+    unitRunner($runModule);
 
     $silent = false;
 

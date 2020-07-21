@@ -389,8 +389,14 @@ function seedAdminUser($parameters = [])
 
 function generateEncryptionKeys()
 {
+    if (!empty(Config::get("system.encryption"))) {
+        echo "\nOrder of steps is important - KEY ALREADY EXISTS";
+        echo "\nSetup will not create multiple encryption keys\n\n";
+    
+        return false;
+    }
     $key_token = '';
-    $key_iv = '';
+    //$key_iv = '';
 
     if (PHP_VERSION_ID >= 70000) {
         $key_token = random_bytes(32);
@@ -405,6 +411,7 @@ function generateEncryptionKeys()
     echo "Encryption key generated\n";
     file_put_contents('config.php', "\nConfig::set('system.encryption', [\n\t'key' => '{$key_token}'\n]);", FILE_APPEND);
     echo "Key written to project config\n\n";
+    return true;
 }
 
 function readConsoleLine($prompt = "Command: ")
