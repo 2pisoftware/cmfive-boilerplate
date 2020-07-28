@@ -29,15 +29,21 @@ RUN apt-get install -y -o "APT::Acquire::Retries=6" \
     php7.2-bcmath \
     php7.2-mbstring
 
-# add any extras, to allow for DB commands & subnet examination etc
+# toolbox extras, to allow for DB commands & subnet examination etc
 
 RUN apt-get update
 RUN apt-get install -y -o "APT::Acquire::Retries=6" \
     git \
     iputils-ping \
     curl \
-    mysql-client-5.7 \
-    phpunit
+    mysql-client-5.7
+
+# PHP extras, for test+debug
+
+RUN apt-get update
+RUN apt-get install -y -o "APT::Acquire::Retries=6" \ 
+    phpunit \
+    php-xdebug
 
 COPY fpm/* /etc/php/7.2/fpm/
 COPY supervisord.conf /etc/supervisord.conf
