@@ -188,10 +188,23 @@ function installCoreLibraries()
 
     echo exec('php composer.phar install');
 
-    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-        echo exec('mklink /J system composer\vendor\2pisoftware\cmfive-core\system');
-    } else {
-        echo exec('ln -s composer/vendor/2pisoftware/cmfive-core/system system');
+    $msg = "";
+    $out = 0;
+    try {
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            echo exec('mklink /J system composer\vendor\2pisoftware\cmfive-core\system',$msg,$out);
+        } else {
+            echo exec('ln -s composer/vendor/2pisoftware/cmfive-core/system system',$msg,$out);
+        }
+    } catch (Exception $e) {
+        echo $e->getMessage();
+        $out = 1;
+    }
+    if ($out!==0) {
+        echo "\nFailed Linking for : \nsystem <---> composer/vendor/2pisoftware/cmfive-core\system";
+        echo "\nComposer dependencies will not install for a missing system path";
+        echo "\n(Check any permissions, fs mounts, host_vs_container links etc)";
+        echo "\nYou may need to rerun this step!\n\n";
     }
 
     installThirdPartyLibraries($composer_json);

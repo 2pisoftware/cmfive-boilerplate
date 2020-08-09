@@ -13,7 +13,6 @@ echo "zend_extension=xdebug.so" > /etc/php/7.2/fpm/conf.d/20-xdebug.ini \
 	&& echo "xdebug.remote_host=${INTERNAL_HOST_IP}" >> /etc/php/7.2/fpm/conf.d/20-xdebug.ini \
 	&& echo "xdebug.remote_connect_back=0" >> /etc/php/7.2/fpm/conf.d/20-xdebug.ini \
 	&& echo "xdebug.remote_autostart=1" >> /etc/php/7.2/fpm/conf.d/20-xdebug.ini \
-	&& echo "xdebug.remote_connect_back=0" >> /etc/php/7.2/fpm/conf.d/20-xdebug.ini \
 	&& echo "xdebug.remote_handler=dbgp" >> /etc/php/7.2/fpm/conf.d/20-xdebug.ini \
 	&& echo "xdebug.max_nesting_level=250" >> /etc/php/7.2/fpm/conf.d/20-xdebug.ini 
 
