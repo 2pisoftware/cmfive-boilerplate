@@ -26,6 +26,7 @@ composer.lock
 system
 /test/Codeception
 /test/Services/chromedriver
+/test/unit
 
 codeception.yml
 
