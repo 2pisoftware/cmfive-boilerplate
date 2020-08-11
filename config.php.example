@@ -45,7 +45,7 @@ Config::set("database", array(
 //=========== Email Layer Configuration =====================
 
 Config::append('email', array(
-    "layer"	=> "smtp",		// smtp or sendmail
+    "layer"	=> "smtp",		// smtp or sendmail or aws
     "command" => "",		// used for sendmail layer only
     "host"	=> "smtp.gmail.com",
     "port"	=> 465,
@@ -63,7 +63,7 @@ Config::set("tests",
     "yaml" =>
     [
         "- WebDriver:" =>
-        [        
+        [
         "url" => "http://webapp:3000",
         "browser" => "chrome",
         "wait" => "60",
