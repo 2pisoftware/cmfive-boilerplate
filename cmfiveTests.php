@@ -133,12 +133,12 @@ function offerMenuTests()
 
 function moduleRunner($runModule)
 {
+    
+    unitRunner($runModule);
     purgeTestCode();
     registerConfig();
     $found = chaseModules("all");
     registerHelpers($found);
-    unitRunner($runModule);
-
     $silent = false;
 
     foreach ($found as $capabilities => $capability) {
