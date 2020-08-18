@@ -16,17 +16,17 @@ RUN apt-get install -y -o "APT::Acquire::Retries=6" \
     vim supervisor nginx gnupg2 
 
 RUN apt-get install -y -o "APT::Acquire::Retries=6" \
-	php7.2-fpm
+	php${php_version:-7.2}-fpm
 
 RUN apt-get install -y -o "APT::Acquire::Retries=6" \
-    php7.2-zip \
-    php7.2-curl \
-    php7.2-gd \
-    php7.2-json \
-    php7.2-mysql \
-    php7.2-xml \
-    php7.2-bcmath \
-    php7.2-mbstring
+    ${php_version:-7.2}-zip \
+    ${php_version:-7.2}-curl \
+    ${php_version:-7.2}-gd \
+    ${php_version:-7.2}-json \
+    ${php_version:-7.2}-mysql \
+    ${php_version:-7.2}-xml \
+    ${php_version:-7.2}-bcmath \
+    ${php_version:-7.2}-mbstring
 
 # toolbox extras, to allow for DB commands & subnet examination etc
 RUN apt-get update
@@ -42,12 +42,24 @@ RUN apt-get install -y -o "APT::Acquire::Retries=6" \
     phpunit \
     php-xdebug
 
-COPY fpm/* /etc/php/7.2/fpm/
-COPY supervisord.conf /etc/supervisord.conf
-COPY nginx/nginx.conf /etc/nginx/nginx.conf
-COPY nginx/default.conf /etc/nginx/conf.d/default.conf
-COPY start.sh start.sh
+# setup preprocessor runtime
+RUN apt-get install -y -o "APT::Acquire::Retries=6" \
+    python3 \
+    python3-pip
+RUN pip3 install jinja2
+
+# preprocess config files with php version
+RUN mkdir /deploy
+WORKDIR /deploy
+COPY . .
+RUN python3 preprocessor.py php_version=${php_version:-7.2}
+RUN chmod -R 777 start.sh
+
+RUN cp fpm/* /etc/php/${php_version:-7.2}/fpm/
+RUN cp supervisord.conf /etc/supervisord.conf
+RUN cp nginx/nginx.conf /etc/nginx/nginx.conf
+RUN cp nginx/default.conf /etc/nginx/conf.d/default.conf
 
 RUN mkdir /run/php
 
-CMD ["/start.sh"]
+CMD ["/deploy/start.sh"]
