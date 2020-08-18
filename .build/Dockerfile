@@ -29,7 +29,6 @@ RUN apt-get install -y -o "APT::Acquire::Retries=6" \
     php7.2-mbstring
 
 # toolbox extras, to allow for DB commands & subnet examination etc
-
 RUN apt-get update
 RUN apt-get install -y -o "APT::Acquire::Retries=6" \
     git \
@@ -38,7 +37,6 @@ RUN apt-get install -y -o "APT::Acquire::Retries=6" \
     mysql-client-5.7
 
 # PHP extras, for test+debug
-
 RUN apt-get update
 RUN apt-get install -y -o "APT::Acquire::Retries=6" \ 
     phpunit \
