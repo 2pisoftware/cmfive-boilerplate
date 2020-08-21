@@ -15,20 +15,18 @@ RUN apt-get install -y locales-all
 # allow retries & break up apt-get for recovery
 # of build from apt cache in case of connection failures
 RUN apt-get install -y -o "APT::Acquire::Retries=6" \
-    vim supervisor nginx gnupg2 
+    vim supervisor nginx gnupg2	
 
 RUN apt-get install -y -o "APT::Acquire::Retries=6" \
-	php${php_version}-fpm
-
-RUN apt-get install -y -o "APT::Acquire::Retries=6" \
-    ${php_version}-zip \
-    ${php_version}-curl \
-    ${php_version}-gd \
-    ${php_version}-json \
-    ${php_version}-mysql \
-    ${php_version}-xml \
-    ${php_version}-bcmath \
-    ${php_version}-mbstring
+    php${php_version}-fpm \
+    php${php_version}-zip \
+    php${php_version}-curl \
+    php${php_version}-gd \
+    php${php_version}-json \
+    php${php_version}-mysql \
+    php${php_version}-xml \
+    php${php_version}-bcmath \
+    php${php_version}-mbstring
 
 # toolbox extras, to allow for DB commands & subnet examination etc
 RUN apt-get update
