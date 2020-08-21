@@ -1,7 +1,7 @@
 # ubuntu version limited for simple mysql5.7 packaging
 FROM ubuntu:18.04
 
-ARG php_version=7.2
+ARG php_version
 
 # prevent install locking up o TZ or other user inputs
 ENV DEBIAN_FRONTEND=noninteractive
