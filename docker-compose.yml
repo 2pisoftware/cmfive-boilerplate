@@ -29,6 +29,8 @@ services:
       - TZ=Australia/Sydney
     volumes:
       - ./:/var/www/html
+      - codecept:/var/www/html/test/Codeception
+      - ./test/Codeception/tests/boilerplate:/var/www/html/test/Codeception/tests/boilerplate
     ports:
       - "3000:3000"
     networks: 
@@ -76,6 +78,8 @@ services:
   
 volumes:
   dbdata:
+    driver: local
+  codecept:
     driver: local
 
 networks: 
