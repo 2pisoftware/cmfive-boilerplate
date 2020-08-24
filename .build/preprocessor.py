@@ -1,13 +1,13 @@
 """
-Traverse all dirs and files under .build and inflate files with exstention
-'.templat' by substiting the php version.
+Traverse all dirs and files under .build and inflate files with the '.templat'
+extention by substiting the php version.
 """
 from jinja2 import Template
 from pathlib import Path
 import sys
 
 
-EXSTENSION = ".template"
+EXTENTION = ".template"
 
 
 def substitute_tokens(fpath, tokens):
