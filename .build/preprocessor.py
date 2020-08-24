@@ -18,14 +18,14 @@ def substitute_tokens(fpath, tokens):
 
 
 def create_file(fpath, contents):
-    filename = str(fpath).replace(EXSTENSION, "")
+    filename = str(fpath).replace(EXTENTION, "")
     with open(filename, "w") as fp:
         fp.write(contents)
 
 
 def inflate_template(fpath, tokens):
     # ignore
-    if not fpath.name.endswith(EXSTENSION):
+    if not fpath.name.endswith(EXTENTION):
         return
 
     # step 1
