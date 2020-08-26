@@ -7,7 +7,7 @@ from pathlib import Path
 import sys
 
 
-EXTENTION = ".template"
+EXTENSION = ".template"
 
 
 def substitute_tokens(fpath, tokens):
@@ -18,14 +18,14 @@ def substitute_tokens(fpath, tokens):
 
 
 def create_file(fpath, contents):
-    filename = str(fpath).replace(EXTENTION, "")
+    filename = str(fpath).replace(EXTENSION, "")
     with open(filename, "w") as fp:
         fp.write(contents)
 
 
 def inflate_template(fpath, tokens):
     # ignore
-    if not fpath.name.endswith(EXTENTION):
+    if not fpath.name.endswith(EXTENSION):
         return
 
     # step 1
