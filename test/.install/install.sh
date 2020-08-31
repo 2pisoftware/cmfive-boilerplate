@@ -9,27 +9,17 @@ curl -sS https://getcomposer.org/installer | php -- \
         --filename=composer \
         --install-dir=. ;
 
+alias composer=./composer
+
 ./composer -q require codeception/codeception --dev ;
 
-./composer require --no-update \
-#codeception/module-apc \
-codeception/module-asserts \
-#codeception/module-cli \
+./composer require --no-update codeception/module-asserts \
 codeception/module-db \
-#codeception/module-filesystem \
-#codeception/module-ftp \
-#codeception/module-memcache \
-#codeception/module-mongodb \
-#codeception/module-phpbrowser \
-#codeception/module-redis \
-#codeception/module-rest \
-#codeception/module-sequence \
-#codeception/module-soap \
-codeception/module-webdriver && \
+codeception/module-webdriver \
+codeception/module-phpbrowser
+
 ./composer update --no-dev --prefer-dist --no-interaction --optimize-autoloader --apcu-autoloader;
 
 vendor/bin/codecept bootstrap ;
 
 chmod -R 775 tests/* ;
-
-
