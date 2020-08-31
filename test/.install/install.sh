@@ -9,8 +9,6 @@ curl -sS https://getcomposer.org/installer | php -- \
         --filename=composer \
         --install-dir=. ;
 
-alias composer=./composer
-
 ./composer -q require codeception/codeception --dev ;
 
 ./composer require --no-update codeception/module-asserts \
