@@ -39,6 +39,9 @@ def preprocess(target, tokens):
     # traverse all dirs and files
     for p in target.iterdir():
         if p.is_dir():
+            # ignore
+            if p.name == 'cloud': 
+                continue
             preprocess(p, tokens)
         if p.is_file():
             inflate_template(p, tokens)
