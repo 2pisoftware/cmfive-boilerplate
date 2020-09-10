@@ -5,8 +5,6 @@ todo:
 - environment variable override
 - make command run exceptions less generic
 - review file permissions
-- install test packages
-- run unit/acceptance tests
 """
 from jinja2 import Template
 import yaml
@@ -95,10 +93,12 @@ def create_docker_compose_file():
 
 
 def docker_compose_up():
+    print('docker compose up')
     run('docker-compose up -d')
 
 
 def create_cmfive_config_file():
+    print('create cmfive config file')
     create_file_in_root(
         "config.php",
         render_template(
@@ -125,6 +125,7 @@ def wait_for_database():
 
 
 def create_database():
+    print('create database')
     wait_for_database()
 
     sql = """
@@ -138,10 +139,12 @@ def create_database():
 
 
 def install_test_packages():
-    pass
+    print('install test packages')
+    run("sh test/.install/install.sh", web_container())
 
 
 def setup_cmfive():
+    print('setup cmfive')
     run("php cmfive.php install core", web_container())
     run("php cmfive.php seed encryption", web_container())
     run("php cmfive.php install migration", web_container())

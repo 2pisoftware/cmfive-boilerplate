@@ -2,7 +2,8 @@
 
 #setup for Codeception
 
-cd ../Codeception/ ;
+SCRIPTPATH="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
+cd "${SCRIPTPATH}/../Codeception"
 
 export  COMPOSER_ALLOW_SUPERUSER=1 ;
 curl -sS https://getcomposer.org/installer | php -- \

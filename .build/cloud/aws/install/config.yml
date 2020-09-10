@@ -2,7 +2,7 @@
 # configs listed here are overridden by environment variables
 
 # admin user
-admin_email: ''
+admin_email: 'admin@2pisoftware.com'
 admin_username: 'cmfive'
 admin_password: 'cmfive'
 admin_login_username: 'cmfive'
