@@ -223,7 +223,7 @@ function sketchComposerForCore()
 
     $composer_string = <<<COMPOSER
     {
-        "name": "cmfive-boilerplate",
+        "name": "2pisoftware/cmfive-boilerplate",
         "version": "1.0",
         "description": "A boilerplate project layout for Cmfive",
         "require": {
