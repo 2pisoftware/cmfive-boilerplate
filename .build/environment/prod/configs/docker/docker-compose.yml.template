@@ -2,14 +2,13 @@
 version: '3'
 
 services:
-
   mysqldb:
-    image: mysql:5.7.21
-    container_name: mysql-5.7
-    hostname: mysql-5.7
+    image: mysql:{{mysql_version}}
+    container_name: mysql-{{mysql_suffix}}
+    hostname: mysql-{{mysql_suffix}}
     command: --sql-mode=""
     ports:
-      - "3308:3306"
+      - "3308:{{db_port}}"
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - TZ=Australia/Sydney
@@ -21,16 +20,12 @@ services:
 
   webapp:
     build:
-      context: ./.build/environment/default/
-      dockerfile: Dockerfile
-    container_name: nginx-php7.2
-    hostname: nginx-php7.2
+      context: .
+      dockerfile: ./.build/environment/{{environment}}/Dockerfile
+    container_name: nginx-php{{php_suffix}}
+    hostname: nginx-php{{php_version}}
     environment:
-      - TZ=Australia/Sydney
-    volumes:
-      - ./:/var/www/html
-      - codecept:/var/www/html/test/Codeception
-      - ./test/Codeception/tests/boilerplate:/var/www/html/test/Codeception/tests/boilerplate
+      - TZ=Australia/Sydney    
     ports:
       - "3000:3000"
     networks: 
@@ -38,8 +33,7 @@ services:
     restart: unless-stopped
     working_dir: /var/www/html
     links:
-      - mysqldb
-      - seleniumsrv
+      - mysqldb      
 
   # ------------------------------------------------------------
   # For IDE&Debug symlinks are best made on the HOST FS
@@ -61,26 +55,11 @@ services:
   #  |  cd /var/www/html/modules
   #  |  ln -s /var/hostmounts/myModules/cmfiveModule cmfiveModule
   #  |-------------->
-  # ------------------------------------------------------------
-    
-  seleniumsrv:
-    # promoting:
-    # docker run --net=cmfive-boilerplate_default --network-alias=selenium314 -p 4444:4444 selenium/standalone-chrome:3.14.0
-    image: selenium/standalone-chrome:3.14.0
-    container_name: selenium314
-    hostname: selenium314
-    ports:
-      - "4444:4444"
-    environment:
-      - TZ=Australia/Sydney
-    networks:
-      - default
+  # ------------------------------------------------------------    
   
 volumes:
   dbdata:
-    driver: local
-  codecept:
-    driver: local
+    driver: local  
 
 networks: 
   default:
