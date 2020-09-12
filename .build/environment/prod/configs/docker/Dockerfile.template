@@ -47,10 +47,10 @@ COPY . /var/www/html
 WORKDIR /bootstrap
 COPY /.build/environment/{{environment}}/stage .
 
-RUN cp fpm/* /etc/php/{{php_version}}/fpm/ &\
-    cp nginx/nginx.conf /etc/nginx/nginx.conf &\
-    cp nginx/default.conf /etc/nginx/conf.d/default.conf &\
-    cp supervisord.conf /etc/supervisord.conf
+RUN cp fpm/* /etc/php/{{php_version}}/fpm/
+RUN cp nginx/nginx.conf /etc/nginx/nginx.conf
+RUN cp nginx/default.conf /etc/nginx/conf.d/default.conf
+RUN cp supervisord.conf /etc/supervisord.conf
 
 RUN mkdir /run/php
 
