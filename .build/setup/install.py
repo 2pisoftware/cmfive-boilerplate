@@ -1,6 +1,5 @@
 """
 todo:
-- logging
 - test status codes on cmfive.php for database migrtion failure
 - environment variable override
 - make command run exceptions less generic
@@ -12,47 +11,32 @@ todo:
 - docker-overide
 - comments
 """
-
+import logging
 import click
-from docker import DockerCompose
-from service import WebService, DatabaseService
+from cmfive import CmfiveDevelopment
 
 
-class Cmfive:
-    def __init__(self, env):
-        self.compose = DockerCompose(env)
-        self.web = WebService(env)
-        self.db = DatabaseService(env)
-
-    def setup(self):
-        self.pre_setup()
-        self.compose.up()
-        self.post_setup()
-
-
-class CmfiveDevelopment(Cmfive):
-    def pre_setup(self):
-        """before docker-compose up"""
-        self.web.create_cmfive_config_file()
-
-    def post_setup(self):
-        """after docker-compose up"""
-        self.db.create_database()
-        self.web.install_test_packages()
-        self.web.setup_cmfive()
-
+def setup_logger(level):
+    logging.basicConfig(
+        format="time: %(asctime)s, module: %(name)s, line: %(lineno)s, level: %(levelname)s, Msg: %(message)s", 
+        datefmt="%Y-%m-%d %H:%M:%S",
+        level=getattr(logging, level.upper())
+    )
 
 # ----------------------
 # Command Line Interface
 # ----------------------
 @click.group()
-def cli():
-    pass
+@click.option('--verbose', default='info', help='log level')
+def cli(verbose):
+    setup_logger(verbose)
 
 
 @cli.command('test')
 def test():
-    CmfiveDevelopment("dev").setup()
+    CmfiveDevelopment().setup()
 
-if __name__ == '__main__':
+
+if __name__ == '__main__':    
+    print('asdad')    
     cli()

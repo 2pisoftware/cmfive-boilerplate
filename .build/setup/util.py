@@ -5,15 +5,18 @@ from distutils import dir_util
 import os
 import subprocess
 from jinja2 import Template
+import logging
 
+logger = logging.getLogger(__name__)
 
 def run(command, container_name=None):
     os.environ['PYTHONUNBUFFERED'] = "1"
 
     if container_name:
         command = f"docker exec {container_name} {command}"
-
+    print(command)
     # run command
+    logger.debug(f"command: {command}")
     proc = subprocess.Popen(
         command,
         shell=True,
@@ -28,6 +31,7 @@ def run(command, container_name=None):
         error = next(_ for _ in (stderr, stdout, default) if _ != "")
         raise Exception(error)
 
+    logger.debug(f"command output: {stdout}, {stderr}, {proc.returncode}")
     return stdout, stderr, proc.returncode
 
 
