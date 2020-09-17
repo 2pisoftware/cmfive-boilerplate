@@ -14,7 +14,7 @@ def run(command, container_name=None):
 
     if container_name:
         command = f"docker exec {container_name} {command}"
-    print(command)
+    
     # run command
     logger.debug(f"command: {command}")
     proc = subprocess.Popen(

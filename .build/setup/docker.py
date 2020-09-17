@@ -57,7 +57,7 @@ class DockerCompose:
 
     @staticmethod
     def containers():
-        stdout, _, _ = util.run('docker-compose ps -q')
+        stdout, _, _ = util.run('docker-compose ps -q')                
         return (Container(guid) for guid in stdout.split("\n"))
 
     # Helper Methods
