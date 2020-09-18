@@ -16,7 +16,10 @@ RUN apt-get install -y -o "APT::Acquire::Retries=6" \
     vim supervisor nginx gnupg2	
 
 RUN apt-get install -y -o "APT::Acquire::Retries=6" \
-    php7.2-fpm \
+    php7.2-fpm
+
+RUN apt-get update
+RUN apt-get install -y -o "APT::Acquire::Retries=6" \
     php7.2-zip \
     php7.2-curl \
     php7.2-gd \

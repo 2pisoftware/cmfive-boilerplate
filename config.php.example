@@ -17,7 +17,7 @@ Config::set("system.timezone", "Australia/Sydney");
 
 //========== Database Configuration ==========================
 
-Config::set("database", array(
+Config::set("database", [
     "hostname"  => getenv('DB_HOST') ? : "localhost",
     "port"  => getenv('DB_PORT') ? : "",
     "username"  => getenv('DB_USERNAME') ? : "<username>",
@@ -40,11 +40,11 @@ Config::set("database", array(
             'windows' => 'mysql.exe" -D$dbname -h$hostname -P$port -u$username -p$password < $filename'
         ],
     ]
-));
+]);
 
 //=========== Email Layer Configuration =====================
 
-Config::append('email', array(
+Config::append('email', [
     "layer"	=> "smtp",		// smtp or sendmail or aws
     "command" => "",		// used for sendmail layer only
     "host"	=> "smtp.gmail.com",
@@ -52,7 +52,7 @@ Config::append('email', array(
     "auth"	=> true,
     "username"	=> '<email>',
     "password"	=> '<password>',
-));
+]);
 
 //========== TestRunner Configuration ==========================
 //========== must be "ENABLED" to run ==========================
@@ -97,24 +97,24 @@ Config::set('system.encryption', [
 // bypass authentication if sent from the following IP addresses
 // specify an IP address and an array of allowed actions from that IP
 
-Config::set("system.allow_from_ip", array(
-	"10.0.0.0" => array("action1", "action2"),
-));
+Config::set("system.allow_from_ip", [
+// 	"10.0.0.0" => array("action1", "action2"),
+]);
 
 // or bypass authentication for the following modules
 
-Config::set("system.allow_module", array(
+Config::set("system.allow_module", [
     // "rest", // uncomment this to switch on REST access to the database objects.
-));
+]);
 
 // or bypass authentication for the following actions
 
-Config::set('system.allow_action', array(
+Config::set('system.allow_action', [
     "auth/login",
     "auth/forgotpassword",
     "auth/resetpassword",
     //"admin/datamigration"
-));
+]);
 
 //========= REST Configuration ==============================
 // check the following configuration carefully to secure
@@ -129,6 +129,6 @@ Config::set('system.rest_api_key', "abcdefghijklmnopqrstuvwxyz1234567890");
 // be aware that only the listed objects will be available via
 // the REST API
 
-Config::set('system.rest_include', array(
+Config::set('system.rest_include', [
 	// "Contact"
-));
+]);

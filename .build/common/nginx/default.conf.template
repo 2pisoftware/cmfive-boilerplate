@@ -65,6 +65,8 @@ server {
 	location ~ /\.ht {
 		deny all;
 	}
+
+	include /var/www/html/nginx.conf;
 }
 
 
