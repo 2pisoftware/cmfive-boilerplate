@@ -9,6 +9,8 @@ todo:
 """
 import logging
 import click
+from common import init_singletons
+from docker import DockerCompose
 from cmfive import CmfiveDevelopment, CmfiveProduction
 
 
@@ -28,6 +30,12 @@ def setup_logger(level):
 @click.option('--verbose', default='info', help='log level')
 def cli(verbose):
     setup_logger(verbose)
+
+
+@cli.command('update-default')
+def update_default():
+    init_singletons("default", True)
+    DockerCompose().init_environment()    
 
 
 @cli.command('provision-dev')
