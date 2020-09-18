@@ -77,7 +77,7 @@ Config::set("tests",
         ],
         "- Db:" =>
         [
-         "dsn" => "mysql:host={{db_hostname}}:{{db_port}};dbname={{db_hostname}}",
+         "dsn" => "mysql:host={{db_hostname}}:{{db_port}};dbname={{db_database}}",
          "user" => "{{db_username}}",
          "password" => "{{db_password}}",
         ],
