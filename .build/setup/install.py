@@ -31,13 +31,13 @@ def cli(verbose):
 
 
 @cli.command('provision-dev')
-def test():
+def provision_dev():
     cmfive = CmfiveDevelopment.create()
     cmfive.setup()
 
 
 @cli.command('provision-prod')
-def test():
+def provision_prod():
     cmfive = CmfiveProduction.create()
     cmfive.setup()
 
