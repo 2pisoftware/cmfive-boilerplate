@@ -1,27 +1,25 @@
 """
 todo:
 - test status codes on cmfive.php for database migrtion failure
-- environment variable override
-- make command run exceptions less generic
 - review file permissions
-- jinja2 enforce substituion
 - unit tests
 - documentation
 - review security
-- docker-overide
 - comments
 """
 import logging
 import click
-from cmfive import CmfiveDevelopment
+from cmfive import CmfiveDevelopment, CmfiveProduction
 
 
 def setup_logger(level):
+    # logger
     logging.basicConfig(
-        format="time: %(asctime)s, module: %(name)s, line: %(lineno)s, level: %(levelname)s, Msg: %(message)s", 
+        format="time: %(asctime)s, module: %(name)s, line: %(lineno)s, level: %(levelname)s, Msg: %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S",
         level=getattr(logging, level.upper())
     )
+
 
 # ----------------------
 # Command Line Interface
@@ -32,11 +30,17 @@ def cli(verbose):
     setup_logger(verbose)
 
 
-@cli.command('test')
+@cli.command('provision-dev')
 def test():
-    CmfiveDevelopment().setup()
+    cmfive = CmfiveDevelopment.create()
+    cmfive.setup()
 
 
-if __name__ == '__main__':    
-    print('asdad')    
+@cli.command('provision-prod')
+def test():
+    cmfive = CmfiveProduction.create()
+    cmfive.setup()
+
+
+if __name__ == '__main__':
     cli()

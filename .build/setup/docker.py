@@ -1,9 +1,10 @@
-from config import Config, Directories
+from common import Config, Directories
 import util
 import logging
 import json
 
 logger = logging.getLogger(__name__)
+
 
 class Container:
     def __init__(self, guid):
@@ -30,15 +31,15 @@ class Container:
 
 
 class DockerCompose:
-    def __init__(self, env):
-        self.dirs = Directories(env)
-        self.config = Config.data(env)
+    def __init__(self):
+        self.dirs = Directories.instance()
+        self.config = Config.instance().config
 
     # Client API
-    def up(self):        
+    def up(self):
         logger.info('init docker environment')
         self.init_environment()
-        
+
         logger.info('docker compose up')
         return util.run('docker-compose up -d')
 
@@ -57,7 +58,7 @@ class DockerCompose:
 
     @staticmethod
     def containers():
-        stdout, _, _ = util.run('docker-compose ps -q')                
+        stdout, _, _ = util.run('docker-compose ps -q')
         return (Container(guid) for guid in stdout.split("\n"))
 
     # Helper Methods

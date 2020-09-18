@@ -4,17 +4,19 @@
 from distutils import dir_util
 import os
 import subprocess
-from jinja2 import Template
+from jinja2 import Template, StrictUndefined
+from jinja2.exceptions import UndefinedError
 import logging
 
 logger = logging.getLogger(__name__)
+
 
 def run(command, container_name=None):
     os.environ['PYTHONUNBUFFERED'] = "1"
 
     if container_name:
         command = f"docker exec {container_name} {command}"
-    
+
     # run command
     logger.debug(f"command: {command}")
     proc = subprocess.Popen(
@@ -48,9 +50,13 @@ def copy_dirs(source, target):
 
 def render_template(fpath, tokens):
     with fpath.open() as fp:
-        template = Template(fp.read())
+        try:
+            template = Template(fp.read(), undefined=StrictUndefined)
+            result = template.render(tokens)
+        except UndefinedError as exc:
+            raise Exception("template placeholder token is missing") from exc
 
-    return template.render(tokens)
+        return result
 
 
 def inflate_template(filepath, destination, extension, tokens, remove):

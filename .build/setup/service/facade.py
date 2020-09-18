@@ -3,12 +3,12 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class Facade:
-    def __init__(self, env):                        
-        self._web = None
-        self._db = None
-        self.env = env
-    
+    def __init__(self):
+        self.web = WebService()
+        self.db = DatabaseService()
+
     def create_cmfive_config_file(self):
         logger.info('create cmfive config file')
         self.web.create_cmfive_config_file(self.db.hostname)
@@ -24,15 +24,3 @@ class Facade:
     def create_database(self):
         logger.info('create database')
         self.db.create_database()
-
-    @property
-    def web(self):        
-        if self._web is None:
-            self._web = WebService(self.env)
-        return self._web
-
-    @property
-    def db(self):
-        if self._db is None:
-            self._db = DatabaseService(self.env)
-        return self._db

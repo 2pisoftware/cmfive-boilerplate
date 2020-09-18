@@ -1,61 +1,82 @@
 """
-<description>
 """
-from pathlib import Path
+from dirs import Directories
+import os
 import yaml
+import boto3
 
 
-class Directories:
-    def __init__(self, env):
-        self._env = env
+def bucket(s3path):
+    normalize = s3path.replace("s3://", "")
+    return normalize.split("/", 1)[0]
 
-    @property
-    def cwd(self):
-        return Path(__file__).expanduser().resolve().parent
 
-    @property
-    def root(self):
-        return self.cwd.joinpath(*[".." for _ in range(2)])
+def key(s3path):
+    normalize = s3path.replace("s3://", "")
+    return normalize.split("/", 1)[1]
 
-    @property
-    def common(self):
-        return self.cwd.joinpath("..", "common")
 
-    @property
-    def env(self):
-        return self.cwd.joinpath("..", "environment", self._env)
+def remote_config(env):
+    # load environment variables
+    profile_name = os.environ.get('PROFILE_NAME', None)
+    config_path = os.environ.get('S3_CONFIG_PATH')
+    client = os.environ.get('CLIENT_CONFIG')
 
-    @property
-    def stage(self):
-        return self.env.joinpath("stage")
+    # pre-condition
+    assert config_path is not None, "environment variable 'S3_CONFIG_PATH' is mandatory"
+    assert client is not None, "environment variable 'CLIENT_CONFIG' is mandatory"
 
-    @property
-    def cmfive(self):
-        return self.env.joinpath("configs", "cmfive")
+    # session
+    if profile_name:
+        session = boto3.Session(profile_name=profile_name)
+        s3 = session.client('s3')
+    # defaults
+    else:
+        s3 = boto3.client('s3')
 
-    @property
-    def docker(self):
-        return self.env.joinpath("configs", "docker")
+    # load content
+    response = s3.get_object(Bucket=bucket(config_path), Key=key(config_path))
+    result = yaml.load(
+        response['Body'].read().decode('utf-8'),
+        Loader=yaml.FullLoader
+    )
 
-    @property
-    def image(self):
-        return self.env.joinpath("configs", "image")
+    # pre-condition
+    assert client in result, "client not in config"
+
+    return result[client]
+
+
+def local_config(env):
+    dirs = Directories.instance()
+
+    with open(dirs.env.joinpath("config.yml"), "r") as fp:
+        return yaml.load(fp.read(), Loader=yaml.FullLoader)
+
+
+def load(env, is_local):
+    # init loader
+    loader = local_config if is_local else remote_config
+
+    config = loader(env)
+    config["environment"] = env
+
+    return config
 
 
 class Config:
-    config = None
+    # singleton
+    _instance = None
+
+    def __init__(self, env, is_local):
+        if type(self)._instance is None:
+            type(self)._instance = self
+
+            # init
+            self.config = load(env, is_local)
 
     @classmethod
-    def data(cls, env):
-        if cls.config is None:
-            cls.config = cls.load(env)
-        return cls.config
+    def instance(cls):
+        assert cls._instance is not None, "singleton is not instantiated"
 
-    @staticmethod
-    def load(env):
-        dirs = Directories(env)
-        with open(dirs.env.joinpath("config.yml"), "r") as fp:
-            result = yaml.load(fp, Loader=yaml.FullLoader)
-            result["environment"] = env
-
-        return result
+        return cls._instance
