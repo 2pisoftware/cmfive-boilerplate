@@ -2,22 +2,6 @@
 version: '3'
 
 services:
-  mysqldb:
-    image: mysql:{{mysql_version}}
-    container_name: mysql-{{mysql_suffix}}
-    hostname: mysql-{{mysql_suffix}}
-    command: --sql-mode=""
-    ports:
-      - "3308:{{db_port}}"
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - TZ=Australia/Sydney
-    volumes:
-    - dbdata:/var/lib/mysql:delegated
-    # 'delegated' may be faster on mac or win?
-    networks:
-      - default
-
   webapp:
     build:
       context: .
@@ -32,8 +16,6 @@ services:
       - default
     restart: unless-stopped
     working_dir: /var/www/html
-    links:
-      - mysqldb      
 
   # ------------------------------------------------------------
   # For IDE&Debug symlinks are best made on the HOST FS
@@ -56,10 +38,6 @@ services:
   #  |  ln -s /var/hostmounts/myModules/cmfiveModule cmfiveModule
   #  |-------------->
   # ------------------------------------------------------------    
-  
-volumes:
-  dbdata:
-    driver: local  
 
 networks: 
   default:
