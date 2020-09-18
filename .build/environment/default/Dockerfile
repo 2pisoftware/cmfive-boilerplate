@@ -44,10 +44,10 @@ RUN apt-get install -y -o "APT::Acquire::Retries=6" \
 WORKDIR /bootstrap
 COPY ./stage .
 
-RUN cp fpm/* /etc/php/7.2/fpm/ &\
-    cp nginx/nginx.conf /etc/nginx/nginx.conf &\
-    cp nginx/default.conf /etc/nginx/conf.d/default.conf &\
-    cp supervisord.conf /etc/supervisord.conf
+RUN cp fpm/* /etc/php/7.2/fpm/
+RUN cp nginx/nginx.conf /etc/nginx/nginx.conf
+RUN cp nginx/default.conf /etc/nginx/conf.d/default.conf
+RUN cp supervisord.conf /etc/supervisord.conf
 
 RUN mkdir /run/php
 
