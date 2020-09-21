@@ -35,6 +35,7 @@ class CmfiveDevelopment(Cmfive):
         return cls()
 
 
+"""
 class CmfiveProduction(Cmfive):
     def __init__(self):
         super().__init__()
@@ -42,10 +43,10 @@ class CmfiveProduction(Cmfive):
     def install(self):
         self.facade.create_database()
         self.facade.create_cmfive_config_file()
-        self.facade.install_test_packages()
         self.facade.setup_cmfive()
 
     @classmethod
     def create(cls):
         init_singletons("prod", False)
         return cls()
+"""

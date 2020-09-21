@@ -1,5 +1,6 @@
 """
 """
+from collections import ChainMap
 from dirs import Directories
 import os
 import yaml
@@ -36,15 +37,18 @@ def remote_config(env):
 
     # load content
     response = s3.get_object(Bucket=bucket(config_path), Key=key(config_path))
-    result = yaml.load(
+    data = yaml.load(
         response['Body'].read().decode('utf-8'),
         Loader=yaml.FullLoader
     )
 
     # pre-condition
-    assert client in result, "client not in config"
-
-    return result[client]
+    assert client in data, "client not in config"
+    
+    return dict(ChainMap(
+        data[client]['base_image'], 
+        data[client]['client_specific'])
+    )
 
 
 def local_config(env):

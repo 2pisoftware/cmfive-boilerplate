@@ -58,6 +58,19 @@ class WebService:
         # modify folder permissions
         self.run("chmod 777 -R cache storage uploads")
 
+    @staticmethod
+    def tag_image(tag):
+        util.run(f"docker tag {WebService.image_name()} {tag}")
+
+    @staticmethod
+    def image_name():
+        """docker-compose names image as <dir>_<service>"""
+        dirs = Directories.instance()
+        prefix = dirs.root.resolve().name
+        name = f"{prefix}_{WebService.SERVICE_NAME}"
+
+        return name
+
     # ---------------
     # Private Methods
     # ---------------

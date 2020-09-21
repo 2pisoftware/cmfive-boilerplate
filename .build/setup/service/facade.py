@@ -23,4 +23,4 @@ class Facade:
 
     def create_database(self):
         logger.info('create database')
-        self.db.create_database()
+        self.db.create_database()    

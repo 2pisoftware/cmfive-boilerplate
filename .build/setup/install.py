@@ -9,9 +9,11 @@ todo:
 """
 import logging
 import click
-from common import init_singletons
-from docker import DockerCompose
-from cmfive import CmfiveDevelopment, CmfiveProduction
+from actions import (
+    update_default,
+    provision_dev,
+    create_production_image
+)
 
 
 def setup_logger(level):
@@ -33,21 +35,22 @@ def cli(verbose):
 
 
 @cli.command('update-default')
-def update_default():
-    init_singletons("default", True)
-    DockerCompose().init_environment()    
+def update_default_cmd():
+    """update docker-compose defualt """
+    update_default()
 
 
 @cli.command('provision-dev')
-def provision_dev():
-    cmfive = CmfiveDevelopment.create()
-    cmfive.setup()
+def provision_dev_cmd():
+    """provision cmfive devlopment instance"""
+    provision_dev()
 
 
-@cli.command('provision-prod')
-def provision_prod():
-    cmfive = CmfiveProduction.create()
-    cmfive.setup()
+@cli.command('create-production-image')
+@click.argument('tag')
+def create_production_image_cmd(tag):
+    """create vanila production image"""
+    create_production_image(tag)  
 
 
 if __name__ == '__main__':
