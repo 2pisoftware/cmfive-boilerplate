@@ -43,6 +43,10 @@ class DockerCompose:
         logger.info('docker compose up')
         return util.run('docker-compose up -d')
 
+    def down(self):
+        logger.info('teardown docker-compose')
+        util.run("docker-compose down -v")
+
     def init_environment(self):
         """prepare docker, docker-compose and image configs"""
         self.create_stage_directory()

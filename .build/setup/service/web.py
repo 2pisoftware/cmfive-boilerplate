@@ -59,17 +59,9 @@ class WebService:
         self.run("chmod 777 -R cache storage uploads")
 
     @staticmethod
-    def tag_image(tag):
-        util.run(f"docker tag {WebService.image_name()} {tag}")
-
-    @staticmethod
-    def image_name():
-        """docker-compose names image as <dir>_<service>"""
-        dirs = Directories.instance()
-        prefix = dirs.root.resolve().name
-        name = f"{prefix}_{WebService.SERVICE_NAME}"
-
-        return name
+    def snapshot_container(tag):
+        container = WebService.container_by_index(0)
+        util.run(f"docker commit {container.container_name} {tag}")
 
     # ---------------
     # Private Methods
@@ -78,3 +70,8 @@ class WebService:
         """run command against web service container(s)"""
         for container in DockerCompose.containers_by_service(self.SERVICE_NAME):
             container.run_command(command)
+
+    @staticmethod
+    def container_by_index(index):
+        containers = list(DockerCompose.containers_by_service(WebService.SERVICE_NAME))
+        return containers[index]

@@ -1,7 +1,7 @@
 import logging
 from common import init_singletons
 from docker import DockerCompose
-from cmfive import CmfiveDevelopment
+from cmfive import CmfiveDevelopment, CmfiveProduction
 from service.web import WebService
 import util
 
@@ -17,17 +17,16 @@ def provision_dev():
     cmfive = CmfiveDevelopment.create()
     cmfive.setup()
 
-
 def create_production_image(tag):
-    # init
-    init_singletons("prod", False)
-    docker = DockerCompose()
-    docker.init_environment()
+    # provision cmfive instance
+    logger.info('provision cmfive instance')
+    cmfive = CmfiveProduction.create()
+    cmfive.setup()            
 
-    # build image       
-    logger.info(f"build image '{WebService.image_name()}'")
-    docker.build()
+    # snapshot web container
+    logger.info('snapshot web container')
+    WebService.snapshot_container(tag)
 
-    # tag image
-    logger.info(f"tag image '{WebService.image_name()}'")
-    WebService.tag_image(tag)
+    # teardown cmfive instance
+    logger.info('teardown cmfive instance')
+    DockerCompose().down()
