@@ -207,6 +207,7 @@ function installCoreLibraries($parameters = [])
     // dist     : []
     // names    : 2pisoftware/cmfive-core
 
+    assert(count($parameters) > 0, '$parameters have be at least one value');
     $composer_json = sketchComposerForCore($parameters[0]);
 
     file_put_contents('./composer.json', json_encode($composer_json, JSON_PRETTY_PRINT));
@@ -245,7 +246,7 @@ function sketchComposerForCore($reference="master")
     // source   : [git] https://github.com/2pisoftware/cmfive-core develop
     // dist     : []
     // names    : 2pisoftware/cmfive-core
-
+    
     $composer_string = <<<COMPOSER
     {
         "name": "2pisoftware/cmfive-boilerplate",
@@ -268,7 +269,7 @@ function sketchComposerForCore($reference="master")
                 "source": {
                     "url": "https://github.com/2pisoftware/cmfive-core",
                     "type": "git",
-                    "reference": "%reference%"
+                    "reference": "$reference"
                     }
                 }
             }
@@ -307,9 +308,6 @@ COMPOSER;
     }
 COMPOSER;
     }
-
-    // substitute placeholder(s)
-    $composer_string = str_replace("%reference%", $reference, $composer_string);
 
     return json_decode($composer_string, true);
 }
