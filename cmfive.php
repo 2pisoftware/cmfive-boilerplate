@@ -11,7 +11,7 @@ error_reporting(E_ALL);
 
 $menuMaker = [
     [
-        'option' => "Install core libraries", 'message' => "Installing core libraries", 'function' => "installCoreLibraries", 'param' => null
+        'option' => "Install core libraries", 'message' => "Installing core libraries", 'function' => "installCoreLibraries", 'param' => ["master"]
     ],
     [
         'option' => "Install database migrations", 'message' => "Installing migrations", 'function' => "installMigrations", 'param' => null
@@ -27,7 +27,8 @@ $menuMaker = [
 $cmdMaker = [
     'install' => [
         [
-            'request' => "core", 'message' => "Installing core libraries", 'function' => "installCoreLibraries", 'args' => false
+            'request' => "core", 'message' => "Installing core libraries", 'function' => "installCoreLibraries", 'args' => true,
+            'hint' => "cmfive-core reference (default is 'master')", "default" => ["master"]
         ],
         [
             'request' => "migration", 'message' => "Installing migrations", 'function' => "installMigrations", 'args' => false
@@ -64,7 +65,12 @@ if ($argc >= 3) {
                 if ($doing['args']) {
                     $shft = $argv;
                     array_shift($shft);
-                    $doing['function']($argc - 1, $shft);
+
+                    // stage values
+                    $paramaters = array_slice($shft, 2);                                                            
+                    $defaults = $doing['default'] ?? [];       
+
+                    $doing['function'](process_default_arguments($paramaters, $defaults));
                 } else {
                     $doing['function']();
                 }
@@ -74,6 +80,25 @@ if ($argc >= 3) {
     }
     echo "\nUnknown command\n";
     exit(1);
+}
+
+function process_default_arguments($paramaters, $defaults) {            
+    foreach($defaults as $key => $value) {                
+        if (is_null($value)) {
+            // NULL value indicate that the paramater must be supplied
+            if (!array_key_exists($key, $paramaters)) {
+                echo "\nExpecting paramater\n";
+                exit(1);                            
+            }            
+        } else {
+            // paramater not supplied, use default value
+            if (!array_key_exists($key, $paramaters)) {
+                $paramaters[$key] = $value;
+            }
+        }
+    }
+
+    return $paramaters;
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -171,7 +196,7 @@ function stepOneYieldsWeb()
     return false;
 }
 
-function installCoreLibraries()
+function installCoreLibraries($parameters = [])
 {
     // name     : 2pisoftware/cmfive-core
     // descrip. :
@@ -182,7 +207,8 @@ function installCoreLibraries()
     // dist     : []
     // names    : 2pisoftware/cmfive-core
 
-    $composer_json = sketchComposerForCore();
+    assert(count($parameters) > 0, '$parameters have be at least one value');
+    $composer_json = sketchComposerForCore($parameters[0]);
 
     file_put_contents('./composer.json', json_encode($composer_json, JSON_PRETTY_PRINT));
 
@@ -210,7 +236,7 @@ function installCoreLibraries()
     installThirdPartyLibraries($composer_json);
 }
 
-function sketchComposerForCore()
+function sketchComposerForCore($reference="master")
 {
     // name     : 2pisoftware/cmfive-core
     // descrip. :
@@ -220,7 +246,7 @@ function sketchComposerForCore()
     // source   : [git] https://github.com/2pisoftware/cmfive-core develop
     // dist     : []
     // names    : 2pisoftware/cmfive-core
-
+    
     $composer_string = <<<COMPOSER
     {
         "name": "2pisoftware/cmfive-boilerplate",
@@ -243,7 +269,7 @@ function sketchComposerForCore()
                 "source": {
                     "url": "https://github.com/2pisoftware/cmfive-core",
                     "type": "git",
-                    "reference": "master"
+                    "reference": "$reference"
                     }
                 }
             }
@@ -342,10 +368,8 @@ function installMigrations()
     }
 }
 
-function cmdSeedAdminUser($pCount, $parameters = [])
-{
-    $parameters = array_slice($parameters, 2);
-    //$pCount = count($parameters);
+function cmdSeedAdminUser($parameters = [])
+{    
     seedAdminUser($parameters);
 };
 
