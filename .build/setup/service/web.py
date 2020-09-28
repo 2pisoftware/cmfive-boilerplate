@@ -48,8 +48,8 @@ class WebService:
         self.run("php cmfive.php seed encryption")
         self.run("php cmfive.php install migration")
         self.run("php cmfive.php seed admin '{}' '{}' '{}' '{}' '{}'".format(
-            self.config['admin_username'],
-            self.config['admin_password'],
+            self.config['admin_first_name'],
+            self.config['admin_last_name'],
             self.config['admin_email'],
             self.config['admin_login_username'],
             self.config['admin_login_password']
