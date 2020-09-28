@@ -1,8 +1,8 @@
 ---
 # admin user
 admin_email: admin@2pisoftware.com
-admin_username: cmfive
-admin_password: cmfive
+admin_first_name: cmfive
+admin_last_name: cmfive
 admin_login_username: cmfive
 admin_login_password: cmfive
 
