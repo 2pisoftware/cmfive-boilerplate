@@ -44,9 +44,8 @@ def remote_config(env):
 
     # pre-condition
     assert client in data, "client not in config"
-    
     return dict(ChainMap(
-        data[client]['base_image'], 
+        data[client]['base_image'],
         data[client]['client_specific'])
     )
 

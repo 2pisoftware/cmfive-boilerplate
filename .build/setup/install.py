@@ -12,7 +12,8 @@ import click
 from actions import (
     update_default,
     provision_dev,
-    create_production_image
+    create_production_image,
+    update_production_image,
 )
 
 
@@ -50,8 +51,14 @@ def provision_dev_cmd():
 @click.argument('tag')
 def create_production_image_cmd(tag):
     """create vanila production image"""
-    create_production_image(tag)  
+    create_production_image(tag)
 
+
+@cli.command('update-production-image')
+@click.argument('tag')
+def create_production_image_cmd(tag):
+    """update production image"""
+    update_production_image(tag)
 
 if __name__ == '__main__':
     cli()

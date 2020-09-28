@@ -54,7 +54,7 @@ class DockerCompose:
         self.create_docker_file()
         self.add_docker_ignore_file()
 
-    def build(self):        
+    def build(self):
         util.run("docker-compose build")
 
     @staticmethod
