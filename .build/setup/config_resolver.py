@@ -23,8 +23,9 @@ def register_resolver(name):
 # Resolvers
 # ---------
 class Resolver:
-    def __init__(self, context, key):
+    def __init__(self, context, config, key):
         self.context = context
+        self.config = config
         self.key = key
 
 
@@ -120,6 +121,7 @@ class StackOutputResolver(Resolver):
                 if 'ExportName' in output
             }
 
+
 @register_resolver('secret')
 class SecretManagerResolver(Resolver):
     def resolve(self):
@@ -128,4 +130,5 @@ class SecretManagerResolver(Resolver):
         except ClientError as e:
             raise Exception(f"Unable to retrieve secretId '{self.key}'") from e
 
-        return secret['SecretString']
+        entries = json.loads(secret['SecretString'])
+        return entries[self.config]

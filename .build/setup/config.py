@@ -46,7 +46,7 @@ class ConfigManager:
 
         context = ConfigContext()
         for key, content in metadata.items():
-            config = Config(context, key, content["resolvers"])
+            config = Config(context, key, content['resolvers'])
 
             # resolve config and save value
             result[key] = config.value
@@ -62,19 +62,22 @@ class Config:
 
     @property
     def value(self):
-        result = self.key
+        value = self.key
         for resolver in self.resolvers:
             assert resolver in registry, f"resolver {resolver} unrecognised"
 
             # resolve key
-            instance = registry[resolver](self.context, result)
-            result = instance.resolve()
+            instance = registry[resolver](self.context, self.key, value)
+            value = instance.resolve()
 
-        return result
-
+        return value
 
 class ConfigContext:
     def __init__(self):
+        # opt-out
+        if not type(self).requires_aws_connectivity():
+            return
+
         # cmfive client - no spaces and url friendly
         self.cmfive_client = os.environ.get('CMFIVE_CLIENT', None)
 
@@ -93,3 +96,17 @@ class ConfigContext:
         self.s3 = boto.client('s3')
         self.ss = boto.client('secretsmanager')
         self.cf = boto.client('cloudformation')
+
+    @staticmethod
+    def requires_aws_connectivity():
+        # load data
+        dirs = Directories.instance()
+        with open(dirs.env.joinpath("config.yml"), "r") as fp:
+            metadata = yaml.load(fp.read(), Loader=yaml.FullLoader)
+
+        # check for resolvers that require aws connectivity
+        for _, value in metadata.items():
+            if any(True for resolver in value["resolvers"] if resolver != 'local'):
+                return True
+
+        return False

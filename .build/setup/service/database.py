@@ -87,43 +87,42 @@ class DatabaseService:
 
 class DatabaseServiceHost:
     """
-    This class represents a database running on a host, if used, the
-    pre-condition is the 'db_hostname' config is defined.
+    This class represents a database running on a host.
     """
     def __init__(self):
-        self.config = Config.instance().config
+        self.config = ConfigManager.instance().config
 
     def run(self, sql):
         """run sql against database on host"""
-
-        # pre-condition
-        if "db_hostname" not in self.config:
-            raise Exception("config 'db_hostname' required")
-
-        # run command
         return util.run(
-            command='mysql -h {db_hostname} -u root -proot -e "{sql}"'.format(
-                db_hostname=self.config["db_hostname"],
+            command='mysql -h {endpoint} -u {username} -p{password} -P {port} -e "{sql}"'.format(
+                endpoint=self.config["db_instance_endpoint"],
+                username=self.config["db_instance_username"],
+                password=self.config["db_instance_password"],
+                port=self.config["db_instance_port"],
                 sql=sql
             ),
             container_name=None
         )
 
     def hostname(self):
-        return self.config["db_hostname"]
+        return self.config["db_instance_endpoint"]
 
 
 class DatabaseServiceContainer:
     """
-    This class represents a database running in a container. The container name is
-    used as the value for the config 'db_hostname'.
+    This class represents a database running in a container.
     """
+    def __init__(self):
+        self.config = ConfigManager.instance().config
+
     def run(self, sql):
-        """run sql against database in container"""
-        # run command
         return util.run(
-            command='mysql -h {db_hostname} -u root -proot -e "{sql}"'.format(
-                db_hostname="127.0.0.1",
+            command='mysql -h {endpoint} -u {username} -p{password} -P {port} -e "{sql}"'.format(
+                endpoint="127.0.0.1",
+                username=self.config["db_instance_username"],
+                password=self.config["db_instance_password"],
+                port=self.config["db_instance_port"],
                 sql=sql
             ),
             container_name=self.container_name()

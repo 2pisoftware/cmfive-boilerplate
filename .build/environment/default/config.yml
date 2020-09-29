@@ -1,9 +1,31 @@
 ---
-# database
-db_port: '3306'
+# -----------------
+# database instance
+# -----------------
+db_instance_port:
+    resolvers:
+    - "local"
+    value: "3306"
 
-# services
-php_version: '7.2'
-php_suffix: '7.2'
-mysql_version: '5.7.21'
-mysql_suffix: '5.7'
+# -------
+# service
+# -------
+php_version:
+    resolvers:
+    - "local"
+    value: "7.2"
+
+php_suffix:
+    resolvers:
+    - "local"
+    value: "7.2"
+
+mysql_version:
+    resolvers:
+    - "local"
+    value: "5.7.21"
+
+mysql_suffix:
+    resolvers:
+    - "local"
+    value: "5.7"

@@ -24,7 +24,7 @@ class WebService:
 
         # add or override db_hostname config
         tokens = dict(self.config)
-        tokens.update({"db_hostname": db_hostname})
+        tokens.update({"db_instance_endpoint": db_hostname})
 
         # render template into stage dir
         util.inflate_template(
