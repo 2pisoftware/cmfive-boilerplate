@@ -54,7 +54,7 @@ def render_template(fpath, tokens):
             template = Template(fp.read(), undefined=StrictUndefined)
             result = template.render(tokens)
         except UndefinedError as exc:
-            raise Exception("template placeholder token is missing") from exc
+            raise Exception(f"template placeholder token is missing - {fpath}") from exc
 
         return result
 
