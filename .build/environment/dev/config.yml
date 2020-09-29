@@ -1,19 +1,74 @@
 ---
+# ----------
 # admin user
-admin_email: admin@2pisoftware.com
-admin_first_name: cmfive
-admin_last_name: cmfive
-admin_login_username: cmfive
-admin_login_password: cmfive
+# ----------
+admin_email:
+    resolvers:
+    - "local"
+    value: "admin@2pisoftware.com"
 
+admin_first_name:
+    resolvers:
+    - "local"
+    value: "cmfive"
+
+admin_last_name:
+    resolvers:
+    - "local"
+    value: "cmfive"
+
+admin_login_username:
+    resolvers:
+    - "local"
+    value: "cmfive"
+
+admin_login_password:
+    resolvers:
+    - "local"
+    value: "cmfive"
+
+# --------
 # database
-db_database: cmfive
-db_username: cmfive
-db_password: cmfive
-db_port: '3306'
+# --------
+db_database:
+    resolvers:
+    - "local"
+    value: "cmfive"
 
-# services
-php_version: '7.2'
-php_suffix: '7.2'
-mysql_version: '5.7.21'
-mysql_suffix: '5.7'
+db_username:
+    resolvers:
+    - "local"
+    value: "cmfive"
+
+db_password:
+    resolvers:
+    - "local"
+    value: "cmfive"
+
+db_port:
+    resolvers:
+    - "local"
+    value: "3306"
+
+# -------
+# service
+# -------
+php_version:
+    resolvers:
+    - "local"
+    value: "7.2"
+
+php_suffix:
+    resolvers:
+    - "local"
+    value: "7.2"
+
+mysql_version:
+    resolvers:
+    - "local"
+    value: "5.7.21"
+
+mysql_suffix:
+    resolvers:
+    - "local"
+    value: "5.7"

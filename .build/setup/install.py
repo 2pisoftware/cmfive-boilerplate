@@ -60,5 +60,18 @@ def create_production_image_cmd(tag):
     """update production image"""
     update_production_image(tag)
 
+
+@cli.command('config')
+def test_config_cmd():   
+    import os
+    from common import init_singletons, ConfigManager
+    
+    os.environ["CMFIVE_CLIENT"] = "microsoft"
+    os.environ["S3_FOLDER"] = "s3://cmfive-config/foo"
+    os.environ["PROFILE_NAME"] = "thomas"
+    init_singletons("dev")
+    print(ConfigManager.instance().config)
+
+
 if __name__ == '__main__':
     cli()

@@ -1,85 +1,95 @@
 """
 """
-from collections import ChainMap
-from dirs import Directories
 import os
+from config_resolver import registry
+from dirs import Directories
 import yaml
 import boto3
 
 
-def bucket(s3path):
-    normalize = s3path.replace("s3://", "")
-    return normalize.split("/", 1)[0]
-
-
-def key(s3path):
-    normalize = s3path.replace("s3://", "")
-    return normalize.split("/", 1)[1]
-
-
-def remote_config(env):
-    # load environment variables
-    profile_name = os.environ.get('PROFILE_NAME', None)
-    config_path = os.environ.get('S3_CONFIG_PATH')
-    client = os.environ.get('CLIENT_CONFIG')
-
-    # pre-condition
-    assert config_path is not None, "environment variable 'S3_CONFIG_PATH' is mandatory"
-    assert client is not None, "environment variable 'CLIENT_CONFIG' is mandatory"
-
-    # session
-    if profile_name:
-        session = boto3.Session(profile_name=profile_name)
-        s3 = session.client('s3')
-    # defaults
-    else:
-        s3 = boto3.client('s3')
-
-    # load content
-    response = s3.get_object(Bucket=bucket(config_path), Key=key(config_path))
-    data = yaml.load(
-        response['Body'].read().decode('utf-8'),
-        Loader=yaml.FullLoader
-    )
-
-    # pre-condition
-    assert client in data, "client not in config"
-    return dict(ChainMap(
-        data[client]['base_image'],
-        data[client]['client_specific'])
-    )
-
-
-def local_config(env):
-    dirs = Directories.instance()
-
-    with open(dirs.env.joinpath("config.yml"), "r") as fp:
-        return yaml.load(fp.read(), Loader=yaml.FullLoader)
-
-
-def load(env, is_local):
-    # init loader
-    loader = local_config if is_local else remote_config
-
-    config = loader(env)
-    config["environment"] = env
-
-    return config
-
-
-class Config:
+class ConfigManager:
     # singleton
     _instance = None
 
-    def __init__(self, env, is_local):
-        if type(self)._instance is None:
-            type(self)._instance = self
+    # ----------
+    # Client API
+    # ----------
+    def __init__(self, env):
+        clazz = type(self)
+        if clazz._instance is None:
+            clazz._instance = self
 
             # init
-            self.config = load(env, is_local)
+            self.config = self.load(env)
+        else:
+            assert False, "logic error"
 
     @classmethod
     def instance(cls):
-        assert cls._instance is not None, "singleton is not instantiated"
+        assert cls._instance is not None, "singleton not initialized"
 
         return cls._instance
+
+    # ---------------
+    # Private Methods
+    # ---------------
+    def load(self, env):
+        # load data
+        dirs = Directories.instance()
+        with open(dirs.env.joinpath("config.yml"), "r") as fp:
+            metadata = yaml.load(fp.read(), Loader=yaml.FullLoader)
+
+        return self.resolve(metadata, env)
+
+    def resolve(self, metadata, env):
+        result = {"environment": env}
+
+        context = ConfigContext()
+        for key, content in metadata.items():
+            config = Config(context, key, content["resolvers"])
+
+            # resolve config and save value
+            result[key] = config.value
+
+        return result
+
+
+class Config:
+    def __init__(self, context, key, resolvers):
+        self.context = context
+        self.key = key
+        self.resolvers = resolvers
+
+    @property
+    def value(self):
+        result = self.key
+        for resolver in self.resolvers:
+            assert resolver in registry, f"resolver {resolver} unrecognised"
+
+            # resolve key
+            instance = registry[resolver](self.context, result)
+            result = instance.resolve()
+
+        return result
+
+
+class ConfigContext:
+    def __init__(self):
+        # cmfive client - no spaces and url friendly
+        self.cmfive_client = os.environ.get('CMFIVE_CLIENT', None)
+
+        # s3 location to config files e.g. s3://<bucket>/<dir>
+        self.s3_folder = os.environ.get('S3_FOLDER', None)
+
+        # AWS configure profile
+        profile_name = os.environ.get('PROFILE_NAME', None)
+
+        # init boto clients
+        if profile_name:
+            boto = boto3.Session(profile_name=profile_name)
+        else:
+            boto = boto3
+
+        self.s3 = boto.client('s3')
+        self.ss = boto.client('secretsmanager')
+        self.cf = boto.client('cloudformation')

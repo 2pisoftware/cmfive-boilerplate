@@ -57,7 +57,7 @@ class ProvisionDevelopmentInstance(ActionTemplate):
 
     @classmethod
     def create(cls):
-        init_singletons("dev", True)
+        init_singletons("dev")
         return cls()
 
 
@@ -80,7 +80,7 @@ class CreateProductionImage(ActionTemplate):
 
     @classmethod
     def create(cls):
-        init_singletons("prod", False)
+        init_singletons("prod")
         return cls()
 
 
@@ -101,7 +101,7 @@ class UpdateProductionImage(ActionTemplate):
 
     @classmethod
     def create(cls):
-        init_singletons("prod", False)
+        init_singletons("prod")
         return cls()
 
 
@@ -109,7 +109,7 @@ class UpdateProductionImage(ActionTemplate):
 # Actions
 # -------
 def update_default():
-    init_singletons("default", True)
+    init_singletons("default")
     DockerCompose().init_environment()
 
 

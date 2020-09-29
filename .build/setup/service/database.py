@@ -1,8 +1,7 @@
 """
-
 """
 from docker import DockerCompose
-from common import Directories, Config
+from common import Directories, ConfigManager
 import util
 import time
 import logging
@@ -18,7 +17,7 @@ class DatabaseService:
 
     def __init__(self):
         self.dirs = Directories.instance()
-        self.config = Config.instance().config
+        self.config = ConfigManager.instance().config
         self._service = None
 
     # ----------

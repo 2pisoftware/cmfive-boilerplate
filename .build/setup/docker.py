@@ -1,4 +1,4 @@
-from common import Config, Directories
+from common import ConfigManager, Directories
 import util
 import logging
 import json
@@ -33,7 +33,7 @@ class Container:
 class DockerCompose:
     def __init__(self):
         self.dirs = Directories.instance()
-        self.config = Config.instance().config
+        self.config = ConfigManager.instance().config
 
     # Client API
     def up(self):
