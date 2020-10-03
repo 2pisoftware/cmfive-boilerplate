@@ -23,9 +23,8 @@ def register_resolver(name):
 # Resolvers
 # ---------
 class Resolver:
-    def __init__(self, context, config, key):
-        self.context = context
-        self.config = config
+    def __init__(self, context, key):
+        self.context = context        
         self.key = key
 
 
@@ -33,24 +32,19 @@ class Resolver:
 class LocalResolver(Resolver):
     _data = None  # cache
 
+    def __init__(self, context, key, value):
+        super().__init__(context, key)
+        self.value = value
+
     def resolve(self):
-        return self.load()[self.key]["value"]
-
-    def load(self):
-        clazz = type(self)
-        if clazz._data is None:
-            dirs = Directories.instance()
-            with open(dirs.env.joinpath("config.yml"), "r") as fp:
-                clazz._data = yaml.load(fp.read(), Loader=yaml.FullLoader)
-
-        return clazz._data
+        return self.value
 
 
 @register_resolver('datastore')
 class DatastoreResolver(Resolver):
-    _data = None  # cache
+    _data = None  # cache    
 
-    def resolve(self):
+    def resolve(self):        
         configs = self.load()
 
         assert self.key in configs, f"config {self.key} not present"
@@ -61,12 +55,9 @@ class DatastoreResolver(Resolver):
         if clazz._data is None:
             # load data from s3 bucket
             response = self.context.s3.get_object(Bucket=self.s3bucket, Key=self.s3key)
-
-            # deserialize
-            clazz._data = yaml.load(
-                response['Body'].read().decode('utf-8'),
-                Loader=yaml.FullLoader
-            )
+            
+            # deserialize                        
+            clazz._data = json.loads(response['Body'].read().decode('utf-8'))            
 
         return clazz._data
 
@@ -77,11 +68,28 @@ class DatastoreResolver(Resolver):
 
     @property
     def s3key(self):
-        full_path = f"{self.context.s3_folder}/{self.context.cmfive_client}_config.yml"
+        full_path = f"{self.context.s3_folder}/{self.context.cmfive_client}_config.json"
         normalize = full_path.replace("s3://", "")
         return normalize.split("/", 1)[1]
 
 
+@register_resolver('secret')
+class SecretManagerResolver(Resolver):
+    def __init__(self, context, key, index):
+        super().__init__(context, key)
+        self.index = index
+
+    def resolve(self):
+        try:
+            secret = self.context.ss.get_secret_value(SecretId=self.key)
+        except ClientError as e:
+            raise Exception(f"Unable to retrieve secretId '{self.key}'") from e
+        
+        entries = json.loads(secret['SecretString'])
+        return entries[self.index]
+
+
+"""
 @register_resolver('output')
 class StackOutputResolver(Resolver):
     def resolve(self):
@@ -120,15 +128,4 @@ class StackOutputResolver(Resolver):
                 for output in summary['Outputs']
                 if 'ExportName' in output
             }
-
-
-@register_resolver('secret')
-class SecretManagerResolver(Resolver):
-    def resolve(self):
-        try:
-            secret = self.context.ss.get_secret_value(SecretId=self.key)
-        except ClientError as e:
-            raise Exception(f"Unable to retrieve secretId '{self.key}'") from e
-
-        entries = json.loads(secret['SecretString'])
-        return entries[self.config]
+"""

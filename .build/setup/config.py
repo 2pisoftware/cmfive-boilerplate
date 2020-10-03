@@ -63,29 +63,38 @@ class Config:
     @property
     def value(self):
         value = self.key
-        for resolver in self.resolvers:
+        for entry in self.resolvers:
+            # parse resolver and data
+            resolver, args = next(iter(entry.items()))
             assert resolver in registry, f"resolver {resolver} unrecognised"
 
+            # load aws remote configs
+            if resolver != "local":
+                self.context.load_remote()
+
             # resolve key
-            instance = registry[resolver](self.context, self.key, value)
+            instance = registry[resolver](context=self.context, key=value, **args)
             value = instance.resolve()
 
         return value
 
+
 class ConfigContext:
     def __init__(self):
-        # opt-out
-        if not type(self).requires_aws_connectivity():
+        self.is_remote = False
+
+    def load_remote(self):
+        if self.is_remote:
             return
 
         # cmfive client - no spaces and url friendly
         self.cmfive_client = os.environ.get('CMFIVE_CLIENT', None)
 
         # s3 location to config files e.g. s3://<bucket>/<dir>
-        self.s3_folder = os.environ.get('S3_FOLDER', None)
+        self.s3_folder = os.environ.get('CONFIG_S3_FOLDER', None)
 
         # AWS configure profile
-        profile_name = os.environ.get('PROFILE_NAME', None)
+        profile_name = os.environ.get('PROFILE_NAME', None)        
 
         # init boto clients
         if profile_name:
@@ -96,17 +105,4 @@ class ConfigContext:
         self.s3 = boto.client('s3')
         self.ss = boto.client('secretsmanager')
         self.cf = boto.client('cloudformation')
-
-    @staticmethod
-    def requires_aws_connectivity():
-        # load data
-        dirs = Directories.instance()
-        with open(dirs.env.joinpath("config.yml"), "r") as fp:
-            metadata = yaml.load(fp.read(), Loader=yaml.FullLoader)
-
-        # check for resolvers that require aws connectivity
-        for _, value in metadata.items():
-            if any(True for resolver in value["resolvers"] if resolver != 'local'):
-                return True
-
-        return False
+        self.is_remote = True

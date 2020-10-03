@@ -4,84 +4,84 @@
 # -----------------
 db_instance_username:
     resolvers:
-    - "local"    
-    value: "root"
+    - local:    
+        value: "root"
 
 db_instance_password:
     resolvers:
-    - "local"    
-    value: "root"  
+    - local:    
+        value: "root"  
 
 db_instance_port:
     resolvers:
-    - "local"
-    value: "3306"
+    - local:
+        value: "3306"
 
 # ----------
 # admin user
 # ----------
 admin_login_username:
     resolvers:
-    - "local"
-    value: "cmfive"
+    - local:
+        value: "cmfive"
 
 admin_login_password:
     resolvers:
-    - "local"
-    value: "cmfive"
+    - local:
+        value: "cmfive"
 
 admin_email:
     resolvers:
-    - "local"
-    value: "cmfive@2pisoftware.com"   
+    - local:
+        value: "cmfive@2pisoftware.com"   
 
 admin_first_name:
     resolvers:
-    - "local"
-    value: "cmfive"
+    - local:
+        value: "cmfive"
 
 admin_last_name:
     resolvers:
-    - "local"
-    value: "cmfive"    
+    - local:
+        value: "cmfive"    
 
 # ---------------
 # client database
 # ---------------
 db_username:
     resolvers:
-    - "local"
-    value: "cmfive"
+    - local:
+        value: "cmfive"
     
 db_password:
     resolvers:
-    - "local"
-    value: "cmfive"
+    - local:
+        value: "cmfive"
 
 db_database:
     resolvers:
-    - "local"
-    value: "cmfive"
+    - local:
+        value: "cmfive"
 
 # -------
 # service
 # -------
 php_version:
     resolvers:
-    - "local"
-    value: "7.2"
+    - local:
+        value: "7.2"
 
 php_suffix:
     resolvers:
-    - "local"
-    value: "7.2"
+    - local:
+        value: "7.2"
 
 mysql_version:
     resolvers:
-    - "local"
-    value: "5.7.21"
+    - local:
+        value: "5.7.21"
 
 mysql_suffix:
     resolvers:
-    - "local"
-    value: "5.7"
+    - local:
+        value: "5.7"

@@ -1,5 +1,5 @@
 import logging
-from common import init_singletons
+from common import init_singletons, ConfigManager
 from docker import DockerCompose
 from service import WebService, DatabaseService
 
@@ -126,3 +126,8 @@ def create_production_image(tag):
 def update_production_image(tag):
     action = UpdateProductionImage.create()
     action.execute(tag)
+
+
+def test_config_resolver(environment):
+    init_singletons(environment)
+    return ConfigManager.instance().config

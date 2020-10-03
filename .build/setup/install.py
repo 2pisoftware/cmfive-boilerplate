@@ -14,6 +14,7 @@ from actions import (
     provision_dev,
     create_production_image,
     update_production_image,
+    test_config_resolver
 )
 
 
@@ -59,6 +60,14 @@ def create_production_image_cmd(tag):
 def create_production_image_cmd(tag):
     """update production image"""
     update_production_image(tag)
+
+
+@cli.command('test-config-resolver')
+@click.argument('environment')
+def test_config_resolver_cmd(environment):
+    """update production image"""
+    print(test_config_resolver(environment))
+
 
 if __name__ == '__main__':
     cli()

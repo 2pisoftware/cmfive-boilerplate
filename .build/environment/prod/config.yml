@@ -4,73 +4,77 @@
 # -----------------
 db_instance_username:
     resolvers:
-    - "datastore"    
-    - "secret"
+    - datastore: {}
+    - secret:
+        index: "username"
 
 db_instance_password:
     resolvers:
-    - "datastore"    
-    - "secret"
+    - datastore: {}
+    - secret:
+        index: "password"
 
 db_instance_endpoint:
     resolvers:
-    - "datastore"
-    - "output"    
+    - datastore: {}
 
 db_instance_port:
     resolvers:
-    - "datastore"
-    - "output"
+    - datastore: {}    
 
 # ----------
 # admin user
 # ----------
 admin_login_username:
     resolvers:
-    - "datastore"
-    - "secret"
+    - datastore: {}
+    - secret:
+        index: "username"
 
 admin_login_password:
     resolvers:
-    - "datastore"
-    - "secret"
+    - datastore: {}
+    - secret:
+        index: "password"
 
 admin_email:
     resolvers:
-    - "datastore"    
+    - datastore: {}   
 
 admin_first_name:
     resolvers:
-    - "datastore"
+    - datastore: {}
 
 admin_last_name:
     resolvers:
-    - "datastore"
+    - datastore: {}
 
 # ---------------
 # client database
 # ---------------
 db_username:
     resolvers:
-    - "datastore"
-    - "secret"
+    - datastore: {}
+    - secret:
+        index: "username"
     
 db_password:
     resolvers:
-    - "datastore"
-    - "secret"
+    - datastore: {}
+    - secret:
+        index: "password"
 
 db_database:
     resolvers:
-    - "datastore"
+    - datastore: {}
 
 # -------
 # service
 # -------
 php_version:
     resolvers:
-    - "datastore"
+    - datastore: {}
 
 php_suffix:
     resolvers:
-    - "datastore"
+    - datastore: {}
