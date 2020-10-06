@@ -15,6 +15,7 @@ RUN apt-get install -y locales-all
 RUN apt-get install -y -o "APT::Acquire::Retries=6" \
     vim supervisor nginx gnupg2	
 
+RUN apt-get update
 RUN apt-get install -y -o "APT::Acquire::Retries=6" \
     php7.2-fpm
 

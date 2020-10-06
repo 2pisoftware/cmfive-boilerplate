@@ -85,6 +85,11 @@ if (allowRunner()) {
                 'request' =>  "unit", 'message' => "Launching UnitTest", 'function' => "genericRunner", 'args' => true,
                 'hint' => "moduleName or all"
             ];
+        $cmdMaker['tests'][] =
+            [
+                'request' =>  "module", 'message' => "Launching Tests on Module", 'function' => "genericRunner", 'args' => true,
+                'hint' => "moduleName  silent"
+            ];
         $cmdMaker['testDB'][] =
             [
                 'request' =>  "setup", 'message' => "Batched TestRunner DB setup", 'function' => "genericRunner", 'args' => true,  'implied' => true
@@ -124,22 +129,22 @@ function offerMenuTests()
     $menuMaker[] =
         [
             'option' => "Run all acceptance tests", 'message' => "Launching TestRunner", 'function' => "testRunner", 'param' => null
-        ];    
+        ];
     $menuMaker[] =
         [
             'option' => "Run all unit tests", 'message' => "Launching UnitTests", 'function' => "unitTestRunner", 'param' => "all"
         ];
 }
 
-function moduleRunner($runModule)
+function moduleRunner($runModule, $silent = false)
 {
-    
+
     unitRunner($runModule);
     purgeTestCode();
     registerConfig();
     $found = chaseModules("all");
     registerHelpers($found);
-    $silent = false;
+    //$silent = false;
 
     foreach ($found as $capabilities => $capability) {
         if ($capabilities == "Tests") {
@@ -162,7 +167,7 @@ function unitRunner($runModule)
 {
     purgeTestCode();
     $runModule = ltrim($runModule);
-    $runModule = empty($runModule)?"all":$runModule;
+    $runModule = empty($runModule) ? "all" : $runModule;
     $found = chaseModules($runModule);
 
     foreach ($found as $capabilities => $capability) {
@@ -188,7 +193,8 @@ function infoRunner()
 function testRunner()
 {
     genericRunner(2, ["", "run"]);
-}function unitTestRunner()
+}
+function unitTestRunner()
 {
     genericRunner(2, ["", "unit"]);
 }
@@ -226,6 +232,13 @@ function genericRunner($argc, $argv)
                     $unitModule = "  " . $argv[2];
                 }
                 unitRunner($unitModule);
+                break;
+            case "module":
+                $module = "";
+                if ($argc > 2) {
+                    $module = $argv[2];
+                }
+                moduleRunner($module, $silent);
                 break;
             case "clean":
                 purgeTestCode();
@@ -368,7 +381,7 @@ function purgeTestCode()
         exec('del ' . CEST_DESTINATION . DS . '*Cest.php');
         exec('del ' . STEP_DESTINATION . DS . '*.php');
         exec('del ' . HELP_DESTINATION . DS . '*.php');
-        exec('del ' . HELP_DESTINATION . DS . '..' . DS . '*.php');        
+        exec('del ' . HELP_DESTINATION . DS . '..' . DS . '*.php');
         exec('del ' . UNIT_DESTINATION . DS . '*.php');
     } else {
         exec('rm -f ' . CEST_DESTINATION . DS . '*Cest.php');
