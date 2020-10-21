@@ -84,6 +84,15 @@ php_suffix:
 # -----------
 module_configs:
     resolvers:
-    - datastore: {}
+    - datastore:
+        default: {}
     modifiers:
-    - json_serialize
+    - merge:
+        value: {"system": {"encryption": {"key": "{{encryption_key}}"}}}
+    - substitue:
+        key: encryption_key
+    - json_serialize: {}
+
+encryption_key:
+    resolvers:
+    - datastore: {}    

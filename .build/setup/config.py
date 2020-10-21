@@ -1,6 +1,7 @@
 """
 """
 import os
+from jinja2 import Template, StrictUndefined
 from config_resolver import registry
 from dirs import Directories
 import yaml
@@ -45,12 +46,16 @@ class ConfigManager:
     def resolve(self, metadata, env):
         result = {"environment": env}
 
+        # resolve config
         context = ConfigContext()
         for key, content in metadata.items():            
-            config = Config(context, key, content)
-
-            # resolve config and save value
+            config = Config(context, key, content)            
             result[key] = config.value
+
+        # apply modifier
+        for key, content in metadata.items():            
+            config = Config(context, key, content)            
+            result[key] = config.apply_modifiers(result, result[key])
 
         return result
 
@@ -77,15 +82,42 @@ class Config:
             instance = registry[resolver](context=self.context, key=value, **args)
             value = instance.resolve()
         
-        return self.apply_modifiers(value)
+        return value        
 
-    def apply_modifiers(self, value):
-        for modifier in self.content.get('modifiers', []):
-            if modifier == "json_serialize":
-                value = json.dumps(value)            
+    def apply_modifiers(self, resolved_values, value):
+        for modifier in self.content.get('modifiers', []):                        
+            if "json_serialize" in modifier:
+                value = json.dumps(value)   
+            if "merge" in modifier:
+                self.merge(modifier["merge"]["value"], value)
+            if "substitue" in modifier:
+                value = self.substitue(value, resolved_values, modifier["substitue"]["key"])                
 
         return value
+    
+    def merge(self, source, target):
+        # basic merge strategy - improve
+        if not isinstance(source, dict):
+            return
+        
+        for key, value in source.items():
+            if key in target:
+                if isinstance(value, dict):
+                    self.merge(source[key], target[key])
+                else:
+                    target[key] = value
+            else:
+                target[key] = source[key]
+    
+    def substitue(self, value, values, key):        
+        serialized = json.dumps(value)                
+        try:            
+            template = Template(serialized, undefined=StrictUndefined)
+            result = template.render({key: values[key]})
+        except UndefinedError as exc:
+            raise Exception(f"template placeholder token is missing - {fpath}") from exc
 
+        return json.loads(result)        
 
 class ConfigContext:
     def __init__(self):

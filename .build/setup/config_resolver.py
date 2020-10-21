@@ -44,10 +44,18 @@ class LocalResolver(Resolver):
 class DatastoreResolver(Resolver):
     _data = None  # cache    
 
+    def __init__(self, context, key, **kwargs):
+        super().__init__(context, key)        
+        self.kwargs = kwargs
+
     def resolve(self):        
         configs = self.load()
-
-        assert self.key in configs, f"config {self.key} not present"
+        
+        if self.key not in configs:            
+            if "default" in self.kwargs:
+                return self.kwargs["default"]            
+            raise Exception(f"config {self.key} not present")            
+                
         return configs[self.key]
 
     def load(self):
