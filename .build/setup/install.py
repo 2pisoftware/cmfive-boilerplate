@@ -65,7 +65,7 @@ def create_production_image_cmd(tag):
 @cli.command('test-config-resolver')
 @click.argument('environment')
 def test_config_resolver_cmd(environment):
-    """update production image"""
+    """test config resolver against environment"""
     print(test_config_resolver(environment))
 
 
