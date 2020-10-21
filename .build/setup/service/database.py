@@ -24,6 +24,8 @@ class DatabaseService:
     # Client API
     # ----------
     def create_database(self):
+        logger.info("create client database")
+
         self.wait_for_database()
         self.run("""
             CREATE DATABASE {db_database};
