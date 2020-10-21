@@ -126,3 +126,7 @@ Config::set('system.rest_api_key', "abcdefghijklmnopqrstuvwxyz1234567890");
 Config::set('system.rest_include', array(
 	// "Contact"
 ));
+
+{% if module_configs is defined %}
+Config::extendFromJson('{{ module_configs }}');
+{% endif %}

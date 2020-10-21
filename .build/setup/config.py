@@ -4,6 +4,7 @@ import os
 from config_resolver import registry
 from dirs import Directories
 import yaml
+import json
 import boto3
 
 
@@ -45,8 +46,8 @@ class ConfigManager:
         result = {"environment": env}
 
         context = ConfigContext()
-        for key, content in metadata.items():
-            config = Config(context, key, content['resolvers'])
+        for key, content in metadata.items():            
+            config = Config(context, key, content)
 
             # resolve config and save value
             result[key] = config.value
@@ -55,15 +56,15 @@ class ConfigManager:
 
 
 class Config:
-    def __init__(self, context, key, resolvers):
+    def __init__(self, context, key, content):
         self.context = context
         self.key = key
-        self.resolvers = resolvers
+        self.content = content
 
     @property
     def value(self):
         value = self.key
-        for entry in self.resolvers:
+        for entry in self.content["resolvers"]:
             # parse resolver and data
             resolver, args = next(iter(entry.items()))
             assert resolver in registry, f"resolver {resolver} unrecognised"
@@ -75,6 +76,13 @@ class Config:
             # resolve key
             instance = registry[resolver](context=self.context, key=value, **args)
             value = instance.resolve()
+        
+        return self.apply_modifiers(value)
+
+    def apply_modifiers(self, value):
+        for modifier in self.content.get('modifiers', []):
+            if modifier == "json_serialize":
+                value = json.dumps(value)            
 
         return value
 

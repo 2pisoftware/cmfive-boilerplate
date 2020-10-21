@@ -78,3 +78,12 @@ php_version:
 php_suffix:
     resolvers:
     - datastore: {}
+
+# -----------
+# third party
+# -----------
+module_configs:
+    resolvers:
+    - datastore: {}
+    modifiers:
+    - json_serialize

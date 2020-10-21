@@ -85,3 +85,13 @@ mysql_suffix:
     resolvers:
     - local:
         value: "5.7"
+
+# -----------
+# third party
+# -----------
+module_configs:
+    resolvers:
+    - local:
+        value: {}
+    modifiers:
+    - json_serialize
