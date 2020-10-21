@@ -20,8 +20,8 @@ Config::set("system.timezone", "Australia/Sydney");
 Config::set("database", array(
     "hostname"  => getenv('DB_HOST') ? : "{{db_instance_endpoint}}",
     "port"  => getenv('DB_PORT') ? : "{{db_instance_port}}",
-    "username"  => getenv('DB_USERNAME') ? : "{{db_instance_username}}",
-    "password"  => getenv('DB_PASSWORD') ? : "{{db_instance_password}}",
+    "username"  => getenv('DB_USERNAME') ? : "{{db_username}}",
+    "password"  => getenv('DB_PASSWORD') ? : "{{db_password}}",
     "database"  => getenv('DB_DATABASE') ? : "{{db_database}}",
     "driver"    => getenv('DB') ? : "mysql",
     "backups" =>
@@ -78,8 +78,8 @@ Config::set("tests",
         "- Db:" =>
         [
          "dsn" => "mysql:host={{db_instance_endpoint}}:{{db_instance_port}};dbname={{db_database}}",
-         "user" => "{{db_instance_username}}",
-         "password" => "{{db_instance_password}}",
+         "user" => "{{db_username}}",
+         "password" => "{{db_password}}",
         ],
         "- Asserts:" => "",
     ]
