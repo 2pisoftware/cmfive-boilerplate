@@ -4,12 +4,12 @@ version: '3'
 services:
 
   mysqldb:
-    image: mysql:5.7.21
-    container_name: mysql-5.7
-    hostname: mysql-5.7
+    image: mysql:{{mysql_version}}
+    container_name: mysql-{{mysql_suffix}}
+    hostname: mysql-{{mysql_suffix}}
     command: --sql-mode=""
     ports:
-      - "3308:3306"
+      - "3308:{{db_port}}"
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - TZ=Australia/Sydney
@@ -21,10 +21,10 @@ services:
 
   webapp:
     build:
-      context: ./.build/environment/default/
+      context: ./.build/environment/{{environment}}/
       dockerfile: Dockerfile
-    container_name: nginx-php7.2
-    hostname: nginx-php7.2
+    container_name: nginx-php{{php_suffix}}
+    hostname: nginx-php{{php_version}}
     environment:
       - TZ=Australia/Sydney
     volumes:

@@ -9,9 +9,42 @@ if (!(isset($argc) && isset($argv))) {
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
+/*
+To add options:
+
+--> * Adding to menu * -->
+    $menuMaker[] =
+            [
+                'option' => "Text will appear in menu",
+                'message' => "Text will display when launched",
+                'function' => "This function will be called as function() or function(param)",
+                'param' => null OR 'param' => "value" OR 'param' => [key array]
+                --> * NOTE * --> ONLY ONE PARAMETER IS PASSED
+                    you need to provision your function vs param's deliberately!
+            ]
+
+--> * Adding to CLI * -->
+    $cmdMaker['aSingleWordNameForTheClassOfCommands'][] =
+            [
+            'request' => "commandToExecute",
+            'message' => "Text will display when launched and as CLI help",
+            'function' => "This function will be called as function() or function(argc, argv)",
+            'args' => true, OR 'args' => false,
+            'hint' => "Text will appear as CLI help if args=true",
+            "default" => [] OR ['aParameterName' => "aDefaultValue"] OR ['aParameterName' => null]
+                --> * NOTE * --> PARAMETERS ARE PASSED AS argc,argv IN CLI STYLE
+                    defaults will read off in array order:
+                     - hence will begin substituting when 'argv' runs out of entries
+                     - a 'null' default value will halt as error error if 'argv' cannot fill
+                    you need to provision your function vs param's deliberately!
+            ]
+        ]
+
+*/
+
 $menuMaker = [
     [
-        'option' => "Install core libraries", 'message' => "Installing core libraries", 'function' => "installCoreLibraries", 'param' => null
+        'option' => "Install core libraries", 'message' => "Installing core libraries", 'function' => "installCoreLibraries", 'param' => "master"
     ],
     [
         'option' => "Install database migrations", 'message' => "Installing migrations", 'function' => "installMigrations", 'param' => null
@@ -27,7 +60,8 @@ $menuMaker = [
 $cmdMaker = [
     'install' => [
         [
-            'request' => "core", 'message' => "Installing core libraries", 'function' => "installCoreLibraries", 'args' => false
+            'request' => "core", 'message' => "Installing core libraries", 'function' => "cmdinstallCoreLibraries", 'args' => true,
+            'hint' => "cmfive-core reference (default is 'master')", "default" => ['branch' => "master"]
         ],
         [
             'request' => "migration", 'message' => "Installing migrations", 'function' => "installMigrations", 'args' => false
@@ -50,7 +84,6 @@ $cmdMaker = [
             'request' => "help", 'message' => "Command line options", 'function' => "synopsis", 'args' => false
         ]
     ]
-    // need to mimic: seedAdminUser(array_slice($argv, 3));
 
 ];
 
@@ -64,7 +97,11 @@ if ($argc >= 3) {
                 if ($doing['args']) {
                     $shft = $argv;
                     array_shift($shft);
-                    $doing['function']($argc - 1, $shft);
+
+                    $defaults = $doing['default'] ?? [];
+                    $substituted = process_default_arguments($shft, $defaults);
+
+                    $doing['function'](count($substituted ?? []), $substituted);
                 } else {
                     $doing['function']();
                 }
@@ -74,6 +111,33 @@ if ($argc >= 3) {
     }
     echo "\nUnknown command\n";
     exit(1);
+}
+
+function process_default_arguments($parameters, $defaults)
+{
+    // this lacks smarts & works like a 'stack'
+    // because parameters do not come is as keyed values:
+    // they are  'argc' count and 'argv[]' array.
+    // so, nice key names on defaults are not used for matching
+    // but do allow exception message on missing req'd params
+
+    $request = array_slice($parameters, 0, 2);
+    $specs = array_slice($parameters, 2);
+    $seq = 0;
+
+    foreach ($defaults as $key => $value) {
+        if (empty($specs[$seq])) {
+            if (is_null($value)) {
+                echo "\nParameter: [" . $key . "] must be supplied!\n";
+                exit(1);
+            } else {
+                $specs[$seq] = $value;
+            }
+        }
+        $seq++;
+    }
+
+    return array_merge($request, $specs);
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -146,8 +210,8 @@ function synopsis()
                 $_SERVER['SCRIPT_NAME'] . " " . $command . " " . $doing['request'];
             if ($doing['args'] && !isset($doing['implied'])) {
                 echo " ["
-                .(isset($doing['hint'])?$doing['hint']:"args...")
-                ."]";
+                    . (isset($doing['hint']) ? $doing['hint'] : "args...")
+                    . "]";
             }
             echo " - (" . $doing['message'] . ")\n";
         }
@@ -163,6 +227,7 @@ function stepOneYieldsWeb()
         if (!class_exists('Web')) {
             require($webFind);
         }
+        refreshComposerAvailability();
         return true;
     }
     echo "\nOrder of steps is important - can't find CORE INSTALL";
@@ -171,7 +236,36 @@ function stepOneYieldsWeb()
     return false;
 }
 
-function installCoreLibraries()
+function refreshComposerAvailability()
+{
+    // in case Composer has pulled new packages
+    // after the autoloader already went up from Web
+    // (when core is installed, web is used for module configs dependencies)
+    // (so autoloader needs flushing when the modules have finally come in)
+    $allIncluded = get_declared_classes();
+    foreach ($allIncluded as $key => $class) {
+        //because our ComposerAutoloader class has a suffixed long-hash:
+        if (strpos($class, "ComposerAutoloaderInit") !== false) {
+            $composerLoader = $class;
+            // OK we found it, so apply this stolen code from:
+            // composer\vendor\composer\autoload_real.php
+            $map = require 'composer/vendor/composer/autoload_psr4.php';
+            foreach ($map as $namespace => $path) {
+                // a minimal response, as Psr4 gets us
+                // at least the db classes needed for web
+                $composerLoader::getLoader()->setPsr4($namespace, $path);
+            }
+            echo "\nFlicked Composer switch: " . $class . "\n";
+        }
+    }
+}
+
+function cmdinstallCoreLibraries($pCount, $parameters = [])
+{
+    installCoreLibraries(($pCount > 2) ? $parameters[2] : null);
+};
+
+function installCoreLibraries($branch)
 {
     // name     : 2pisoftware/cmfive-core
     // descrip. :
@@ -182,7 +276,13 @@ function installCoreLibraries()
     // dist     : []
     // names    : 2pisoftware/cmfive-core
 
-    $composer_json = sketchComposerForCore();
+    if (is_null($branch)) {
+        echo ("No branch from core repository was specified.\n");
+    } else {
+        echo ("Installing {$branch} from core repository.\n");
+    }
+
+    $composer_json = sketchComposerForCore($branch);
 
     file_put_contents('./composer.json', json_encode($composer_json, JSON_PRETTY_PRINT));
 
@@ -192,16 +292,16 @@ function installCoreLibraries()
     $out = 0;
     try {
         if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-            echo exec('mklink /J system composer\vendor\2pisoftware\cmfive-core\system',$msg,$out);
+            echo exec('mklink /J system composer\vendor\2pisoftware\cmfive-core\system', $msg, $out);
         } else {
-            echo exec('ln -s composer/vendor/2pisoftware/cmfive-core/system system',$msg,$out);
+            echo exec('ln -s composer/vendor/2pisoftware/cmfive-core/system system', $msg, $out);
         }
     } catch (Exception $e) {
         echo $e->getMessage();
         $out = 1;
     }
-    if ($out!==0) {
-        echo "\nFailed Linking for : \nsystem <---> composer/vendor/2pisoftware/cmfive-core\system";
+    if ($out !== 0) {
+        echo "\nFailed Linking for : \nsystem <---> composer/vendor/2pisoftware/cmfive-core/system";
         echo "\nComposer dependencies will not install for a missing system path";
         echo "\n(Check any permissions, fs mounts, host_vs_container links etc)";
         echo "\nYou may need to rerun this step!\n\n";
@@ -210,7 +310,7 @@ function installCoreLibraries()
     installThirdPartyLibraries($composer_json);
 }
 
-function sketchComposerForCore()
+function sketchComposerForCore($reference)
 {
     // name     : 2pisoftware/cmfive-core
     // descrip. :
@@ -221,13 +321,21 @@ function sketchComposerForCore()
     // dist     : []
     // names    : 2pisoftware/cmfive-core
 
+    if (is_null($reference)) {
+        if (PHP_MAJOR_VERSION === 7 && PHP_MINOR_VERSION === 0) {
+            $reference = "legacy/PHP7.0";
+        } else {
+            $reference = "master";
+        }
+    }
+
     $composer_string = <<<COMPOSER
     {
-        "name": "cmfive-boilerplate",
+        "name": "2pisoftware/cmfive-boilerplate",
         "version": "1.0",
         "description": "A boilerplate project layout for Cmfive",
         "require": {
-            "2pisoftware/cmfive-core": "dev-master"
+            "2pisoftware/cmfive-core": "dev-$reference"
         },
         "config": {
             "vendor-dir": "composer/vendor",
@@ -239,50 +347,17 @@ function sketchComposerForCore()
                 "type": "package",
                 "package": {
                 "name": "2pisoftware/cmfive-core",
-                "version": "master",
+                "version": "dev-$reference",
                 "source": {
                     "url": "https://github.com/2pisoftware/cmfive-core",
                     "type": "git",
-                    "reference": "master"
+                    "reference": "$reference"
                     }
                 }
             }
         ]
     }
 COMPOSER;
-
-    if (PHP_MAJOR_VERSION === 7 && PHP_MINOR_VERSION === 0) {
-        $composer_string = <<<COMPOSER
-    {
-        "name": "cmfive-boilerplate",
-        "version": "1.0",
-        "description": "A boilerplate project layout for Cmfive",
-        "require": {
-            "2pisoftware/cmfive-core": "dev-legacy/PHP7.0"
-        },
-        "config": {
-            "vendor-dir": "composer/vendor",
-            "cache-dir": "composer/cache",
-            "bin-dir": "composer/bin"
-        },
-        "repositories": [
-            {
-                "type": "package",
-                "package": {
-                "name": "2pisoftware/cmfive-core",
-                "version": "dev-legacy/PHP7.0",
-                "source": {
-                    "url": "https://github.com/2pisoftware/cmfive-core",
-                    "type": "git",
-                    "reference": "legacy/PHP7.0"
-                    }
-                }
-            }
-        ]
-    }
-COMPOSER;
-    }
-
     return json_decode($composer_string, true);
 }
 
@@ -345,7 +420,6 @@ function installMigrations()
 function cmdSeedAdminUser($pCount, $parameters = [])
 {
     $parameters = array_slice($parameters, 2);
-    //$pCount = count($parameters);
     seedAdminUser($parameters);
 };
 
@@ -371,7 +445,7 @@ function seedAdminUser($parameters = [])
     if (isset($findAdmin->id)) {
         echo "\nOrder of steps is important - ADMIN USER EXISTS";
         echo "\nSetup will not create multiple admin users\n\n";
-    
+
         return false;
     }
 
@@ -405,7 +479,7 @@ function generateEncryptionKeys()
     if (!empty(Config::get("system.encryption"))) {
         echo "\nOrder of steps is important - KEY ALREADY EXISTS";
         echo "\nSetup will not create multiple encryption keys\n\n";
-    
+
         return false;
     }
     $key_token = '';

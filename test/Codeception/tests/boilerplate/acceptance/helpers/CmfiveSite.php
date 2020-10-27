@@ -83,7 +83,7 @@ class CmfiveSite extends \Codeception\Module
 
     public function getTestDB()
     {
-        $this->assertNotContains("WARNING", $this->_useCmFiveDB("test"));
+        $this->assertNotContains("WARNING", [$this->_useCmFiveDB("test")]);
     }
 
     public function putTestDB()

@@ -18,4 +18,3 @@ echo "zend_extension=xdebug.so" > /etc/php/7.2/fpm/conf.d/20-xdebug.ini \
 
 	  
 supervisord -n -c /etc/supervisord.conf
-

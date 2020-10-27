@@ -1,67 +1,51 @@
 
 1) Clone/pull/download: https://github.com/2pisoftware/cmfive-boilerplate
-    - use branch master if just running tests
-    - use branch /feature/codeceptionTesting for test & testrunner dev
  - Position it nicely for WebServer to find
  - Match it to a CORE install (cmfive.php step[1] will clone MASTER from scratch)
-    - use branch /feature/codeceptionTesting for test & testrunner dev 
  - Make symlinks etc as required
  - Apply any other usual cmfive setup steps!
+ - Enable TestRunner in cmfive-boilerplate\config.php:
+				Config::set("tests", array(
+					"testrunner"  => "ENABLED"
+				));
+
+ FOR TEST ENVIRONMENT --> BEST TO PROCEED FROM HERE WITH DOCKER-"UP" FROM BOILERPLATE COMPOSE YML
 
  2) cm5 --> Install
-    - TestRunner will need a 'volatile' database to work into:
-
-	 - Can be an existing database, or you can create a new one
-	       - check the settings in cmfive-boilerplate\config.php
-
+    - TestRunner will need a 'volatile' database to work into.
 	 - Use "cmfive.php" to manage chosen cm5 database
-	       - BE SURE YOU CAN ACCESS A BACKUP if keeping an existing DB configured
+
      - Create/Check cmfive-boilerplate config.php for all database settings
 	       - use example to correctly configure DB executable commands and paths
 		   - leave parameters as-is; these will be auto-filled
 		   - these settings do not override any settings elsewhere (eg: in Admin module config)
+
 		 - CHECK THE CONFIG WORKS -> test for backup and restore, examine files in cmfive-boilerplate\backups
+	       - BE SURE YOU CAN ACCESS A BACKUP
+		   
 	 - Run : "Setup empty TestRunner DB and Administrator"
 	       - once only
 	       - backs up standing DB -> BUT ONLY IF backup config.php is correct!
 		   - deletes all data -> CAN ONLY BE RECOVERED if your backup is good!
 		   - runs all migrations & seeds test Admin user
 		   - grabs snapshot of new 'empty' database to use for tests
-	 - Run : "Restore database" to restore previously standing DB
-	 - Run : "List command options" to see command line use of tools
 	 
-3) Have a fresh "composer.phar" in --> cmfive-boilerplate\test\Codeception
-4) Execute in --> cmfive-boilerplate\test\Codeception : "php composer.phar require codeception/codeception --dev"
-   'n' to opt to use a composer.json unique to tests (wont be overwritten when the system generates a new composer.json)
-   Also note: DOM XML extension for PHP needs to be enabled for CodeCeption to function.
-5) Execute in --> cmfive-boilerplate\test\Codeception : "vendor/bin/codecept bootstrap"
- - make sure there is no 'old' cmfive-boilerplate\test\Codeception\codeception.yml --> delete it first if you see one
+3) Codeception --> Install
+	  - Use "test\.install\install.sh"
+		- it will get a fresh "composer.phar" & pull Codeception source + modules, 
+ 			then "BOOTSTRAPS" codeception project environment
+		- if you cannot use bash, follow all steps in the script per your own OS tools
 
-6) Check suitability for versions & OS of Selenium support in --> cmfive-boilerplate\test\Services
- - ready to go for Windows/Chrome = run "LaunchChromeSelenium.bat"
- - be prepared to recheck setup if CodeCeption later refuses to work!
-
-7) Check cmfive-boilerplate\test\Codeception\tests\acceptance.suite.dist.yml:
-	(duplicate a fresh one for use from versioned example)
-	"modules:
-	  enabled:
-		- WebDriver:
-			url: http://cmfive.local
-			browser: chrome
-			wait: 60
-			port: 4444 "
+4) Selenium support
+	  - provisioned by Docker, copy settings from config.example on config.php
+	  - customise if not using Docker 
+	  
+5) Check cmfive-boilerplate\test\Codeception\tests\acceptance.suite.dist.yml:
  	--> needs to match your cmfive WebServer & Browser & WebDriver
+	  - provisioned from config.php
+	  	  - copy settings from config.example on config.php
+		  - set specifics for your DB (&Selenium if not using from Docker)
 
- 8) Enable the testRunner in cmfive-boilerplate\config.php:
-				Config::set("tests", array(
-					"testrunner"  => "ENABLED"
-				));
+6) Execute in --> cmfive-boilerplate:
+ 	--> Use "cmfive.php" for TestRunner functions & as wrapper for command line tools
 
- 9) Make sure Selenium/WebDriver are running per your required setup
-
- 10) Execute in --> cmfive-boilerplate:
-  - "php cmfiveTests.php" to see TestRunner collect & build all module tests
-  - "php cmfiveTests.php run boilerplate_HelperCest.php" to see TestRunner launch 'self test' & show all Helper functions
-
- 11) Find more details of TestRunner in --> cmfive-boilerplate\test\Guide.txt
- 12) Find footnotes on SetUp in --> cmfive-boilerplate\test\Codeception\readme.txt

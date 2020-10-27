@@ -17,12 +17,12 @@ Config::set("system.timezone", "Australia/Sydney");
 
 //========== Database Configuration ==========================
 
-Config::set("database", [
-    "hostname"  => getenv('DB_HOST') ? : "localhost",
-    "port"  => getenv('DB_PORT') ? : "",
-    "username"  => getenv('DB_USERNAME') ? : "<username>",
-    "password"  => getenv('DB_PASSWORD') ? : "<password>",
-    "database"  => getenv('DB_DATABASE') ? : "<database>",
+Config::set("database", array(
+    "hostname"  => getenv('DB_HOST') ? : "{{db_hostname}}",
+    "port"  => getenv('DB_PORT') ? : "{{db_port}}",
+    "username"  => getenv('DB_USERNAME') ? : "{{db_username}}",
+    "password"  => getenv('DB_PASSWORD') ? : "{{db_password}}",
+    "database"  => getenv('DB_DATABASE') ? : "{{db_database}}",
     "driver"    => getenv('DB') ? : "mysql",
     "backups" =>
     [
@@ -40,11 +40,11 @@ Config::set("database", [
             'windows' => 'mysql.exe" -D$dbname -h$hostname -P$port -u$username -p$password < $filename'
         ],
     ]
-]);
+));
 
 //=========== Email Layer Configuration =====================
 
-Config::append('email', [
+Config::append('email', array(
     "layer"	=> "smtp",		// smtp or sendmail or aws
     "command" => "",		// used for sendmail layer only
     "host"	=> "smtp.gmail.com",
@@ -52,7 +52,7 @@ Config::append('email', [
     "auth"	=> true,
     "username"	=> '<email>',
     "password"	=> '<password>',
-]);
+));
 
 //========== TestRunner Configuration ==========================
 //========== must be "ENABLED" to run ==========================
@@ -77,44 +77,38 @@ Config::set("tests",
         ],
         "- Db:" =>
         [
-         "dsn" => "mysql:host=localhost:3306;dbname=<database>",
-         "user" => "<username>",
-         "password" => "<password>",
+         "dsn" => "mysql:host={{db_hostname}}:{{db_port}};dbname={{db_database}}",
+         "user" => "{{db_username}}",
+         "password" => "{{db_password}}",
         ],
         "- Asserts:" => "",
     ]
     ]
 );
 
-//======= define openssl encryption key and initialization vector ============
-Config::set('system.encryption', [
-    'key' => '',
-    'iv'  => ''
-]);
-
 //========= Anonymous Access ================================
 
 // bypass authentication if sent from the following IP addresses
 // specify an IP address and an array of allowed actions from that IP
 
-Config::set("system.allow_from_ip", [
-// 	"10.0.0.0" => array("action1", "action2"),
-]);
+Config::set("system.allow_from_ip", array(
+	"10.0.0.0" => array("action1", "action2"),
+));
 
 // or bypass authentication for the following modules
 
-Config::set("system.allow_module", [
+Config::set("system.allow_module", array(
     // "rest", // uncomment this to switch on REST access to the database objects.
-]);
+));
 
 // or bypass authentication for the following actions
 
-Config::set('system.allow_action', [
+Config::set('system.allow_action', array(
     "auth/login",
     "auth/forgotpassword",
     "auth/resetpassword",
     //"admin/datamigration"
-]);
+));
 
 //========= REST Configuration ==============================
 // check the following configuration carefully to secure
@@ -129,6 +123,6 @@ Config::set('system.rest_api_key', "abcdefghijklmnopqrstuvwxyz1234567890");
 // be aware that only the listed objects will be available via
 // the REST API
 
-Config::set('system.rest_include', [
+Config::set('system.rest_include', array(
 	// "Contact"
-]);
+));

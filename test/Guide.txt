@@ -1,22 +1,16 @@
 
 *** Pull Codeception test branch cm5 boilerplate&core from git
---> Install
-     - Use "cmfive.php" for TestRunner functions & as wrapper for command line tools
 *** Setup Codeception
-*** Make sure Webdriver service is running (see cmfive-boilerplate\test\Codeception\readme.txt)
---> RUN
-     - use "cmfive.php" for easy launch
-     --> BACK UP YOUR ORIGINAL DATABASE BEFORE TESTS!
-     --> RESTORE AFTER TESTS
-     --> "cmfiveTests.php" has commandline functions wrapped by cmfive.php
-     --> "cmfiveToolsDB.php" has commandline functions wrapped by cmfive.php
+*** Make sure a Webdriver service is running
 
+     - Use "cmfive.php" for TestRunner functions & as wrapper for command line tools
+     
 ---------------------------------------------------------------------
 TestRunner for Codeception:
 ---------------------------------------------------------------------
 
-From "boilerplate", use cmfiveTest.php.
-Can do:
+From "boilerplate", use cmfive.php.
+cmfive.php has CLI and menu wrappers to do:
  - execute cmfiveTests.php
    - build & show all tests
  - execute cmfiveTests.php run
@@ -26,13 +20,15 @@ Can do:
 - eg: execute cmfiveTests.php run boilerplate_HelperCest.php
    - build all and show all currently available Cest helper functions
 
+---------------------------------------------------------------------
+
 Extend with:
 cmfive-boilerplate\test\Codeception\tests\boilerplate\CmfiveUI.php
     --> base actor for all tests --> add functions supporting component/CSS level (not module actions!)
 cmfive-boilerplate\test\Codeception\tests\boilerplate\acceptance\helpers\CmfiveSite.php
     --> base helper for all tests --> add functions related to instances & services (not cmfive features!)
 
-Make tests:
+Make tests portable in cmfive modules:
 General folder layout for tests (see cmfive-boilerplate\system\modules\admin\tests)
  /acceptance --> main Codeception test container
     - [MyTest]Cest.php files go in here
