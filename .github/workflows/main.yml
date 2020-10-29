@@ -19,4 +19,4 @@ jobs:
               uses: pipeline-components/php-codesniffer@v0.12.3
               with:
                   # Additional options
-                  options: -s -p --colors --extensions=php
+                  options: -s -p --colors --extensions=php --runtime-set testVersion 7.2
