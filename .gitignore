@@ -7,6 +7,8 @@
 /log
 
 desktop.ini
+docker-compose.override.yml
+.env 
 
 # IDE Fluff
 .settings
@@ -30,3 +32,14 @@ system
 codeception.yml
 
 test/Services/chromedriver
+test/Codeception/tests/acceptance.suite.dist.yml
+
+# Build files
+__pycache__/
+venv/
+
+.build/environment/dev/stage/
+.build/environment/dev/Dockerfile
+
+.build/environment/prod/stage/
+.build/environment/prod/Dockerfile

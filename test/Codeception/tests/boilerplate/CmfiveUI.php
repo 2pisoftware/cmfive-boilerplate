@@ -56,6 +56,10 @@ class CmfiveUI extends \Codeception\Actor
                     $this->fillCkEditorById($fieldNameParts[1], $fieldValue);
                 } elseif ($fieldNameParts[0] == 'autocomplete' && count($fieldNameParts) > 1) {
                     $this->fillAutocomplete($fieldNameParts[1], $fieldValue);
+                } elseif ($fieldNameParts[0] == 'vModelAutocomplete' && count($fieldNameParts) > 1) {
+                    $this->wait(1);
+                    $this->waitForElement("(//div[@id = '".$fieldNameParts[1]."'])/input", 2);
+                    $this->fillField("(//div[@id = '".$fieldNameParts[1]."'])/input", $fieldValue);
                 } else {
                     $this->fillField('#' . $fieldName, $fieldValue);
                 }

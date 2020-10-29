@@ -1,0 +1,9 @@
+---
+# database
+db_port: '3306'
+
+# services
+php_version: '7.2'
+php_suffix: '7.2'
+mysql_version: '5.7.21'
+mysql_suffix: '5.7'
