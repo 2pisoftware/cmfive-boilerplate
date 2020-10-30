@@ -1,98 +1,116 @@
 ---
+manifest:
+  providers:
+  - name: aws_provider
+    type: aws
+    prop:
+      profile: null
+  resolvers:  
+  - name: datastore
+    provider: aws_provider
+    type: s3
+    prop:
+      format: json
+      source:
+        path:
+          environment:
+            name: S3_FOLDER
+        file:
+          environment:
+            name: FILENAME  
+  - name: secret
+    provider: aws_provider
+    type: secretsmanager  
+
+data:
 # -----------------
 # database instance
 # -----------------
-db_instance_username:
-    resolvers:
-    - datastore: {}
-    - secret:
-        index: "username"
-
-db_instance_password:
-    resolvers:
-    - datastore: {}
-    - secret:
-        index: "password"
-
-db_instance_endpoint:
-    resolvers:
-    - datastore: {}
-
-db_instance_port:
-    resolvers:
-    - datastore: {}    
-
+- name: db_instance_username
+  resolvers:
+  - resolver: datastore
+  - resolver: secret
+    prop:
+      index: username
+- name: db_instance_password
+  resolvers:
+  - resolver: datastore
+  - resolver: secret
+    prop:
+      index: username
+- name: db_instance_endpoint
+  resolvers:
+  - resolver: datastore
+- name: db_instance_port
+  resolvers:
+  - resolver: datastore
+- name: encryption_key
+  resolvers:
+  - resolver: datastore
 # ----------
 # admin user
 # ----------
-admin_login_username:
-    resolvers:
-    - datastore: {}
-    - secret:
-        index: "username"
-
-admin_login_password:
-    resolvers:
-    - datastore: {}
-    - secret:
-        index: "password"
-
-admin_email:
-    resolvers:
-    - datastore: {}   
-
-admin_first_name:
-    resolvers:
-    - datastore: {}
-
-admin_last_name:
-    resolvers:
-    - datastore: {}
-
+- name: admin_login_username
+  resolvers:
+  - resolver: datastore
+  - resolver: secret
+    prop:
+      index: username
+- name: admin_login_password   
+  resolvers:
+  - resolver: datastore
+  - resolver: secret
+    prop:
+      index: password
+- name: admin_email
+  resolvers:
+  - resolver: datastore
+- name: admin_first_name
+  resolvers:
+  - resolver: datastore
+- name: admin_last_name
+  resolvers:
+  - resolver: datastore
 # ---------------
 # client database
 # ---------------
-db_username:
-    resolvers:
-    - datastore: {}
-    - secret:
-        index: "username"
-    
-db_password:
-    resolvers:
-    - datastore: {}
-    - secret:
-        index: "password"
-
-db_database:
-    resolvers:
-    - datastore: {}
-
+- name: db_username
+  resolvers:
+  - resolver: datastore
+  - resolver: secret
+    prop:
+      index: username
+- name: db_password
+  resolvers:
+  - resolver: datastore
+  - resolver: secret
+    prop:
+      index: password
+- name: db_database
+  resolvers:
+  - resolver: datastore
 # -------
 # service
 # -------
-php_version:
-    resolvers:
-    - datastore: {}
-
-php_suffix:
-    resolvers:
-    - datastore: {}
-
+- name: php_version
+  resolvers:
+  - resolver: datastore
+- name: php_suffix
+  resolvers:
+  - resolver: datastore
 # -----------
 # third party
 # -----------
-module_configs:
-    resolvers:
-    - datastore:
-        default: {}
-    modifiers:
-    - merge:
-        value: {"system": {"encryption": {"key": "{{encryption_key}}"}}}
-    - substitue:
-        key: encryption_key
-    - json_serialize: {}
-
-encryption_key:
-    resolvers:
-    - datastore: {}    
+- name: module_configs
+  resolvers:
+  - resolver: datastore
+    prop:
+      default: {}
+  modifiers:
+  - modifier: merge
+    prop:
+      value: {"system": {"encryption": {"key": "{{encryption_key}}"}}} 
+  - modifier: substitue
+    prop:
+      key: encryption_key
+  - modifier: json_serialize

@@ -1,97 +1,108 @@
 ---
+manifest:
+  providers:
+  - name: dev_profile
+    type: local
+  resolvers:
+  - name: inline
+    provider: dev_profile
+    type: local
+
+data:
 # -----------------
 # database instance
 # -----------------
-db_instance_username:
-    resolvers:
-    - local:    
-        value: "root"
-
-db_instance_password:
-    resolvers:
-    - local:    
-        value: "root"  
-
-db_instance_port:
-    resolvers:
-    - local:
-        value: "3306"
-
+- name: db_instance_username
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "root"
+- name: db_instance_password
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "root"
+- name: db_instance_port
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "3306"
 # ----------
 # admin user
 # ----------
-admin_login_username:
-    resolvers:
-    - local:
-        value: "cmfive"
-
-admin_login_password:
-    resolvers:
-    - local:
-        value: "cmfive"
-
-admin_email:
-    resolvers:
-    - local:
-        value: "cmfive@2pisoftware.com"   
-
-admin_first_name:
-    resolvers:
-    - local:
-        value: "cmfive"
-
-admin_last_name:
-    resolvers:
-    - local:
-        value: "cmfive"    
-
+- name: admin_login_username
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "cmfive"
+- name: admin_login_password
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "cmfive"
+- name: admin_email
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "cmfive@2pisoftware.com"
+- name: admin_first_name
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "cmfive"
+- name: admin_last_name
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "cmfive"
 # ---------------
 # client database
 # ---------------
-db_username:
-    resolvers:
-    - local:
-        value: "cmfive"
-    
-db_password:
-    resolvers:
-    - local:
-        value: "cmfive"
-
-db_database:
-    resolvers:
-    - local:
-        value: "cmfive"
-
+- name: db_username
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "cmfive"
+- name: db_password
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "cmfive"
+- name: db_database
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "cmfive"
 # -------
 # service
 # -------
-php_version:
-    resolvers:
-    - local:
-        value: "7.2"
-
-php_suffix:
-    resolvers:
-    - local:
-        value: "7.2"
-
-mysql_version:
-    resolvers:
-    - local:
-        value: "5.7.21"
-
-mysql_suffix:
-    resolvers:
-    - local:
-        value: "5.7"
-
+- name: php_version
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "7.2"
+- name: php_suffix
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "7.2"
+- name: mysql_version
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "5.7.21"
+- name: mysql_suffix
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "5.7"
 # -----------
 # third party
 # -----------
-module_configs:
-    resolvers:
-    - local:
-        value: {}
-    modifiers:
-    - json_serialize
+- name: module_configs
+  resolvers:
+  - resolver: inline
+    prop:
+      value: {}
+  modifiers:
+  - modifier: json_serialize    
