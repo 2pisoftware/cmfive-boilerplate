@@ -97,6 +97,14 @@ data:
     prop:
       value: "5.7"
 # -----------
+# cmfive core
+# -----------
+- name: cmfive_core_ref
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "feature/config_json"
+# -----------
 # third party
 # -----------
 - name: module_configs

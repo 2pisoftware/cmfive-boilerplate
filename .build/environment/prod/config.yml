@@ -99,6 +99,14 @@ data:
   resolvers:
   - resolver: datastore
 # -----------
+# cmfive core
+# -----------
+- name: cmfive_core_ref
+  resolvers:
+  - resolver: datastore
+    prop:
+      default: "feature/config_json"
+# -----------
 # third party
 # -----------
 - name: module_configs

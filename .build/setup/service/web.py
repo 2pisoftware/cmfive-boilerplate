@@ -48,7 +48,7 @@ class WebService:
 
     def install_core(self):
         logger.info("install cmfive core")
-        self.run("php cmfive.php install core")
+        self.run(f"php cmfive.php install core {self.config['cmfive_core_ref']}")
 
     def seed_encryption(self):
         logger.info("seed encryption key")
