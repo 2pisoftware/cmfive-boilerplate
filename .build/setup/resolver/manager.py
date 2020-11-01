@@ -18,13 +18,32 @@ class ConfigResolver:
         self.init_providers()
         self.init_resolvers()
 
-    def update(self, config, value):
+    def resolve(self, config, value):
         result = config
         for context in self.manifest.data.resolvers(config):
             resolver = self.resolvers[context["resolver"]]
             result = resolver.resolve(result, **context.get("prop", {}))
 
         return self.manifest.data.set_value(config, result)
+
+    def update(self, config, value):
+        cnt, prv = config, config
+        resolver = None             
+        for context in self.manifest.data.resolvers(config):            
+            resolver = self.resolvers[context["resolver"]]
+            prv = cnt
+            cnt = resolver.resolve(prv, **context.get("prop", {}))        
+
+        # no resolver or config resolved to same value
+        if resolver is None or cnt == value:
+            return
+
+        # update config value        
+        resolver.update(prv, value, **context.get("prop", {}))
+
+    def flush(self):
+        for resolver in self.resolvers.values():
+            resolver.flush()
 
     # --------------
     # Helper Methods
@@ -73,7 +92,7 @@ class ConfigModifier:
             "json_serialize": self.json_serialize,
         }
 
-    def update(self, config, value):
+    def resolve(self, config, value):
         result = value
         for context in self.manifest.data.modifiers(config):
             name = context["modifier"]
@@ -138,6 +157,22 @@ def resolve(dsl):
     result = {}
     for action in actions:
         for config in manifest.data.configs():
-            result[config] = action.update(config, result.get(config))
+            result[config] = action.resolve(config, result.get(config))    
 
     return result
+
+
+def update(dsl, values):
+    # setup
+    Dirs.instance(dsl)
+    manifest = Manifest()
+    resolver = ConfigResolver(manifest)
+
+    # update exisiting configs
+    for config in manifest.data.configs():
+        if config not in values:
+            continue
+        
+        resolver.update(config, values[config])
+
+    resolver.flush()

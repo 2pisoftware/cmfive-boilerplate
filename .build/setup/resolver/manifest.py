@@ -27,6 +27,10 @@ class Data:
         for context in self.data:
             yield context["name"]
 
+    def resolver_count(self, config):
+        context = self.context(config)
+        return len(list(self.resolvers(config)))        
+
     def resolvers(self, config):
         context = self.context(config)
         for resolver in context.get("resolvers", []):

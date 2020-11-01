@@ -20,35 +20,45 @@ def register_resolver(name):
 @register_resolver('s3')
 class S3Resolver:
     def __init__(self, provider, source, format):
-        self.content = self.load(
-            client=provider.session.client("s3"),
-            bucket=os.environ[source["path"]["environment"]["name"]],
-            key=os.environ[source["file"]["environment"]["name"]],
-            format=format
-        )
-
-    @staticmethod
-    def allowed_providers():
-        return ("aws",)
-
-    @staticmethod
-    def load(client, bucket, key, format):
-        response = client.get_object(
-            Bucket=bucket.replace("s3://", ""),
-            Key=key
-        )
-        return json.loads(response['Body'].read().decode('utf-8'))
+        self.client = provider.session.client("s3")
+        self.bucket = os.environ[source["path"]["environment"]["name"]]
+        self.key = os.environ[source["file"]["environment"]["name"]]        
+        self.content = self.load()            
 
     def resolve(self, config, **kwargs):
         if "default" in kwargs:
             return kwargs["default"]
         return self.content[config]
 
+    def update(self, config, value, **kwargs):
+        self.content[config] = value
+
+    def flush(self):
+        self.save()
+
+    @staticmethod
+    def allowed_providers():
+        return ("aws",)
+            
+    def load(self):
+        response = self.client.get_object(
+            Bucket=self.bucket.replace("s3://", ""),
+            Key=self.key
+        )
+        return json.loads(response['Body'].read().decode('utf-8'))
+
+    def save(self):
+        self.client.put_object(
+            Body=json.dumps(self.content).encode(),
+            Bucket=self.bucket.replace("s3://", ""),
+            Key=self.key
+        )
 
 @register_resolver('secretsmanager')
 class SecretsManagerMResolver:
     def __init__(self, provider):
         self.sm = provider.session.client("secretsmanager")
+        self.store = []
 
     @staticmethod
     def allowed_providers():
@@ -58,6 +68,13 @@ class SecretsManagerMResolver:
         secret = self.get_secret(config)
         return secret[kwargs["index"]]
 
+    def update(self, config, value, **kwargs):
+        self.store.append((config, kwargs["index"], value)) 
+
+    def flush(self):
+        for item in self.store:
+            self.set_secret(*item)            
+
     def get_secret(self, key):
         try:
             secret = self.sm.get_secret_value(SecretId=key)
@@ -65,6 +82,11 @@ class SecretsManagerMResolver:
             raise Exception(f"Unable to retrieve secretId '{key}'") from e
 
         return json.loads(secret['SecretString'])
+
+    def set_secret(self, key, index, value):        
+        secret = self.get_secret(key)
+        secret[index] = value
+        self.sm.put_secret_value(SecretId=key, SecretString=json.dumps(secret))
 
 
 @register_resolver('filesystem')
@@ -95,6 +117,11 @@ class FileSystemResolver:
 
         raise Exception(f"{config} is not present and no default value set")
 
+    def update(self, config, value, **kwargs):
+        pass
+
+    def flush(self):
+        pass
 
 @register_resolver('local')
 class LocalResolver:
@@ -111,3 +138,9 @@ class LocalResolver:
             return kwargs["value"]
 
         raise Exception(f"No value set for config '{config}'")
+
+    def update(self, config, value, **kwargs):
+        pass
+
+    def flush(self):
+        pass
