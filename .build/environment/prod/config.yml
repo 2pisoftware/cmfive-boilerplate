@@ -37,7 +37,7 @@ data:
   - resolver: datastore
   - resolver: secret
     prop:
-      index: username
+      index: password
 - name: db_instance_endpoint
   resolvers:
   - resolver: datastore
