@@ -5,29 +5,29 @@ env:
     git-credential-helper: 'yes'
 phases:
     install:
-    runtime-versions:
-        python: 3.8
-    commands:
-    # elastic container registry
-    - export IMAGE_REPO_URI=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
-    - export IMAGE_REPO_NAME=${CMFIVE_CLIENT}_cmfive
-    - "export IMAGE_TAG=`echo $CODEBUILD_BUILD_ID | cut -d: -f2`"
-    - export FILENAME=${CMFIVE_CLIENT}.json
-    # artifact
-    - export DEPLOY_DIR=$CODEBUILD_SRC_DIR/.build/environment/prod/deploy
-    # setup
-    - apt-get update
-    - apt-get install mysql-client -y
-    - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $IMAGE_REPO_URI
+        runtime-versions:
+            python: 3.8
+        commands:
+        # elastic container registry
+        - export IMAGE_REPO_URI=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+        - export IMAGE_REPO_NAME=${CMFIVE_CLIENT}_cmfive
+        - "export IMAGE_TAG=`echo $CODEBUILD_BUILD_ID | cut -d: -f2`"
+        - export FILENAME=${CMFIVE_CLIENT}.json
+        # artifact
+        - export DEPLOY_DIR=$CODEBUILD_SRC_DIR/.build/environment/prod/deploy
+        # setup
+        - apt-get update
+        - apt-get install mysql-client -y
+        - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $IMAGE_REPO_URI
     build:
-    commands:
-    - cd $CODEBUILD_SRC_DIR/.build/setup
-    - pip install -r requirements.txt
-    - python install.py create-production-image $IMAGE_REPO_URI/$IMAGE_REPO_NAME:$IMAGE_TAG
-    - docker push $IMAGE_REPO_URI/$IMAGE_REPO_NAME:$IMAGE_TAG
+        commands:
+        - cd $CODEBUILD_SRC_DIR/.build/setup
+        - pip install -r requirements.txt
+        - python install.py create-production-image $IMAGE_REPO_URI/$IMAGE_REPO_NAME:$IMAGE_TAG
+        - docker push $IMAGE_REPO_URI/$IMAGE_REPO_NAME:$IMAGE_TAG
     post_build:
-    commands:
-    - echo "$AWS_REGION,$AWS_ACCOUNT_ID,$IMAGE_REPO_URI/$IMAGE_REPO_NAME:$IMAGE_TAG" > $DEPLOY_DIR/manifest
+        commands:
+        - echo "$AWS_REGION,$AWS_ACCOUNT_ID,$IMAGE_REPO_URI/$IMAGE_REPO_NAME:$IMAGE_TAG" > $DEPLOY_DIR/manifest
 artifacts:
     files:
     - "**/*"
