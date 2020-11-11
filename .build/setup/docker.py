@@ -75,6 +75,11 @@ class DockerCompose:
         util.delete_dir(self.dirs.stage)
         util.copy_dirs(self.dirs.common, self.dirs.stage)
         util.copy_dirs(self.dirs.image, self.dirs.stage)
+
+        # optional override
+        if self.dirs.override.exists():
+            util.copy_dirs(self.dirs.override, self.dirs.stage)
+
         util.inflate_templates(self.dirs.stage, ".template", self.config, True)
 
     def create_docker_compose_file(self):

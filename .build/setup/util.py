@@ -2,11 +2,14 @@
 <description>
 """
 from distutils import dir_util
-import os
-import subprocess
+from pathlib import Path
+from importlib import import_module
 from jinja2 import Template, StrictUndefined
 from jinja2.exceptions import UndefinedError
 import logging
+import os
+import sys
+import subprocess
 
 logger = logging.getLogger(__name__)
 
@@ -84,3 +87,23 @@ def inflate_templates(target, extension, tokens, remove):
             inflate_templates(p, extension, tokens, remove)
         if p.is_file():
             inflate_template(p, p.parent, extension, tokens, remove)
+
+
+def run_scripts(filepath, entrypoint):
+    # normalize
+    filepath = Path(filepath)
+
+    # opt-out
+    if not filepath.exists():
+        return
+
+    # load and run scripts
+    sys.path.append(str(filepath))
+    for p in filepath.iterdir():        
+        if p.suffix != ".py":
+            continue
+        logger.info(f"load and run script '{p.name}'")        
+        function = getattr(import_module(p.stem), entrypoint)
+
+        # invoke
+        function()
