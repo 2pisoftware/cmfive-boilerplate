@@ -4,11 +4,12 @@
 from distutils import dir_util
 from pathlib import Path
 from importlib import import_module
-from jinja2 import Template, StrictUndefined
+from jinja2 import Template, StrictUndefined, Environment, BaseLoader
 from jinja2.exceptions import UndefinedError
 import logging
 import os
 import sys
+import json
 import subprocess
 
 logger = logging.getLogger(__name__)
@@ -54,8 +55,10 @@ def copy_dirs(source, target):
 def render_template(fpath, tokens):
     with fpath.open() as fp:
         try:
-            template = Template(fp.read(), undefined=StrictUndefined)
-            result = template.render(tokens)
+            environment = Environment(loader=BaseLoader)
+            environment.filters["fromjson"] = lambda value: json.loads(value)
+            template = environment.from_string(fp.read())            
+            result = template.render(tokens, undefined=StrictUndefined)
         except UndefinedError as exc:
             raise Exception(f"template placeholder token is missing - {fpath}") from exc
 
