@@ -1,7 +1,9 @@
 import logging
-from common import init_singletons, ConfigManager
+import util
+from common import init_singletons, ConfigManager, Directories
 from docker import DockerCompose
 from service import WebService, DatabaseService
+
 
 logger = logging.getLogger(__name__)
 
@@ -14,6 +16,7 @@ class ActionTemplate:
         self.compose = DockerCompose()
         self.web = WebService()
         self.db = DatabaseService()
+        self.dirs = Directories.instance()
 
     # ----------
     # Client API
@@ -28,16 +31,19 @@ class ActionTemplate:
         logger.info('\n-- step 2. setup cmfive --')
         self.setup_hook()
 
+        # post setup - optional
+        util.run_scripts(self.dirs.scripts, "main")
+
     def create_image(self, tag):
         # snapshot web container
         logger.info('\n-- step 3. snapshot web container --')
         WebService.snapshot_container(tag)
 
-    def stop_environment(sekf):
+    def stop_environment(self):
         # teardown cmfive instance
         logger.info('\n-- step 4. teardown cmfive instance --')
-        DockerCompose().down()
-
+        DockerCompose().down()    
+    
 
 class ProvisionDevelopmentInstance(ActionTemplate):
     def execute(self, *args):
