@@ -120,8 +120,12 @@ class ConfigModifier:
         serialized = json.dumps(value)
         try:
             template = Template(serialized, undefined=StrictUndefined)
+            # normalize
+            if isinstance(prop["key"], str):
+                prop["key"] = [prop["key"]]
+            
             result = template.render({
-                prop["key"]: self.manifest.data.get_value(prop["key"])
+               key: self.manifest.data.get_value(key) for key in prop["key"]
             })
         except UndefinedError as exc:
             raise Exception(f"template placeholder token is missing - {prop['key']}") from exc
