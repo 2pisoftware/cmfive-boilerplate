@@ -122,3 +122,29 @@ data:
     prop:
       key: encryption_key
   - modifier: json_serialize
+# ------
+# domain
+# ------
+- name: base_domain
+  resolvers:
+  - resolver: datastore
+    prop:
+      default: "2piboom.com"
+- name: site_name
+  resolvers:
+  - resolver: datastore        
+- name: site_domains
+  resolvers:
+  - resolver: datastore
+    prop:      
+      default: ["www.{{site_name}}.{{base_domain}}", "{{site_name}}.{{base_domain}}"]
+  modifiers:
+  - modifier: substitue
+    prop:
+      key: ["base_domain", "site_name"]  
+  - modifier: json_serialize
+- name: certbot_webmaster
+  resolvers:
+  - resolver: datastore
+    prop:
+      default: "webmaster@2pisoftware.com"
