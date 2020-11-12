@@ -1,3 +1,6 @@
+# Add
+- scripts dir in environment
+
 # Summary
 The `.build` directory contains all the source and configuration files required for continuous delivery and deployment.
 
