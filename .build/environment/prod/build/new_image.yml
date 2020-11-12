@@ -10,9 +10,10 @@ phases:
         commands:
         # elastic container registry
         - export IMAGE_REPO_URI=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
-        - export IMAGE_REPO_NAME=${CMFIVE_CLIENT}_cmfive
+        #- export IMAGE_REPO_NAME=${CMFIVE_CLIENT}_cmfive
+        - export IMAGE_REPO_NAME=${ECR_REPO}
         - "export IMAGE_TAG=`echo $CODEBUILD_BUILD_ID | cut -d: -f2`"
-        - export FILENAME=${CMFIVE_CLIENT}.json
+        #- export FILENAME=${CMFIVE_CLIENT}.json
         # artifact
         - export DEPLOY_DIR=$CODEBUILD_SRC_DIR/.build/environment/prod/deploy
         # setup
