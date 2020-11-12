@@ -141,7 +141,8 @@ data:
   modifiers:
   - modifier: substitue
     prop:
-      key: ["base_domain", "site_name"]  
+      key: ["base_domain", "site_name"]
+  - modifier: json_serialize
 - name: certbot_webmaster
   resolvers:
   - resolver: datastore
