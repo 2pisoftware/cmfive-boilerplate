@@ -43,7 +43,7 @@ class ActionTemplate:
         # teardown cmfive instance
         logger.info('\n-- step 4. teardown cmfive instance --')
         DockerCompose().down()    
-    
+
 
 class ProvisionDevelopmentInstance(ActionTemplate):
     def execute(self, *args):
@@ -51,14 +51,25 @@ class ProvisionDevelopmentInstance(ActionTemplate):
         self.setup()
 
     def setup_hook(self):
-        # cmfive setup steps
-        self.db.create_database()
+        # cmfive setup steps        
+        exists = self.db.database_exists()
+                
+        # create database once
+        if not exists:
+            self.db.create_database()
+
+        # idempotent operations
         self.web.inject_cmfive_config_file(self.db.hostname)
         self.web.install_core()
         self.web.seed_encryption()
         self.web.install_test_packages()
-        self.web.install_migration()
-        self.web.seed_admin()
+        self.web.install_migration()        
+
+        # seed admin user once
+        if not exists:
+            self.web.seed_admin()
+
+        # fix
         self.web.update_permissions()
 
     @classmethod
@@ -75,34 +86,24 @@ class CreateProductionImage(ActionTemplate):
         self.stop_environment()
 
     def setup_hook(self):
-        # cmfive setup steps
-        self.db.create_database()
+        # cmfive setup steps        
+        exists = self.db.database_exists()
+
+        # create database once
+        if not exists:
+            self.db.create_database()
+
+        # idempotent operations
         self.web.inject_cmfive_config_file(self.db.hostname)
         self.web.install_core()
         self.web.seed_encryption()
         self.web.install_migration()
-        self.web.seed_admin()
-        self.web.update_permissions()
+        
+         # seed admin user once
+        if not exists:
+            self.web.seed_admin()
 
-    @classmethod
-    def create(cls):
-        init_singletons("prod")
-        return cls()
-
-
-class UpdateProductionImage(ActionTemplate):
-    def execute(self, *args):
-        self.init_environment()
-        self.setup()
-        self.create_image(args[0])
-        self.stop_environment()
-
-    def setup_hook(self):
-        # cmfive setup steps
-        self.web.inject_cmfive_config_file(self.db.hostname)
-        self.web.install_core()
-        self.web.seed_encryption()
-        self.web.install_migration()
+        # fix
         self.web.update_permissions()
 
     @classmethod
@@ -126,11 +127,6 @@ def provision_dev():
 
 def create_production_image(tag):
     action = CreateProductionImage.create()
-    action.execute(tag)
-
-
-def update_production_image(tag):
-    action = UpdateProductionImage.create()
     action.execute(tag)
 
 
