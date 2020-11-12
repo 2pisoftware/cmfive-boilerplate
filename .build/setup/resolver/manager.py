@@ -18,11 +18,15 @@ class ConfigResolver:
         self.init_providers()
         self.init_resolvers()
 
-    def resolve(self, config, value):
+    def resolve(self, config, value, error_on_undefined):
         result = config
         for context in self.manifest.data.resolvers(config):
             resolver = self.resolvers[context["resolver"]]
-            result = resolver.resolve(result, **context.get("prop", {}))
+            result = resolver.resolve(
+                result, 
+                error_on_undefined, 
+                **context.get("prop", {})
+            )
 
         return self.manifest.data.set_value(config, result)
 
@@ -92,7 +96,7 @@ class ConfigModifier:
             "json_serialize": self.json_serialize,
         }
 
-    def resolve(self, config, value):
+    def resolve(self, config, value, error_on_undefined):
         result = value
         for context in self.manifest.data.modifiers(config):
             name = context["modifier"]
@@ -133,6 +137,7 @@ class ConfigModifier:
         return json.loads(result)
 
     def merge(self, config, value, prop):
+        print(config, prop["value"], value, prop)
         self.recurse_merge(prop["value"], value)
         return value
 
@@ -151,8 +156,8 @@ class ConfigModifier:
                 target[key] = source[key]
 
 
-def resolve(dsl):
-    # setup
+def resolve(dsl, error_on_undefined=True):
+    # setup 
     Dirs.instance(dsl)
     manifest = Manifest()
     actions = (ConfigResolver(manifest), ConfigModifier(manifest))
@@ -161,7 +166,11 @@ def resolve(dsl):
     result = {}
     for action in actions:
         for config in manifest.data.configs():
-            result[config] = action.resolve(config, result.get(config))    
+            result[config] = action.resolve(
+                config,                  
+                result.get(config),
+                error_on_undefined
+            )
 
     return result
 

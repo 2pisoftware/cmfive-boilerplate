@@ -8,6 +8,8 @@ from botocore.exceptions import ClientError
 
 resolver_registry = {}
 
+ERROR_ON_UNDEFINED_VALUE = "<undefined>"
+
 
 def register_resolver(name):
     """add resolver class to registry"""
@@ -25,10 +27,17 @@ class S3Resolver:
         self.key = os.environ[source["file"]["environment"]["name"]]        
         self.content = self.load()            
 
-    def resolve(self, config, **kwargs):
+    def resolve(self, config, error_on_undefined, **kwargs):
         if "default" in kwargs:
             return kwargs["default"]
-        return self.content[config]
+
+        if config in self.content:
+            return self.content[config]
+        
+        if not error_on_undefined:
+            return ERROR_ON_UNDEFINED_VALUE
+
+        raise Exception(f"s3 config '{config}' not present")
 
     def update(self, config, value, **kwargs):
         self.content[config] = value
@@ -54,6 +63,7 @@ class S3Resolver:
             Key=self.key
         )
 
+
 @register_resolver('secretsmanager')
 class SecretsManagerMResolver:
     def __init__(self, provider):
@@ -64,9 +74,22 @@ class SecretsManagerMResolver:
     def allowed_providers():
         return ("aws",)
 
-    def resolve(self, config, **kwargs):
-        secret = self.get_secret(config)
-        return secret[kwargs["index"]]
+    def resolve(self, config, error_on_undefined, **kwargs):
+        # suppress exception
+        try:
+            secret = self.get_secret(config)
+        except Exception:
+            if error_on_undefined:
+                raise
+            secret = {}
+
+        if kwargs["index"] in secret:
+            return secret[kwargs["index"]]
+
+        if not error_on_undefined:
+            return ERROR_ON_UNDEFINED_VALUE
+
+        raise Exception(f"secretsmanager config '{config}:{kwargs['index']}' not present")
 
     def update(self, config, value, **kwargs):
         self.store.append((config, kwargs["index"], value)) 
@@ -106,7 +129,7 @@ class FileSystemResolver:
 
         return deserialize(data, format)
 
-    def resolve(self, config, **kwargs):
+    def resolve(self, config, error_on_undefined, **kwargs):
         # config present
         if config in self.content:
             return self.content[config]
@@ -115,6 +138,9 @@ class FileSystemResolver:
         if "default" in kwargs:
             return kwargs["default"]
 
+        if not error_on_undefined:
+            return ERROR_ON_UNDEFINED_VALUE
+
         raise Exception(f"{config} is not present and no default value set")
 
     def update(self, config, value, **kwargs):
@@ -122,6 +148,7 @@ class FileSystemResolver:
 
     def flush(self):
         pass
+
 
 @register_resolver('local')
 class LocalResolver:
@@ -132,10 +159,13 @@ class LocalResolver:
     def allowed_providers():
         return ("local",)
 
-    def resolve(self, config, **kwargs):
+    def resolve(self, config, error_on_undefined, **kwargs):
         # default value
         if "value" in kwargs:
             return kwargs["value"]
+
+        if not error_on_undefined:
+            return ERROR_ON_UNDEFINED_VALUE
 
         raise Exception(f"No value set for config '{config}'")
 
