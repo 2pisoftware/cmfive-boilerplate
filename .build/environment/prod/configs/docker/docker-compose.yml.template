@@ -11,7 +11,7 @@ services:
     environment:
       - TZ=Australia/Sydney    
     ports:
-      - "127.0.0.1:3000:3000"
+      - "3000:3000"
     networks: 
       - default
     restart: unless-stopped

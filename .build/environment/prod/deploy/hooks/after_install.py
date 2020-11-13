@@ -54,7 +54,7 @@ def pull_image():
     logger.info(output)
 
 def run_container():
-    output = run(f"docker run -d -p 3000:3000 {docker_image}")
+    output = run(f"docker run -d -p 127.0.0.1:3000:3000 {docker_image}")
     logger.info(output)
 
 login_to_ecr()
