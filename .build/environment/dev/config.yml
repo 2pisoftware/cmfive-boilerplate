@@ -1,0 +1,116 @@
+---
+manifest:
+  providers:
+  - name: dev_profile
+    type: local
+  resolvers:
+  - name: inline
+    provider: dev_profile
+    type: local
+
+data:
+# -----------------
+# database instance
+# -----------------
+- name: db_instance_username
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "root"
+- name: db_instance_password
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "root"
+- name: db_instance_port
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "3306"
+# ----------
+# admin user
+# ----------
+- name: admin_login_username
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "cmfive"
+- name: admin_login_password
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "cmfive"
+- name: admin_email
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "cmfive@2pisoftware.com"
+- name: admin_first_name
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "cmfive"
+- name: admin_last_name
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "cmfive"
+# ---------------
+# client database
+# ---------------
+- name: db_username
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "cmfive"
+- name: db_password
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "cmfive"
+- name: db_database
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "cmfive"
+# -------
+# service
+# -------
+- name: php_version
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "7.2"
+- name: php_suffix
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "7.2"
+- name: mysql_version
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "5.7.21"
+- name: mysql_suffix
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "5.7"
+# -----------
+# cmfive core
+# -----------
+- name: cmfive_core_ref
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "feature/config_json"
+# -----------
+# third party
+# -----------
+- name: module_configs
+  resolvers:
+  - resolver: inline
+    prop:
+      value: {}
+  modifiers:
+  - modifier: json_serialize    
