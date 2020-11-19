@@ -1,6 +1,7 @@
 #!/bin/php
 <?php
 
+
 if (!(isset($argc) && isset($argv))) {
     echo "No action is possible.";
     exit();
@@ -204,6 +205,7 @@ function sketchComposerForCore()
     // dist     : []
     // names    : 2pisoftware/cmfive-core
 
+
     $composer_string = <<<COMPOSER
     {
         "name": "cmfive-boilerplate",
@@ -219,6 +221,7 @@ function sketchComposerForCore()
         },
         "repositories": [
             {
+
                 "type": "package",
                 "package": {
                 "name": "2pisoftware/cmfive-core",
@@ -227,12 +230,14 @@ function sketchComposerForCore()
                     "url": "https://github.com/2pisoftware/cmfive-core",
                     "type": "git",
                     "reference": "master"
+
                     }
                 }
             }
         ]
     }
 COMPOSER;
+
 
     return json_decode($composer_string, true);
 }
@@ -378,3 +383,4 @@ function readConsoleLine($prompt = "Command: ")
 
     return $command;
 }
+
