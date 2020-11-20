@@ -1,6 +1,8 @@
 #!/bin/php
 <?php
 
+use Symfony\Component\Yaml\Yaml;
+
 if (!(isset($argc) && isset($argv))) {
     echo "No action is possible.";
     exit();
@@ -18,10 +20,12 @@ defined('BOILERPLATE_TEST_DIRECTORY') || define('BOILERPLATE_TEST_DIRECTORY', TE
 defined('CEST_DIRECTORY') || define('CEST_DIRECTORY', DS . 'acceptance');
 defined('STEP_DIRECTORY') || define('STEP_DIRECTORY', DS . 'acceptance' . DS . 'steps');
 defined('HELP_DIRECTORY') || define('HELP_DIRECTORY', DS . 'acceptance' . DS . 'helpers');
+defined('UNIT_DIRECTORY') || define('UNIT_DIRECTORY', DS . 'unit');
 
 defined('CEST_DESTINATION') || define('CEST_DESTINATION', TEST_DIRECTORY . DS . 'tests' . DS . 'acceptance');
 defined('STEP_DESTINATION') || define('STEP_DESTINATION', TEST_DIRECTORY . DS . 'tests' . DS . '_support' . DS . 'step' . DS . 'acceptance');
 defined('HELP_DESTINATION') || define('HELP_DESTINATION', TEST_DIRECTORY . DS . 'tests' . DS . '_support' . DS . 'Helper');
+defined('UNIT_DESTINATION') || define('UNIT_DESTINATION', 'test' . DS . 'unit');
 
 defined('SHARED_SOURCE') || define('SHARED_SOURCE', 'boilerplate');
 defined('SHARED_CORE') || define('SHARED_CORE', 'workflows');
@@ -35,7 +39,7 @@ $sharedParam = [
     'testAdminFirstname' => 'admin',
     'testAdminLastname' => 'admin',
     'setupCommand' => 'cmfive.php',
-    'DBCommand' => 'cmfiveTestDB.php',
+    'DBCommand' => 'cmfiveToolsDB.php',
     'cmfiveModuleList' => ''
 ];
 
@@ -44,6 +48,7 @@ $sharedParam['boilerplatePath'] = getcwd();
 // 'loaded' will come from cmfive config
 $loadedParam = [
     'DB_Hostname' =>    "database.hostname",
+    'DB_Port'     =>    "database.port",
     'DB_Username' =>    "database.username",
     'DB_Password' =>    "database.password",
     'DB_Database' =>    "database.database",
@@ -52,13 +57,15 @@ $loadedParam = [
 ];
 
 defined('DEBUG_RUN') || define('DEBUG_RUN', "run --steps --debug acceptance");
+defined('PHPUNIT_RUN') || define('PHPUNIT_RUN', "");
 
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 // before anything else happens, check testrunner is allowed!
 if (allowRunner()) {
-    include "cmfiveTestDB.php";
+    include "cmfiveToolsDB.php";
+    echo "\n";
 
     if (!isset($menuMaker)) {
         genericRunner($argc, $argv);
@@ -70,11 +77,22 @@ if (allowRunner()) {
             ];
         $cmdMaker['tests'][] =
             [
-                'request' =>  "run", 'message' => "Launching TestRunner", 'function' => "genericRunner", 'args' => true
+                'request' =>  "run", 'message' => "Launching TestRunner", 'function' => "genericRunner", 'args' => true,
+                'hint' => "module_FileNameCest.php silent"
+            ];
+        $cmdMaker['tests'][] =
+            [
+                'request' =>  "unit", 'message' => "Launching UnitTest", 'function' => "genericRunner", 'args' => true,
+                'hint' => "moduleName or all"
+            ];
+        $cmdMaker['tests'][] =
+            [
+                'request' =>  "module", 'message' => "Launching Tests on Module", 'function' => "genericRunner", 'args' => true,
+                'hint' => "moduleName  silent"
             ];
         $cmdMaker['testDB'][] =
             [
-                'request' =>  "setup", 'message' => "Batched TestRunner DB setup", 'function' => "genericRunner", 'args' => true
+                'request' =>  "setup", 'message' => "Batched TestRunner DB setup", 'function' => "genericRunner", 'args' => true,  'implied' => true
             ];
     }
 }
@@ -110,17 +128,23 @@ function offerMenuTests()
     }
     $menuMaker[] =
         [
-            'option' => "Run all tests", 'message' => "Launching TestRunner", 'function' => "testRunner", 'param' => null
+            'option' => "Run all acceptance tests", 'message' => "Launching TestRunner", 'function' => "testRunner", 'param' => null
+        ];
+    $menuMaker[] =
+        [
+            'option' => "Run all unit tests", 'message' => "Launching UnitTests", 'function' => "unitTestRunner", 'param' => "all"
         ];
 }
 
-function moduleRunner($runModule)
+function moduleRunner($runModule, $silent = false)
 {
+
+    unitRunner($runModule);
     purgeTestCode();
+    registerConfig();
     $found = chaseModules("all");
     registerHelpers($found);
-
-    $silent = false;
+    //$silent = false;
 
     foreach ($found as $capabilities => $capability) {
         if ($capabilities == "Tests") {
@@ -138,6 +162,30 @@ function moduleRunner($runModule)
     }
 }
 
+
+function unitRunner($runModule)
+{
+    purgeTestCode();
+    $runModule = ltrim($runModule);
+    $runModule = empty($runModule) ? "all" : $runModule;
+    $found = chaseModules($runModule);
+
+    foreach ($found as $capabilities => $capability) {
+        if ($capabilities == "UnitTests") {
+            foreach ($capability as $module => $resources) {
+                if ($module == $runModule || $runModule == "all") {
+                    foreach ($resources as $resource) {
+                        $unitTestCommand = PHPUNIT_RUN . "  " . UNIT_DESTINATION . DS . $resource . " ";
+                        $packBar = "\nO" . str_repeat("-", strlen($unitTestCommand) + 2) . "O\n";
+                        echo $packBar . "| " . $unitTestCommand . " |" . $packBar;
+                        launchUnitTest($unitTestCommand);
+                    }
+                }
+            }
+        }
+    }
+}
+
 function infoRunner()
 {
     genericRunner(null, null);
@@ -145,6 +193,10 @@ function infoRunner()
 function testRunner()
 {
     genericRunner(2, ["", "run"]);
+}
+function unitTestRunner()
+{
+    genericRunner(2, ["", "unit"]);
 }
 function DBRunner()
 {
@@ -154,11 +206,14 @@ function DBRunner()
 function genericRunner($argc, $argv)
 {
     purgeTestCode();
+    registerConfig();
     $found = chaseModules("all");
     registerHelpers($found);
     reportModules($found);
 
-    echo "\n --- To launch: --- \ncmfiveTests [run] [module_testfile.php] [silent]\n\n";
+    echo "\n --- To launch: --- \ncmfiveTests [run] [module_testfile.php] [silent]";
+    echo "\n --- Or: --- \ncmfiveTests [unit] [module]\n\n";
+
     $codeCeptCommand = DEBUG_RUN;
 
     if ($argc > 1) {
@@ -170,6 +225,20 @@ function genericRunner($argc, $argv)
                 }
 
                 launchCodecept($codeCeptCommand, $silent);
+                break;
+            case "unit":
+                $unitModule = "";
+                if ($argc > 2) {
+                    $unitModule = "  " . $argv[2];
+                }
+                unitRunner($unitModule);
+                break;
+            case "module":
+                $module = "";
+                if ($argc > 2) {
+                    $module = $argv[2];
+                }
+                moduleRunner($module, $silent);
                 break;
             case "clean":
                 purgeTestCode();
@@ -186,14 +255,43 @@ function allowRunner()
     $webFind = "system/web.php";
     if (chaseWeb($webFind)) {
         if (!class_exists('Web')) {
+            // Testrunner leans heavily on config, so always reset it
+            if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+                echo exec('del .\cache\config.cache');
+            } else {
+                echo exec('rm -f cache/config.cache');
+            }
             require("system/web.php");
         }
         $w = new Web();
-        if ((Config::get('tests'))["testrunner"] == "ENABLED") {
+        if (Config::get("tests.testrunner") == "ENABLED") {
+            if (!checkTestEnvironment()) {
+                echo "Configure Test Runner and database backup in config.php per examples.\n";
+                return false;
+            }
             return true;
-        };
+        }
     }
     return false;
+}
+
+function checkTestEnvironment()
+{
+
+    if (
+        Config::get("tests.yaml.- WebDriver:")
+        && Config::get("tests.yaml.- Db:")
+        && Config::get("database.backups.commandPath")
+        && Config::get("database.backups.backupCommand")
+        && Config::get("database.backups.restoreCommand")
+    ) {
+        echo "Found: Codeception configuration\n";
+    } else {
+        echo "Useful Codeception configuration not found in config.php\n";
+        return false;
+    }
+
+    return true;
 }
 
 function chaseWeb($webFind)
@@ -209,9 +307,17 @@ function batchTestSetup()
 {
     global $sharedParam;
 
+    echo "Starting with backup.\n";
+    echo (shell_exec("php cmfive.php DB backup") . "\n");
+
+    if (checkABackup(ROOT_PATH . DS . BACKUP_DIRECTORY) == 0) {
+        echo "Stopping, useful backup not confirmed.\n\n";
+        return;
+    }
+
     $Mcommand = [
-        "cmfive.php DB backup",
-        "cmfiveTestDB.php purge",
+        //"cmfive.php DB backup",
+        "cmfiveToolsDB.php purge",
         "cmfive.php install migrations",
         "cmfive.php seed admin "
             . $sharedParam['testAdminUsername'] . " "
@@ -257,6 +363,18 @@ function launchCodecept($param, $silent = false)
     return $silent;
 }
 
+
+function launchUnitTest($param)
+{
+    try {
+        $runner = "cd " . ROOT_PATH . " && phpunit " . $param;
+        echo $runner;
+        echo shell_exec($runner);
+    } catch (Exception $e) {
+        echo $e->getMessage();
+    }
+}
+
 function purgeTestCode()
 {
     if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
@@ -264,11 +382,13 @@ function purgeTestCode()
         exec('del ' . STEP_DESTINATION . DS . '*.php');
         exec('del ' . HELP_DESTINATION . DS . '*.php');
         exec('del ' . HELP_DESTINATION . DS . '..' . DS . '*.php');
+        exec('del ' . UNIT_DESTINATION . DS . '*.php');
     } else {
         exec('rm -f ' . CEST_DESTINATION . DS . '*Cest.php');
         exec('rm -f ' . STEP_DESTINATION . DS . '*.php');
         exec('rm -f ' . HELP_DESTINATION . DS . '*.php');
         exec('rm -f ' . HELP_DESTINATION . DS . '..' . DS . '*.php');
+        exec('rm -f ' . UNIT_DESTINATION . DS . '*.php');
     }
 }
 
@@ -307,6 +427,36 @@ function reportModules($moduleCapabilities)
     }
     echo "\n";
 }
+
+
+function registerConfig()
+{
+    $destPath = BOILERPLATE_TEST_DIRECTORY . DS . "acceptance.suite.dist.yml";
+    $ConfigYML = fopen($destPath, "w");
+
+    if (!$ConfigYML) {
+        return;
+    }
+
+    $codeceptionConfig = ["modules" => ["enabled" => Config::get("tests.yaml")]];
+    if (!$codeceptionConfig) {
+        return;
+    }
+    $hdr = "# Codeception Test Suite Configuration\n#\n" .
+        "# Suite for acceptance tests.\n" .
+        "# Perform tests in browser using the WebDriver or PhpBrowser.\n" .
+        "# If you need both WebDriver and PHPBrowser tests - create a separate suite.\n\n" .
+        "class_name: CmfiveUI\n\n";
+
+    fwrite($ConfigYML, $hdr);
+
+    $setup = Yaml::dump($codeceptionConfig, 99);
+    $setup = str_replace("'-", "-", $setup);
+    $setup = str_replace(":':", ":", $setup);
+    fwrite($ConfigYML, $setup);
+    fclose($ConfigYML);
+}
+
 
 function registerHelpers($moduleCapabilities)
 {
@@ -366,6 +516,10 @@ function registerBoilerplateParameters($spoolTo)
             fwrite($spoolTo, "                                    "
                 . "{$key}: '" . $configTyped . "'\n");
         }
+        if (!isset($configTyped)) {
+            fwrite($spoolTo, "                                    "
+                . "{$key}: ''\n");
+        }
     }
 }
 
@@ -407,6 +561,9 @@ function chaseModules($module_name)
                         if (isset($file['cest'])) {
                             $moduleCapabilities['Tests'][$module][] =  $file['cest'];
                         }
+                        if (isset($file['unit'])) {
+                            $moduleCapabilities['UnitTests'][$module][] =  $file['unit'];
+                        }
 
                         if (isset($file['actor'])) {
                             $moduleCapabilities['Actors'][$module][] =  $file['actor'];
@@ -434,11 +591,12 @@ function getTestsForModule($module)
     $workflow_path = WORKFLOWS_TEST_DIRECTORY . DS . $module;
     $test_paths = [$module_path, $system_module_path, $boiler_path, $workflow_path];
 
-    $extended_paths = [CEST_DIRECTORY, STEP_DIRECTORY, HELP_DIRECTORY];
+    $extended_paths = [CEST_DIRECTORY, STEP_DIRECTORY, HELP_DIRECTORY, UNIT_DIRECTORY];
     $dest_paths = [
         CEST_DIRECTORY => CEST_DESTINATION,
         STEP_DIRECTORY => STEP_DESTINATION,
-        HELP_DIRECTORY => HELP_DESTINATION
+        HELP_DIRECTORY => HELP_DESTINATION,
+        UNIT_DIRECTORY => UNIT_DESTINATION
     ];
 
     $findActor = "";
@@ -475,6 +633,10 @@ function getTestsForModule($module)
                         if ($ext == STEP_DIRECTORY) {
                             $modFile = $module . "_" . $file;
                             $details['actor'] = rtrim($file, ".php");
+                        }
+                        if ($ext == UNIT_DIRECTORY) {
+                            $modFile = $module . "_" . $file;
+                            $details['unit'] = $modFile;
                         }
                         if ($ext == $findActor) {
                             $details['actor'] = rtrim($file, ".php");

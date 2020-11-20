@@ -2,9 +2,32 @@
    RequestHeader unset Proxy
 </IfModule>
 
-Options All -Indexes
+Options -Indexes +FollowSymLinks
 
-# Turn on the RewriteEngine
+# Evaluate allows before denies.
+order allow,deny
+
+# Allow the index.php file.
+<FilesMatch "index.php">
+    Allow from all
+</FilesMatch>
+
+# Block all files with the .php extension except the index.php file.
+<Files ~ "^(?!index).*\.php$">
+   Require all denied
+</Files>
+
+# Allow all files without a file extension. This is to allow rewrites say to /auth/login.
+<Files ~ "^([^.]+)$">
+   Allow from all
+</Files>
+
+# Allow all files with the following extensions.
+<Files ~ "\.(jpg|png|ico|jpeg|gif|css|js|woff|ttf)$">
+   Allow from all
+</Files>
+
+# Turn on the RewriteEngine.
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
