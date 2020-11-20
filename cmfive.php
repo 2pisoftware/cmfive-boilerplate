@@ -1,7 +1,6 @@
 #!/bin/php
 <?php
 
-
 if (!(isset($argc) && isset($argv))) {
     echo "No action is possible.";
     exit();
@@ -42,8 +41,6 @@ $cmdMaker = [
             'request' =>  "admin", 'message' => "Setting up admin user", 'function' => "cmdSeedAdminUser", 'args' => true
         ]
     ]
-    // need to mimic: seedAdminUser(array_slice($argv, 3));
-
 ];
 
 include "cmfiveTests.php";
@@ -180,22 +177,15 @@ function installCoreLibraries()
 
     if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
         echo exec('mklink /D system composer\vendor\2pisoftware\cmfive-core\system');
-        //echo exec('del .\cache\config.cache');
     } else {
         echo exec('ln -s composer/vendor/2pisoftware/cmfive-core/system system');
-        //echo exec('rm -f cache/config.cache');
     }
-
-    // if (!class_exists('Web')) {
-    //     require('system/web.php');
-    // }
 
     installThirdPartyLibraries($composer_json);
 }
 
 function sketchComposerForCore()
 {
-
     // name     : 2pisoftware/cmfive-core
     // descrip. :
     // keywords :
@@ -204,7 +194,6 @@ function sketchComposerForCore()
     // source   : [git] https://github.com/2pisoftware/cmfive-core develop
     // dist     : []
     // names    : 2pisoftware/cmfive-core
-
 
     $composer_string = <<<COMPOSER
     {
@@ -238,13 +227,11 @@ function sketchComposerForCore()
     }
 COMPOSER;
 
-
     return json_decode($composer_string, true);
 }
 
 function installThirdPartyLibraries($composer_json = null)
 {
-
     if (!stepOneYieldsWeb()) {
         return false;
     }
@@ -261,9 +248,9 @@ function installThirdPartyLibraries($composer_json = null)
         $composer_json = sketchComposerForCore();
     }
 
-    $dependencies_array = array();
+    $dependencies_array = [];
     foreach ($w->modules() as $module) {
-        $dependencies = Config::get("{$module}.dependencies"); //var_dump($dependencies);
+        $dependencies = Config::get("{$module}.dependencies");
         if (!empty($dependencies)) {
             $dependencies_array = array_merge($dependencies, $dependencies_array);
         }
@@ -288,7 +275,7 @@ function installMigrations()
     }
     $w = new Web();
     $w->initDB();
-    // $w->startSession();
+
     $_SESSION = [];
 
     try {
@@ -363,10 +350,10 @@ function generateEncryptionKeys()
     }
 
     $key_token = bin2hex($key_token);
-    //$key_iv = bin2hex($key_iv);
+
 
     echo "Encryption key generated\n";
-    //file_put_contents('config.php', "\nConfig::set('system.encryption', [\n\t'key' => '{$key_token}',\n\t'iv' => '{$key_iv}'\n]);", FILE_APPEND);
+
     file_put_contents('config.php', "\nConfig::set('system.encryption', [\n\t'key' => '{$key_token}'\n]);", FILE_APPEND);
     echo "Key written to project config\n\n";
 }
@@ -383,4 +370,3 @@ function readConsoleLine($prompt = "Command: ")
 
     return $command;
 }
-

@@ -6,14 +6,12 @@ env:
 
   - DB=mysql DB_HOST=localhost DB_USERNAME=root DB_PASSWORD='' DB_DATABASE=cmfive
 
-
 addons:
   hosts:
     - cmfive.dev
 
 sudo:
   - required
-
 
 before_script:
   - mysql -e 'create database cmfive;'
@@ -24,10 +22,4 @@ before_script:
   - sed -i 's/<database>/cmfive/' config.php
   - php cmfive.php install core
   - php cmfive.php install migrations
-  
- # - git clone https://iceaxelihne@bitbucket.org/2pisoftware/selenium-testrunner.git
-
-script:
-  - bash install-dependancies.sh
-   
-
+  - cd composer/
