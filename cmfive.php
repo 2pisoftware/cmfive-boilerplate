@@ -344,6 +344,7 @@ function sketchComposerForCore($reference)
         },
         "repositories": [
             {
+
                 "type": "package",
                 "package": {
                 "name": "2pisoftware/cmfive-core",
@@ -494,6 +495,7 @@ function generateEncryptionKeys()
     }
 
     $key_token = bin2hex($key_token);
+
 
     echo "Encryption key generated\n";
     file_put_contents('config.php', "\nConfig::set('system.encryption', [\n\t'key' => '{$key_token}'\n]);", FILE_APPEND);
