@@ -1,4 +1,4 @@
-from common import Config, Directories
+from common import ConfigManager, Directories
 import util
 import logging
 import json
@@ -33,7 +33,7 @@ class Container:
 class DockerCompose:
     def __init__(self):
         self.dirs = Directories.instance()
-        self.config = Config.instance().config
+        self.config = ConfigManager.instance().config
 
     # Client API
     def up(self):
@@ -54,7 +54,7 @@ class DockerCompose:
         self.create_docker_file()
         self.add_docker_ignore_file()
 
-    def build(self):        
+    def build(self):
         util.run("docker-compose build")
 
     @staticmethod
@@ -75,6 +75,11 @@ class DockerCompose:
         util.delete_dir(self.dirs.stage)
         util.copy_dirs(self.dirs.common, self.dirs.stage)
         util.copy_dirs(self.dirs.image, self.dirs.stage)
+
+        # optional override
+        if self.dirs.override.exists():
+            util.copy_dirs(self.dirs.override, self.dirs.stage)
+
         util.inflate_templates(self.dirs.stage, ".template", self.config, True)
 
     def create_docker_compose_file(self):

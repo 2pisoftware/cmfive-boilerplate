@@ -1,9 +1,42 @@
 ---
-# database
-db_port: '3306'
+manifest:
+  providers:
+  - name: dev_profile
+    type: local
+  resolvers:
+  - name: inline
+    provider: dev_profile
+    type: local
 
-# services
-php_version: '7.2'
-php_suffix: '7.2'
-mysql_version: '5.7.21'
-mysql_suffix: '5.7'
+data:
+# -----------------
+# database instance
+# -----------------
+- name: db_instance_port
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "3306"
+# -------
+# service
+# -------
+- name: php_version
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "7.2"
+- name: php_suffix
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "7.2"
+- name: mysql_version
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "5.7.21"
+- name: mysql_suffix
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "5.7"

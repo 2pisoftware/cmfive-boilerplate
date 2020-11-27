@@ -9,7 +9,7 @@ services:
     hostname: mysql-{{mysql_suffix}}
     command: --sql-mode=""
     ports:
-      - "3308:{{db_port}}"
+      - "3308:{{db_instance_port}}"
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - TZ=Australia/Sydney

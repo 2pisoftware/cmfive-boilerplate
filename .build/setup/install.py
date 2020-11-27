@@ -12,7 +12,8 @@ import click
 from actions import (
     update_default,
     provision_dev,
-    create_production_image
+    create_production_image,
+    test_config_resolver    
 )
 
 
@@ -50,7 +51,14 @@ def provision_dev_cmd():
 @click.argument('tag')
 def create_production_image_cmd(tag):
     """create vanila production image"""
-    create_production_image(tag)  
+    create_production_image(tag)
+
+
+@cli.command('test-config-resolver')
+@click.argument('environment')
+def test_config_resolver_cmd(environment):
+    """test config resolver against environment"""
+    print(test_config_resolver(environment))
 
 
 if __name__ == '__main__':

@@ -49,3 +49,11 @@ class Directories:
     @property
     def image(self):
         return self.env.joinpath("configs", "image")
+
+    @property
+    def override(self):
+        return self.env.joinpath("configs", "common_override")
+
+    @property
+    def scripts(self):
+        return self.env.joinpath("scripts")

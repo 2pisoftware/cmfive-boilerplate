@@ -2,11 +2,15 @@
 <description>
 """
 from distutils import dir_util
-import os
-import subprocess
-from jinja2 import Template, StrictUndefined
+from pathlib import Path
+from importlib import import_module
+from jinja2 import Template, StrictUndefined, Environment, BaseLoader
 from jinja2.exceptions import UndefinedError
 import logging
+import os
+import sys
+import json
+import subprocess
 
 logger = logging.getLogger(__name__)
 
@@ -51,10 +55,12 @@ def copy_dirs(source, target):
 def render_template(fpath, tokens):
     with fpath.open() as fp:
         try:
-            template = Template(fp.read(), undefined=StrictUndefined)
-            result = template.render(tokens)
+            environment = Environment(loader=BaseLoader)
+            environment.filters["fromjson"] = lambda value: json.loads(value)
+            template = environment.from_string(fp.read())            
+            result = template.render(tokens, undefined=StrictUndefined)
         except UndefinedError as exc:
-            raise Exception("template placeholder token is missing") from exc
+            raise Exception(f"template placeholder token is missing - {fpath}") from exc
 
         return result
 
@@ -84,3 +90,23 @@ def inflate_templates(target, extension, tokens, remove):
             inflate_templates(p, extension, tokens, remove)
         if p.is_file():
             inflate_template(p, p.parent, extension, tokens, remove)
+
+
+def run_scripts(filepath, entrypoint):
+    # normalize
+    filepath = Path(filepath)
+
+    # opt-out
+    if not filepath.exists():
+        return
+
+    # load and run scripts
+    sys.path.append(str(filepath))
+    for p in filepath.iterdir():        
+        if p.suffix != ".py":
+            continue
+        logger.info(f"load and run script '{p.name}'")        
+        function = getattr(import_module(p.stem), entrypoint)
+
+        # invoke
+        function()

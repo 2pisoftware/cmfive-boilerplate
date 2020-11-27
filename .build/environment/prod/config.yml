@@ -1,0 +1,150 @@
+---
+manifest:
+  providers:
+  - name: aws_provider
+    type: aws
+    prop:
+      profile: null
+  resolvers:  
+  - name: datastore
+    provider: aws_provider
+    type: s3
+    prop:
+      format: json
+      source:
+        path:
+          environment:
+            name: S3_FOLDER
+        file:
+          environment:
+            name: FILENAME  
+  - name: secret
+    provider: aws_provider
+    type: secretsmanager  
+
+data:
+# -----------------
+# database instance
+# -----------------
+- name: db_instance_username
+  resolvers:
+  - resolver: datastore
+  - resolver: secret
+    prop:
+      index: username
+- name: db_instance_password
+  resolvers:
+  - resolver: datastore
+  - resolver: secret
+    prop:
+      index: password
+- name: db_instance_endpoint
+  resolvers:
+  - resolver: datastore
+- name: db_instance_port
+  resolvers:
+  - resolver: datastore
+- name: encryption_key
+  resolvers:
+  - resolver: datastore
+# ----------
+# admin user
+# ----------
+- name: admin_login_username
+  resolvers:
+  - resolver: datastore
+  - resolver: secret
+    prop:
+      index: username
+- name: admin_login_password   
+  resolvers:
+  - resolver: datastore
+  - resolver: secret
+    prop:
+      index: password
+- name: admin_email
+  resolvers:
+  - resolver: datastore
+- name: admin_first_name
+  resolvers:
+  - resolver: datastore
+- name: admin_last_name
+  resolvers:
+  - resolver: datastore
+# ---------------
+# client database
+# ---------------
+- name: db_username
+  resolvers:
+  - resolver: datastore
+  - resolver: secret
+    prop:
+      index: username
+- name: db_password
+  resolvers:
+  - resolver: datastore
+  - resolver: secret
+    prop:
+      index: password
+- name: db_database
+  resolvers:
+  - resolver: datastore
+# -------
+# service
+# -------
+- name: php_version
+  resolvers:
+  - resolver: datastore
+- name: php_suffix
+  resolvers:
+  - resolver: datastore
+# -----------
+# cmfive core
+# -----------
+- name: cmfive_core_ref
+  resolvers:
+  - resolver: datastore
+    prop:
+      default: "feature/config_json"
+# -----------
+# third party
+# -----------
+- name: module_configs
+  resolvers:
+  - resolver: datastore
+    prop:
+      default: {}
+  modifiers:
+  - modifier: merge
+    prop:
+      value: {"system": {"encryption": {"key": "{{encryption_key}}"}}} 
+  - modifier: substitue
+    prop:
+      key: encryption_key
+  - modifier: json_serialize
+# ------
+# domain
+# ------
+- name: base_domain
+  resolvers:
+  - resolver: datastore
+    prop:
+      default: "2piboom.com"
+- name: site_name
+  resolvers:
+  - resolver: datastore        
+- name: site_domains
+  resolvers:
+  - resolver: datastore
+    prop:      
+      default: ["www.{{site_name}}.{{base_domain}}", "{{site_name}}.{{base_domain}}"]
+  modifiers:
+  - modifier: substitue
+    prop:
+      key: ["base_domain", "site_name"]
+  - modifier: json_serialize
+- name: certbot_webmaster
+  resolvers:
+  - resolver: datastore
+    prop:
+      default: "webmaster@2pisoftware.com"

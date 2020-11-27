@@ -1,7 +1,7 @@
 """
 """
 from docker import DockerCompose
-from common import Directories, Config
+from common import Directories, ConfigManager
 import util
 import time
 import logging
@@ -14,15 +14,17 @@ class WebService:
 
     def __init__(self):
         self.dirs = Directories.instance()
-        self.config = Config.instance().config
+        self.config = ConfigManager.instance().config
 
     # ----------
     # Client API
     # ----------
-    def create_cmfive_config_file(self, db_hostname):
+    def inject_cmfive_config_file(self, db_hostname):
+        logger.info("inject config.php into web container")
+
         # add or override db_hostname config
         tokens = dict(self.config)
-        tokens.update({"db_hostname": db_hostname})
+        tokens.update({"db_instance_endpoint": db_hostname})
 
         # render template into stage dir
         util.inflate_template(
@@ -41,12 +43,23 @@ class WebService:
             )
 
     def install_test_packages(self):
+        logger.info("install test packages")
         self.run("sh test/.install/install.sh")
 
-    def setup_cmfive(self):
-        self.run("php cmfive.php install core")
+    def install_core(self):
+        logger.info("install cmfive core")
+        self.run(f"php cmfive.php install core {self.config['cmfive_core_ref']}")
+
+    def seed_encryption(self):
+        logger.info("seed encryption key")
         self.run("php cmfive.php seed encryption")
+
+    def install_migration(self):
+        logger.info("perform module database migrations")
         self.run("php cmfive.php install migration")
+
+    def seed_admin(self):
+        logger.info("seed cmfive admin user")
         self.run("php cmfive.php seed admin '{}' '{}' '{}' '{}' '{}'".format(
             self.config['admin_first_name'],
             self.config['admin_last_name'],
@@ -55,7 +68,8 @@ class WebService:
             self.config['admin_login_password']
         ))
 
-        # modify folder permissions
+    def update_permissions(self):
+        logger.info("update container permissions")
         self.run("chmod 777 -R cache storage uploads")
 
     @staticmethod

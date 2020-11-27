@@ -1,8 +1,8 @@
-from config import Config
 from dirs import Directories
+from config import ConfigManager
 
 
-def init_singletons(env, is_config_local):
+def init_singletons(env):
     """initialize singletons"""
     Directories(env)
-    Config(env, is_config_local)
+    ConfigManager(env)
