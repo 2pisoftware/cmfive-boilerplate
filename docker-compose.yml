@@ -21,10 +21,10 @@ services:
 
   webapp:
     build:
-      context: ./.build/environment/default/
+      context: ./.build/environment/dev/
       dockerfile: Dockerfile
-    container_name: nginx-php7.2
-    hostname: nginx-php7.2
+    container_name: nginx-php7.4
+    hostname: nginx-php7.4
     environment:
       - TZ=Australia/Sydney
     volumes:

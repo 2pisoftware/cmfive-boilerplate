@@ -24,12 +24,12 @@ data:
   resolvers:
   - resolver: inline
     prop:
-      value: "7.2"
+      value: "7.4"
 - name: php_suffix
   resolvers:
   - resolver: inline
     prop:
-      value: "7.2"
+      value: "7.4"
 - name: mysql_version
   resolvers:
   - resolver: inline
