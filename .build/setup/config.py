@@ -1,6 +1,6 @@
 """
 """
-from resolver.manager import resolve
+from resolver.app import get_configs
 from dirs import Directories
 
 
@@ -18,7 +18,7 @@ class ConfigManager:
 
             # init
             dirs = Directories.instance()
-            self.config = resolve(dirs.env.joinpath("config.yml"))                        
+            self.config = get_configs(dirs.env.joinpath("config.yml"))                        
             self.config["environment"] = env
         else:
             assert False, "logic error"    
