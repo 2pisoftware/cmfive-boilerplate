@@ -6,21 +6,24 @@ manifest:
     prop:
       profile: null
   resolvers:  
-  - name: datastore
-    provider: aws_provider
+  - name: res_s3    
     type: s3
+    provider: aws_provider        
+    primary: True
     prop:
       format: json
-      source:
+      source:        
         path:
-          environment:
-            name: S3_FOLDER
+          lookup: environment
+          prop:          
+            variable: S3_FOLDER
         file:
-          environment:
-            name: FILENAME  
-  - name: secret
+          lookup: environment
+          prop:  
+            variable: FILENAME  
+  - name: res_sm
     provider: aws_provider
-    type: secretsmanager  
+    type: secretsmanager
 
 data:
 # -----------------
@@ -28,82 +31,82 @@ data:
 # -----------------
 - name: db_instance_username
   resolvers:
-  - resolver: datastore
-  - resolver: secret
+  - resolver: res_s3
+  - resolver: res_sm
     prop:
       index: username
 - name: db_instance_password
   resolvers:
-  - resolver: datastore
-  - resolver: secret
+  - resolver: res_s3
+  - resolver: res_sm
     prop:
       index: password
 - name: db_instance_endpoint
   resolvers:
-  - resolver: datastore
+  - resolver: res_s3
 - name: db_instance_port
   resolvers:
-  - resolver: datastore
+  - resolver: res_s3
 - name: encryption_key
   resolvers:
-  - resolver: datastore
+  - resolver: res_s3
 # ----------
 # admin user
 # ----------
 - name: admin_login_username
   resolvers:
-  - resolver: datastore
-  - resolver: secret
+  - resolver: res_s3
+  - resolver: res_sm
     prop:
       index: username
 - name: admin_login_password   
   resolvers:
-  - resolver: datastore
-  - resolver: secret
+  - resolver: res_s3
+  - resolver: res_sm
     prop:
       index: password
 - name: admin_email
   resolvers:
-  - resolver: datastore
+  - resolver: res_s3
 - name: admin_first_name
   resolvers:
-  - resolver: datastore
+  - resolver: res_s3
 - name: admin_last_name
   resolvers:
-  - resolver: datastore
+  - resolver: res_s3
 # ---------------
 # client database
 # ---------------
 - name: db_username
   resolvers:
-  - resolver: datastore
-  - resolver: secret
+  - resolver: res_s3
+  - resolver: res_sm
     prop:
       index: username
 - name: db_password
   resolvers:
-  - resolver: datastore
-  - resolver: secret
+  - resolver: res_s3
+  - resolver: res_sm
     prop:
       index: password
 - name: db_database
   resolvers:
-  - resolver: datastore
+  - resolver: res_s3
 # -------
 # service
 # -------
 - name: php_version
   resolvers:
-  - resolver: datastore
+  - resolver: res_s3
 - name: php_suffix
   resolvers:
-  - resolver: datastore
+  - resolver: res_s3
 # -----------
 # cmfive core
 # -----------
 - name: cmfive_core_ref
   resolvers:
-  - resolver: datastore
+  - resolver: res_s3
     prop:
       default: "feature/config_json"
 # -----------
@@ -111,7 +114,7 @@ data:
 # -----------
 - name: module_configs
   resolvers:
-  - resolver: datastore
+  - resolver: res_s3
     prop:
       default: {}
   modifiers:
@@ -127,16 +130,16 @@ data:
 # ------
 - name: base_domain
   resolvers:
-  - resolver: datastore
+  - resolver: res_s3
     prop:
       default: "2piboom.com"
 - name: site_name
   resolvers:
-  - resolver: datastore        
+  - resolver: res_s3        
 - name: site_domains
   resolvers:
-  - resolver: datastore
-    prop:      
+  - resolver: res_s3
+    prop:
       default: ["www.{{site_name}}.{{base_domain}}", "{{site_name}}.{{base_domain}}"]
   modifiers:
   - modifier: substitue
@@ -145,6 +148,6 @@ data:
   - modifier: json_serialize
 - name: certbot_webmaster
   resolvers:
-  - resolver: datastore
+  - resolver: res_s3
     prop:
       default: "webmaster@2pisoftware.com"

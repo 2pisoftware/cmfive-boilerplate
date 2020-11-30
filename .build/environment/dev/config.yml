@@ -1,12 +1,8 @@
 ---
 manifest:
-  providers:
-  - name: dev_profile
-    type: local
   resolvers:
-  - name: inline
-    provider: dev_profile
-    type: local
+  - name: inline    
+    type: literal
 
 data:
 # -----------------
@@ -113,4 +109,4 @@ data:
     prop:
       value: {}
   modifiers:
-  - modifier: json_serialize    
+  - modifier: json_serialize
