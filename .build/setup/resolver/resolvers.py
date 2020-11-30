@@ -1,14 +1,11 @@
-import os
+# todo:
+# - mark resolvers as allowed to be primary/non-primary
+# - compare props against jsonschema
 import json
-from pathlib import Path
-from .dirs import Dirs
-from .util import deserialize
-from botocore.exceptions import ClientError
+import botocore
 
 
 resolver_registry = {}
-
-ERROR_ON_UNDEFINED_VALUE = "<undefined>"
 
 
 def register_resolver(name):
@@ -19,158 +16,279 @@ def register_resolver(name):
     return add_class
 
 
-@register_resolver('s3')
-class S3Resolver:
-    def __init__(self, provider, source, format):
-        self.client = provider.session.client("s3")
-        self.bucket = os.environ[source["path"]["environment"]["name"]]
-        self.key = os.environ[source["file"]["environment"]["name"]]        
-        self.content = self.load()            
+@register_resolver('literal')
+class LiteralResolver:
+    def __init__(self, provider, dirs, props):
+        pass    
 
-    def resolve(self, config, error_on_undefined, **kwargs):
-        if "default" in kwargs:
-            return kwargs["default"]
+    def get(self, value):        
+        return value    
 
-        if config in self.content:
-            return self.content[config]
-        
-        if not error_on_undefined:
-            return ERROR_ON_UNDEFINED_VALUE
+    # ---------------
+    # Utility Methods
+    # ---------------    
+    def create_adapter(self, key, props):
+        return LiteralResolverAdapter(self, key, props)
 
-        raise Exception(f"s3 config '{config}' not present")
+    @staticmethod
+    def allowed_providers():
+        return tuple()
+    
+    @staticmethod
+    def schema():        
+        return {}
 
-    def update(self, config, value, **kwargs):
-        self.content[config] = value
 
-    def flush(self):
-        self.save()
+class LiteralResolverAdapter:
+    def __init__(self, resolver, key, props):        
+        self.resolver = resolver
+        self.key = key
+        self.props = props        
+
+    def put(self, value):
+        pass
+
+    def get(self):        
+        return self.resolver.get(self.props["value"])
+
+    def get_all(self):
+        raise NotImplemented()
+
+    def is_present(self):
+        return True
+
+
+@register_resolver('secretsmanager')
+class SecretsManagerResolver:
+    def __init__(self, provider, dirs, props):           
+        self.sm = provider.session.client("secretsmanager")        
+
+    def put(self, key, index, value):
+        self.set_secret(key, index, value)
+
+    def get(self, key, index):        
+        secret = self.get_secret(key)
+        if index is None:
+            return secret
+        return secret[index]
+
+    def get_all(self):
+        raise NotImplemented()
+
+    def is_present(self, key, index):
+        # secret doesn't exist
+        try:
+            secret = self.get_secret(key)
+        except botocore.exceptions.ClientError as error:
+            if error.response['Error']['Code'] == "ResourceNotFoundException":
+                return False
+            raise error        
+
+        if index is None:
+            return True
+
+        return index in secret
+                
+    # --------------
+    # Helper Methods
+    # --------------   
+    def get_secret(self, key):
+        secret = self.sm.get_secret_value(SecretId=key)
+        try:
+            return json.loads(secret['SecretString'])
+        except json.decoder.JSONDecodeError:
+            return secret['SecretString']
+
+    def set_secret(self, key, index, value):    
+        secret = self.get_secret(key)             
+
+        # plaintext
+        if index is None:             
+            content = value            
+        # key/value pairs
+        else:
+            secret[index] = value
+            content = json.dumps(secret)
+
+        self.sm.put_secret_value(SecretId=key, SecretString=content)
+
+    # ---------------
+    # Utility Methods
+    # ---------------    
+    def create_adapter(self, key, props):
+        return SecretsManagerResolverAdapter(self, key, props)
 
     @staticmethod
     def allowed_providers():
         return ("aws",)
-            
+    
+    @staticmethod
+    def schema():        
+        return {}
+
+
+class SecretsManagerResolverAdapter:
+    def __init__(self, resolver, key, props):        
+        self.resolver = resolver
+        self.key = key
+        self.props = props        
+
+    def put(self, value):
+        self.resolver.put(self.key, self.props["index"], value)
+
+    def get(self):        
+        return self.resolver.get(self.key, self.index)
+
+    def is_present(self):
+        return self.resolver.is_present(self.key, self.index)
+
+    @property
+    def index(self):
+        return self.props.get("index")
+
+
+@register_resolver('s3')
+class S3Resolver:
+    def __init__(self, provider, dirs, props):           
+        self.s3 = provider.session.client("s3")     
+        self.props = props
+        self.content = self.load()
+
+    def put(self, key, value):        
+        self.content[key] = value
+        self.save()
+
+    def get(self, key):
+        return self.content.get(key)
+
+    def get_all(self):
+        return self.content
+
+    def is_present(self, key):
+        return key in self.content    
+
+    # --------------
+    # Helper Methods
+    # --------------
+    @property
+    def bucket(self):
+        from resolver.fields import Field
+        return Field.create("bucket", self.props["source"]["path"]).value
+
+    @property
+    def key(self):
+        from resolver.fields import Field
+        return Field.create("key", self.props["source"]["file"]).value
+    
     def load(self):
-        response = self.client.get_object(
+        response = self.s3.get_object(
             Bucket=self.bucket.replace("s3://", ""),
             Key=self.key
         )
         return json.loads(response['Body'].read().decode('utf-8'))
 
     def save(self):
-        self.client.put_object(
+        self.s3.put_object(
             Body=json.dumps(self.content).encode(),
             Bucket=self.bucket.replace("s3://", ""),
             Key=self.key
         )
-
-
-@register_resolver('secretsmanager')
-class SecretsManagerMResolver:
-    def __init__(self, provider):
-        self.sm = provider.session.client("secretsmanager")
-        self.store = []
+    # ---------------
+    # Utility Methods
+    # ---------------    
+    def create_adapter(self, key, props):
+        return S3ResolverAdapter(self, key, props)
 
     @staticmethod
     def allowed_providers():
         return ("aws",)
+    
+    @staticmethod
+    def schema():        
+        return {}
 
-    def resolve(self, config, error_on_undefined, **kwargs):
-        # suppress exception
-        try:
-            secret = self.get_secret(config)
-        except Exception:
-            if error_on_undefined:
-                raise
-            secret = {}
 
-        if kwargs["index"] in secret:
-            return secret[kwargs["index"]]
+class S3ResolverAdapter:
+    def __init__(self, resolver, key, props):        
+        self.resolver = resolver
+        self.key = key
+        self.props = props   
 
-        if not error_on_undefined:
-            return ERROR_ON_UNDEFINED_VALUE
+    def get(self):
+        return self.resolver.get(self.key) or self.props.get("default", None)
 
-        raise Exception(f"secretsmanager config '{config}:{kwargs['index']}' not present")
+    def put(self, value):
+        self.resolver.put(self.key, value)
 
-    def update(self, config, value, **kwargs):
-        self.store.append((config, kwargs["index"], value)) 
-
-    def flush(self):
-        for item in self.store:
-            self.set_secret(*item)            
-
-    def get_secret(self, key):
-        try:
-            secret = self.sm.get_secret_value(SecretId=key)
-        except ClientError as e:
-            raise Exception(f"Unable to retrieve secretId '{key}'") from e
-
-        return json.loads(secret['SecretString'])
-
-    def set_secret(self, key, index, value):        
-        secret = self.get_secret(key)
-        secret[index] = value
-        self.sm.put_secret_value(SecretId=key, SecretString=json.dumps(secret))
+    def is_present(self):
+        return self.resolver.is_present(self.key) or "default" in self.props
 
 
 @register_resolver('filesystem')
-class FileSystemResolver:
-    def __init__(self, provider, format, filepath):
-        self.content = self.load(format, filepath)
+class FilesystemResolver:
+    def __init__(self, provider, dirs, props):
+        self.dirs = dirs
+        self.props = props
+        self.content = self.load()
+
+    def put(self, key, value):        
+        self.content[key] = value
+        self.save()
+
+    def get(self, key):
+        return self.content.get(key)
+
+    def get_all(self):
+        return self.content
+
+    def is_present(self, key):
+        return key in self.content
+
+    # --------------
+    # Helper Methods
+    # --------------    
+    def load(self):
+        with open(self.filepath, "r") as fp:
+            return json.load(fp)        
+
+    def save(self):
+        with open(self.filepath, "w") as fp:
+            fp.write(json.dumps(self.content))
+
+    @property
+    def filepath(self):
+        from .fields import Field
+        value = Field.create("key", self.props["filepath"]).value
+   
+        # file location is relative to schema file
+        return self.dirs.lookup.joinpath(value)
+
+    # ---------------
+    # Utility Methods
+    # ---------------    
+    def create_adapter(self, key, props):
+        return FilesystemResolverAdapter(self, key, props)
 
     @staticmethod
     def allowed_providers():
-        return ("local",)
-
+        return tuple()
+    
     @staticmethod
-    def load(format, filepath):
-        dirs = Dirs.instance()
-        with open(dirs.lookup.joinpath(filepath), "r") as fp:
-            data = fp.read()
-
-        return deserialize(data, format)
-
-    def resolve(self, config, error_on_undefined, **kwargs):
-        # config present
-        if config in self.content:
-            return self.content[config]
-
-        # default value
-        if "default" in kwargs:
-            return kwargs["default"]
-
-        if not error_on_undefined:
-            return ERROR_ON_UNDEFINED_VALUE
-
-        raise Exception(f"{config} is not present and no default value set")
-
-    def update(self, config, value, **kwargs):
-        pass
-
-    def flush(self):
-        pass
+    def schema():        
+        return {}
 
 
-@register_resolver('local')
-class LocalResolver:
-    def __init__(self, provider):
-        pass
+class FilesystemResolverAdapter:
+    def __init__(self, resolver, key, props):        
+        self.resolver = resolver
+        self.key = key
+        self.props = props   
 
-    @staticmethod
-    def allowed_providers():
-        return ("local",)
+    def get(self):
+        return self.resolver.get(self.key) or self.props.get("default", None)
 
-    def resolve(self, config, error_on_undefined, **kwargs):
-        # default value
-        if "value" in kwargs:
-            return kwargs["value"]
+    def put(self, value):
+        self.resolver.put(self.key, value)
 
-        if not error_on_undefined:
-            return ERROR_ON_UNDEFINED_VALUE
-
-        raise Exception(f"No value set for config '{config}'")
-
-    def update(self, config, value, **kwargs):
-        pass
-
-    def flush(self):
-        pass
+    def is_present(self):        
+        return self.resolver.is_present(self.key) or "default" in self.props
