@@ -14,7 +14,7 @@ class Container:
     def run_command(self, command):
         return util.run(command, self.container_name)
 
-    def copy_file_into(self, source, target):
+    def copy_into(self, source, target):
         util.run("docker cp {source} {container_name}:{target}".format(
             source=source,
             container_name=self.container_name,

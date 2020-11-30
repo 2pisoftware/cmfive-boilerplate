@@ -37,7 +37,7 @@ class WebService:
 
         # copy file into container(s)
         for container in DockerCompose.containers_by_service(self.SERVICE_NAME):
-            container.copy_file_into(
+            container.copy_into(
                 source=self.dirs.stage.joinpath("config.php"),
                 target="/var/www/html/config.php"
             )

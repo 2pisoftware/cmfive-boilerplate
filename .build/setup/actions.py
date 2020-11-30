@@ -2,7 +2,7 @@ import logging
 import util
 from common import init_singletons, ConfigManager, Directories
 from docker import DockerCompose
-from service import WebService, DatabaseService
+from service import WebService, DatabaseService, cicd
 
 
 logger = logging.getLogger(__name__)
@@ -97,6 +97,7 @@ class CreateProductionImage(ActionTemplate):
         self.web.inject_cmfive_config_file(self.db.hostname)
         self.web.install_core()
         self.web.seed_encryption()
+        cicd.install_crm_modules(self.web.SERVICE_NAME)
         self.web.install_migration()
         
          # seed admin user once
