@@ -46,7 +46,11 @@ class ActionTemplate:
 
 
 class ProvisionDevelopmentInstance(ActionTemplate):
-    def execute(self, *args):
+    def __init__(self, resuse_config):
+        super().__init__()
+        self.resuse_config = resuse_config
+
+    def execute(self):
         self.init_environment()
         self.setup()
 
@@ -58,12 +62,16 @@ class ProvisionDevelopmentInstance(ActionTemplate):
         if not exists:
             self.db.create_database()
 
-        # idempotent operations
-        self.web.inject_cmfive_config_file(self.db.hostname)
+        # idempotent operations        
+        # ---------------------
+        if not self.resuse_config:
+            self.web.inject_cmfive_config_file(self.db.hostname)
+        
         self.web.install_core()
         self.web.seed_encryption()
         self.web.install_test_packages()
         self.web.install_migration()        
+        # ----------------------
 
         # seed admin user once
         if not exists:
@@ -73,9 +81,9 @@ class ProvisionDevelopmentInstance(ActionTemplate):
         self.web.update_permissions()
 
     @classmethod
-    def create(cls):
+    def create(cls, resuse_config):
         init_singletons("dev")
-        return cls()
+        return cls(resuse_config)
 
 
 class CreateProductionImage(ActionTemplate):
@@ -121,8 +129,8 @@ def update_default():
     DockerCompose().init_environment()
 
 
-def provision_dev():
-    action = ProvisionDevelopmentInstance.create()
+def provision_dev(resuse_config):
+    action = ProvisionDevelopmentInstance.create(resuse_config)
     action.execute()
 
 
