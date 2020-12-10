@@ -108,7 +108,7 @@ data:
   resolvers:
   - resolver: res_s3
     prop:
-      default: "feature/config_json"
+      default: "develop"
 # -----------
 # third party
 # -----------
