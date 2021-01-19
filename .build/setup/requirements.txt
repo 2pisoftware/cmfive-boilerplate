@@ -1,6 +1,6 @@
 click==7.1.2
 Jinja2==2.11.2
 pyyaml==5.3.1
-botocore==1.17.63
+boto3==1.16.57
 requests==2.25.0
 jsonschema==3.2.0

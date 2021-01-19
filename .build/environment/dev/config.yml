@@ -99,7 +99,7 @@ data:
   resolvers:
   - resolver: inline
     prop:
-      value: "feature/config_json"
+      value: "develop"
 # -----------
 # third party
 # -----------
