@@ -2,7 +2,7 @@ import logging
 import util
 from common import init_singletons, ConfigManager, Directories
 from docker import DockerCompose
-from service import WebService, DatabaseService, cicd
+from service import WebService, DatabaseService, cicd, vscode
 
 
 logger = logging.getLogger(__name__)
@@ -15,7 +15,7 @@ class ActionTemplate:
     def __init__(self):
         self.compose = DockerCompose()
         self.web = WebService()
-        self.db = DatabaseService()
+        self.db = DatabaseService()               
         self.dirs = Directories.instance()
 
     # ----------
@@ -70,7 +70,7 @@ class ProvisionDevelopmentInstance(ActionTemplate):
         self.web.install_core()
         self.web.seed_encryption()
         self.web.install_test_packages()
-        self.web.install_migration()        
+        self.web.install_migration()
         # ----------------------
 
         # seed admin user once
@@ -79,6 +79,9 @@ class ProvisionDevelopmentInstance(ActionTemplate):
 
         # fix
         self.web.update_permissions()
+
+        # miscellaneous        
+        vscode.setup_php_xdebug_config()
 
     @classmethod
     def create(cls, resuse_config):
@@ -102,11 +105,13 @@ class CreateProductionImage(ActionTemplate):
             self.db.create_database()
 
         # idempotent operations
+        # ---------------------
         self.web.inject_cmfive_config_file(self.db.hostname)
         self.web.install_core()
         self.web.seed_encryption()
         cicd.install_crm_modules(self.web.SERVICE_NAME)
         self.web.install_migration()
+        # ---------------------
         
          # seed admin user once
         if not exists:

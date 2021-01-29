@@ -57,3 +57,7 @@ class Directories:
     @property
     def scripts(self):
         return self.env.joinpath("scripts")
+    
+    @property
+    def vscode(self):
+        return self.root.joinpath(".vscode")
