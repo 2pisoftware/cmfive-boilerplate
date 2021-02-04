@@ -1,3 +1,5 @@
+import boto3
+from botocore.exceptions import ClientError
 from .fields import Field
 import resolver.util as util
 import logging
@@ -95,6 +97,84 @@ class SourceControlClone:
                         "password",
                         "repository",
                         "owner",
+                        "ref",
+                        "destination"
+                    ]
+                },
+            },
+            "required": ["type", "prop"]
+        }
+
+
+@register_action("codecommit_clone")
+class CodeCommitClone:
+    """
+    Assumed action is ran in the context of an AWS CodeBuild project with the permission set:
+    - "codecommit:GitPull",
+    - "codecommit:GetRepository"
+    """
+    def __init__(self, props):
+        self.props = props           
+        self.repository = self.resolve("repository")          
+        self.ref = self.resolve("ref")
+        self._destination = self.resolve("destination")
+
+    def execute(self, dirs):
+        logger.info('codecommit_clone')      
+
+        command = self.clone_command(dirs)                 
+        logger.info(command)      
+        util.run(command)
+
+    # --------------
+    # Helper Methods
+    # --------------
+    def clone_command(self, dirs):        
+        return "git clone {url} --single-branch --branch {ref} {destination}".format(
+            url=self.codecommit_clone_url,
+            ref=self.ref,
+            destination=self.destination(dirs)
+        )
+
+    def destination(self, dirs):
+        """clone directory is relative to schema file"""
+        if self._destination == "":
+            return dirs.lookup.joinpath(self.repository)
+        
+        return dirs.lookup.joinpath(self._destination)
+
+    def resolve(self, key):        
+        return Field.create(key, self.props["prop"][key]).value
+
+    @property
+    def codecommit_clone_url(self):        
+        try:
+            client = boto3.client('codecommit')
+            response = client.get_repository(repositoryName=self.repository)
+        except ClientError as e:        
+            if e.response['Error']['Code'] == 'RepositoryDoesNotExistException':
+                raise Exception(f"CodeCommit repository '{self.repository}' does not exist") from e
+
+            # couldn't handle
+            raise
+
+        return response["repositoryMetadata"]["cloneUrlHttp"]    
+
+    @staticmethod
+    def schema():
+        return {
+            "type" : "object",
+            "properties" : {
+                "type": { "type" : "string" },
+                "prop": { 
+                    "type" : "object",
+                    "properties": {
+                        "repository": { "type": ["string", "object"] },                        
+                        "ref": { "type": ["string", "object"] },
+                        "destination": { "type": ["string", "object"] },                     
+                    },
+                    "required": [                        
+                        "repository",
                         "ref",
                         "destination"
                     ]
