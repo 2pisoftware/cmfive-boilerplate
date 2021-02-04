@@ -110,3 +110,11 @@ data:
       value: {}
   modifiers:
   - modifier: json_serialize
+# ------
+# xdebug
+# ------
+- name: add_php_xdebug_vscode_config
+  resolvers:
+  - resolver: inline
+    prop:
+      value: true
