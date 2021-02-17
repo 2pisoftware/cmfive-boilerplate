@@ -13,7 +13,9 @@ phases:
         - export IMAGE_REPO_NAME=${ECR_REPO}
         - "export IMAGE_TAG=`echo $CODEBUILD_BUILD_ID | cut -d: -f2`"        
         # artifact
-        - export DEPLOY_DIR=$CODEBUILD_SRC_DIR/.build/environment/prod/deploy
+        - export DEPLOY_DIR=$CODEBUILD_SRC_DIR/.build/environment/prod/deploy        
+        # issue ~ https://github.com/yarnpkg/yarn/issues/7866
+        - "curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -"
         # setup
         - apt-get update
         - apt-get install mysql-client -y

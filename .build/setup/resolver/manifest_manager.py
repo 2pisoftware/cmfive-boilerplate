@@ -121,19 +121,26 @@ class GithubTokenManifestLoader:
     def __init__(self, props):
         self.props = props
 
-    def load(self):                
-        # stage http get request
-        headers = {'Authorization': 'token ' + self.token}
-        uri = f"https://api.github.com/repos/{self.owner}/{self.repository}/contents/{self.path}?ref={self.ref}"        
-        
+    def load(self):
         # request file
-        response = requests.get(uri, headers=headers)
+        response = requests.get(**self.stage_request())        
 
         # decode response
         document = response.json()               
         content = b64decode(document["content"]).decode('utf-8')       
         
         return yaml.load(content, Loader=yaml.FullLoader) or {}
+
+    def stage_request(self):
+        result = {
+            url: f"https://api.github.com/repos/{self.owner}/{self.repository}/contents/{self.path}?ref={self.ref}" 
+        }
+        
+        # optional - token can be None for public repositories
+        if self.token:
+            result["headers"] = {'Authorization': 'token ' + self.token}
+        
+        return result
 
     @property
     def token(self):        
