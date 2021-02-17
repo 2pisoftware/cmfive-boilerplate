@@ -94,9 +94,9 @@ class ProvisionTestInstance(ProvisionDevelopmentInstance):
         super().__init__(None)
 
     @classmethod
-    def create(cls, resuse_config):
+    def create(cls):
         init_singletons("test")
-        return cls(resuse_config)
+        return cls()
 
 
 class CreateProductionImage(ActionTemplate):
