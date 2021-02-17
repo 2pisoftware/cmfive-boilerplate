@@ -12,6 +12,7 @@ import click
 from actions import (
     update_default,
     provision_dev,
+    provision_test,
     create_production_image,
     test_config_resolver    
 )
@@ -55,6 +56,14 @@ def provision_dev_cmd(resuse_config):
         resuse_config = True
 
     provision_dev(resuse_config)
+
+
+@cli.command('provision-test')
+def provision_test_cmd():
+    """
+    provision cmfive test instance.
+    """
+    provision_test()
 
 
 @cli.command('create-production-image')

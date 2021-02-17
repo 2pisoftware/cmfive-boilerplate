@@ -89,6 +89,16 @@ class ProvisionDevelopmentInstance(ActionTemplate):
         return cls(resuse_config)
 
 
+class ProvisionTestInstance(ProvisionDevelopmentInstance):
+    def __init__(self):
+        super().__init__(None)
+
+    @classmethod
+    def create(cls, resuse_config):
+        init_singletons("test")
+        return cls(resuse_config)
+
+
 class CreateProductionImage(ActionTemplate):
     def execute(self, *args):
         self.init_environment()
@@ -136,6 +146,11 @@ def update_default():
 
 def provision_dev(resuse_config):
     action = ProvisionDevelopmentInstance.create(resuse_config)
+    action.execute()
+
+
+def provision_test():
+    action = ProvisionTestInstance.create()
     action.execute()
 
 
