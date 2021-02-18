@@ -89,9 +89,40 @@ class ProvisionDevelopmentInstance(ActionTemplate):
         return cls(resuse_config)
 
 
-class ProvisionTestInstance(ProvisionDevelopmentInstance):
+class ProvisionTestInstance(ActionTemplate):
     def __init__(self):
         super().__init__(None)
+
+
+    def execute(self):
+        self.init_environment()
+        self.setup()
+    
+    def setup_hook(self):
+        # cmfive setup steps        
+        exists = self.db.database_exists()
+                
+        # create database once
+        if not exists:
+            self.db.create_database()
+
+        # idempotent operations        
+        # ---------------------
+        if not self.resuse_config:
+            self.web.inject_cmfive_config_file(self.db.hostname)
+        
+        self.web.install_core()
+        self.web.seed_encryption()
+        self.web.install_test_packages()
+        self.web.install_migration()
+        # ----------------------
+
+        # seed admin user once
+        if not exists:
+            self.web.seed_admin()
+
+        # fix
+        self.web.update_permissions()
 
     @classmethod
     def create(cls):
