@@ -108,7 +108,7 @@ class ProvisionTestInstance(ActionTemplate):
 
         # idempotent operations        
         # ---------------------
-        if not self.resuse_config:
+        if not self.reuse_config:
             self.web.inject_cmfive_config_file(self.db.hostname)
         
         self.web.install_core()

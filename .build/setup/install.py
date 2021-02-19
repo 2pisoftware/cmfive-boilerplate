@@ -60,7 +60,7 @@ def provision_dev_cmd(reuse_config):
 
 @cli.command('provision-test')
 @click.option('-rc', '--reuse_config', default=False)
-def provision_test_cmd():
+def provision_test_cmd(reuse_config):
     """
     provision cmfive test instance.
     
