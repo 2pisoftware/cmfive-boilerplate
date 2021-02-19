@@ -43,27 +43,35 @@ def update_default_cmd():
 
 
 @cli.command('provision-dev')
-@click.option('-rc', '--resuse_config', default=False)
-def provision_dev_cmd(resuse_config):
+@click.option('-rc', '--reuse_config', default=False)
+def provision_dev_cmd(reuse_config):
     """
     provision cmfive devlopment instance.
 
-    The 'resuse_configs' provides a mechanism for the developer to
+    The 'reuse_configs' provides a mechanism for the developer to
     reuse the same configs that were staged from a subsequant run 
     of this command. I.e. config.php is not blatted.
     """
-    if resuse_config:
-        resuse_config = True
+    if reuse_config:
+        reuse_config = True
 
-    provision_dev(resuse_config)
+    provision_dev(reuse_config)
 
 
 @cli.command('provision-test')
+@click.option('-rc', '--reuse_config', default=False)
 def provision_test_cmd():
     """
     provision cmfive test instance.
+    
+    The 'reuse_configs' provides a mechanism for the developer to
+    reuse the same configs that were staged from a subsequant run 
+    of this command. I.e. config.php is not blatted.
     """
-    provision_test()
+    if reuse_config:
+        reuse_config = True
+
+    provision_test(reuse_config)
 
 
 @cli.command('create-production-image')

@@ -46,9 +46,9 @@ class ActionTemplate:
 
 
 class ProvisionDevelopmentInstance(ActionTemplate):
-    def __init__(self, resuse_config):
+    def __init__(self, reuse_config):
         super().__init__()
-        self.resuse_config = resuse_config
+        self.reuse_config = reuse_config
 
     def execute(self):
         self.init_environment()
@@ -64,7 +64,7 @@ class ProvisionDevelopmentInstance(ActionTemplate):
 
         # idempotent operations        
         # ---------------------
-        if not self.resuse_config:
+        if not self.reuse_config:
             self.web.inject_cmfive_config_file(self.db.hostname)
         
         self.web.install_core()
@@ -90,9 +90,9 @@ class ProvisionDevelopmentInstance(ActionTemplate):
 
 
 class ProvisionTestInstance(ActionTemplate):
-    def __init__(self):
+    def __init__(self, reuse_config):
         super().__init__()
-
+        self.reuse_config = reuse_config
 
     def execute(self):
         self.init_environment()
@@ -175,13 +175,13 @@ def update_default():
     DockerCompose().init_environment()
 
 
-def provision_dev(resuse_config):
-    action = ProvisionDevelopmentInstance.create(resuse_config)
+def provision_dev(reuse_config):
+    action = ProvisionDevelopmentInstance.create(reuse_config)
     action.execute()
 
 
-def provision_test():
-    action = ProvisionTestInstance.create()
+def provision_test(reuse_config):
+    action = ProvisionTestInstance.create(reuse_config)
     action.execute()
 
 
