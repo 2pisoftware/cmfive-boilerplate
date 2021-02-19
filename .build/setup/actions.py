@@ -84,9 +84,9 @@ class ProvisionDevelopmentInstance(ActionTemplate):
         vscode.setup_php_xdebug_config()
 
     @classmethod
-    def create(cls, resuse_config):
+    def create(cls, reuse_config):
         init_singletons("dev")
-        return cls(resuse_config)
+        return cls(reuse_config)
 
 
 class ProvisionTestInstance(ActionTemplate):
@@ -125,9 +125,9 @@ class ProvisionTestInstance(ActionTemplate):
         self.web.update_permissions()
 
     @classmethod
-    def create(cls):
+    def create(cls, reuse_config):
         init_singletons("test")
-        return cls()
+        return cls(reuse_config)
 
 
 class CreateProductionImage(ActionTemplate):
