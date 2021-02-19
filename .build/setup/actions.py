@@ -91,7 +91,7 @@ class ProvisionDevelopmentInstance(ActionTemplate):
 
 class ProvisionTestInstance(ActionTemplate):
     def __init__(self):
-        super().__init__(None)
+        super().__init__()
 
 
     def execute(self):
