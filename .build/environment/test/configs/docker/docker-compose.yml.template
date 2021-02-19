@@ -23,6 +23,8 @@ services:
     build:
       context: ./.build/environment/{{environment}}/
       dockerfile: Dockerfile
+      cache_from:
+        - localhost:5000/cmfive
     container_name: nginx-php{{php_suffix}}
     hostname: nginx-php{{php_version}}
     environment:
