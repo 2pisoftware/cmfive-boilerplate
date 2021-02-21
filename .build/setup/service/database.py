@@ -15,9 +15,9 @@ logger = logging.getLogger(__name__)
 class DatabaseService:
     SERVICE_NAME = "mysqldb"
 
-    def __init__(self):
-        self.dirs = Directories.instance()
-        self.config = ConfigManager.instance().config
+    def __init__(self, context):
+        self.context = context
+        self.config = context.manager.config
         self._service = None
 
     # ----------
@@ -55,7 +55,7 @@ class DatabaseService:
         if self._service is None:
             if self.is_database_container_present():
                 # database running in container
-                self._service = DatabaseServiceContainer()
+                self._service = DatabaseServiceContainer(self.context)
             else:
                 # database running on host
                 self._service = DatabaseServiceHost()
@@ -100,8 +100,8 @@ class DatabaseServiceContainer:
     """
     This class represents a database running in a container.
     """
-    def __init__(self):
-        self.config = ConfigManager.instance().config
+    def __init__(self, context):
+        self.config = context.manager.config
         self.servicing = False
 
     # ----------

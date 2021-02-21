@@ -1,6 +1,7 @@
 import logging
 import util
-from common import init_singletons, ConfigManager, Directories
+from common import create_shared_context
+from config import ConfigManager
 from docker import DockerCompose
 from service import WebService, DatabaseService, cicd, vscode
 
@@ -12,11 +13,11 @@ logger = logging.getLogger(__name__)
 # Helper Classes
 # --------------
 class ActionTemplate:
-    def __init__(self):
-        self.compose = DockerCompose()
-        self.web = WebService()
-        self.db = DatabaseService()               
-        self.dirs = Directories.instance()
+    def __init__(self, env):
+        self.context = create_shared_context(env)
+        self.compose = DockerCompose(self.context)
+        self.web = WebService(self.context)
+        self.db = DatabaseService(self.context)
 
     # ----------
     # Client API
@@ -32,7 +33,7 @@ class ActionTemplate:
         self.setup_hook()
 
         # post setup - optional
-        util.run_scripts(self.dirs.scripts, "main")
+        util.run_scripts(self.context.dirs.scripts, "main")
 
     def create_image(self, tag):
         # snapshot web container
@@ -46,8 +47,8 @@ class ActionTemplate:
 
 
 class ProvisionDevelopmentInstance(ActionTemplate):
-    def __init__(self, reuse_config):
-        super().__init__()
+    def __init__(self, env, reuse_config):
+        super().__init__(env)
         self.reuse_config = reuse_config
 
     def execute(self):
@@ -81,17 +82,12 @@ class ProvisionDevelopmentInstance(ActionTemplate):
         self.web.update_permissions()
 
         # miscellaneous        
-        vscode.setup_php_xdebug_config()
-
-    @classmethod
-    def create(cls, reuse_config):
-        init_singletons("dev")
-        return cls(reuse_config)
+        vscode.setup_php_xdebug_config(self.context)
 
 
 class ProvisionTestInstance(ActionTemplate):
-    def __init__(self, reuse_config):
-        super().__init__()
+    def __init__(self, env, reuse_config):
+        super().__init__(env)
         self.reuse_config = reuse_config
 
     def execute(self):
@@ -124,11 +120,6 @@ class ProvisionTestInstance(ActionTemplate):
         # fix
         self.web.update_permissions()
 
-    @classmethod
-    def create(cls, reuse_config):
-        init_singletons("test")
-        return cls(reuse_config)
-
 
 class CreateProductionImage(ActionTemplate):
     def execute(self, *args):
@@ -150,7 +141,7 @@ class CreateProductionImage(ActionTemplate):
         self.web.inject_cmfive_config_file(self.db.hostname)
         self.web.install_core()
         self.web.seed_encryption()
-        cicd.install_crm_modules(self.web.SERVICE_NAME)
+        cicd.install_crm_modules(self.context, self.web.SERVICE_NAME)
         self.web.install_migration()
         # ---------------------
         
@@ -161,35 +152,30 @@ class CreateProductionImage(ActionTemplate):
         # fix
         self.web.update_permissions()
 
-    @classmethod
-    def create(cls):
-        init_singletons("prod")
-        return cls()
-
 
 # -------
 # Actions
 # -------
 def update_default():
-    init_singletons("default")
-    DockerCompose().init_environment()
+    context = create_shared_context("default")
+    DockerCompose(context).init_environment()
 
 
 def provision_dev(reuse_config):
-    action = ProvisionDevelopmentInstance.create(reuse_config)
+    action = ProvisionDevelopmentInstance('dev', reuse_config)
     action.execute()
 
 
 def provision_test(reuse_config):
-    action = ProvisionTestInstance.create(reuse_config)
+    action = ProvisionTestInstance('test', reuse_config)
     action.execute()
 
 
 def create_production_image(tag):
-    action = CreateProductionImage.create()
+    action = CreateProductionImage('prod')
     action.execute(tag)
 
 
 def test_config_resolver(environment):
-    init_singletons(environment)
-    return ConfigManager.instance().config
+    context = create_shared_context(environment)    
+    return ConfigManager(environment, context.dirs).config
