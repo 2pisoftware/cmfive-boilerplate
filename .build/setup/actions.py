@@ -13,8 +13,8 @@ logger = logging.getLogger(__name__)
 # Helper Classes
 # --------------
 class ActionTemplate:
-    def __init__(self, env):
-        self.context = create_shared_context(env)
+    def __init__(self, env, context=None):        
+        self.context = context if context else create_shared_context(env)        
         self.compose = DockerCompose(self.context)
         self.web = WebService(self.context)
         self.db = DatabaseService(self.context)
@@ -29,7 +29,7 @@ class ActionTemplate:
 
     def setup(self):
         # subclass defines setup steps
-        logger.info('\n-- step 2. setup cmfive --')
+        logger.info('\n-- step 2. setup cmfive --')        
         self.setup_hook()
 
         # post setup - optional
@@ -67,12 +67,14 @@ class ProvisionDevelopmentInstance(ActionTemplate):
         # ---------------------
         if not self.reuse_config:
             self.web.inject_cmfive_config_file(self.db.hostname)
-        
+
         self.web.install_core()
         self.web.seed_encryption()
         self.web.install_test_packages()
         self.web.install_migration()
         # ----------------------
+
+        print('asdad')
 
         # seed admin user once
         if not exists:
@@ -86,9 +88,8 @@ class ProvisionDevelopmentInstance(ActionTemplate):
 
 
 class ProvisionTestInstance(ActionTemplate):
-    def __init__(self, env, reuse_config):
-        super().__init__(env)
-        self.reuse_config = reuse_config
+    def __init__(self, env, context):
+        super().__init__(env, context)        
 
     def execute(self):
         self.init_environment()
@@ -101,12 +102,10 @@ class ProvisionTestInstance(ActionTemplate):
         # create database once
         if not exists:
             self.db.create_database()
-
+                
         # idempotent operations        
         # ---------------------
-        if not self.reuse_config:
-            self.web.inject_cmfive_config_file(self.db.hostname)
-        
+        self.web.inject_cmfive_config_file(self.db.hostname)        
         self.web.install_core()
         self.web.seed_encryption()
         self.web.install_test_packages()
@@ -166,8 +165,15 @@ def provision_dev(reuse_config):
     action.execute()
 
 
-def provision_test(reuse_config):
-    action = ProvisionTestInstance('test', reuse_config)
+def provision_test(config):
+    env = 'test'
+
+    # update config with values user provided in CLI
+    context = create_shared_context(env)
+    context.manager.config.update(config)
+
+    # init and execute action    
+    action = ProvisionTestInstance(env, context)
     action.execute()
 
 
@@ -177,5 +183,5 @@ def create_production_image(tag):
 
 
 def test_config_resolver(environment):
-    context = create_shared_context(environment)    
+    context = create_shared_context(environment)
     return ConfigManager(environment, context.dirs).config

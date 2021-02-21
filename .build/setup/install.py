@@ -9,6 +9,7 @@ todo:
 """
 import logging
 import click
+from decorator import literal_cmd_options
 from actions import (
     update_default,
     provision_dev,
@@ -59,19 +60,13 @@ def provision_dev_cmd(reuse_config):
 
 
 @cli.command('provision-test')
-@click.option('-rc', '--reuse_config', default=False)
-def provision_test_cmd(reuse_config):
+@literal_cmd_options('test')
+def provision_test_cmd(**kwargs):
     """
-    provision cmfive test instance.
-    
-    The 'reuse_configs' provides a mechanism for the developer to
-    reuse the same configs that were staged from a subsequant run 
-    of this command. I.e. config.php is not blatted.
-    """
-    if reuse_config:
-        reuse_config = True
-
-    provision_test(reuse_config)
+    provision cmfive test instance.    
+    """            
+    logger = logging.getLogger(__name__)    
+    provision_test(kwargs)
 
 
 @cli.command('create-production-image')
