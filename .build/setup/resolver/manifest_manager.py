@@ -8,8 +8,7 @@ from .fields import Field
 
 
 class ManifestManager:    
-    def __init__(self, dirs):
-        print(dirs.dsl)
+    def __init__(self, dirs):        
         self.manifests = [
             Manifest(FilesystemManifestLoader({"filepath": dirs.dsl}))
         ]

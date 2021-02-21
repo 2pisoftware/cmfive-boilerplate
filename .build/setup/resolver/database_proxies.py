@@ -11,6 +11,10 @@ class SchemaDatabaseProxy:
         self.resolver_manager = resolver_manager        
         self.database = None
 
+    def get_resolver_type(self, key):        
+        _, resolver_adapter  = self.resolve(key)
+        return resolver_adapter.resolver.name
+
     def get(self, key):               
         result, _  = self.resolve(key)   
         result = self.modify(key, result)
@@ -83,6 +87,10 @@ class IntrinsicDatabaseProxy:
         self.reserved = registries
         self.database = None
 
+    def get_resolver_type(self, key):
+        # allow another proxy to handle request        
+        raise RequestUnhandled()
+
     def get(self, key):
         # allow another proxy to handle request
         if not self.is_reserved(key):
@@ -147,6 +155,10 @@ class SchemalessDatabaseProxy:
         self.manifest = manifest
         self.resolver = resolver        
         self.database = None
+
+    def get_resolver_type(self, key):
+        # allow another proxy to handle request        
+        raise RequestUnhandled()
 
     def get(self, key):
         # allow another proxy to handle request

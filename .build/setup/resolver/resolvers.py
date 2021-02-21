@@ -12,6 +12,7 @@ def register_resolver(name):
     """add resolver class to registry"""
     def add_class(clazz):
         resolver_registry[name] = clazz
+        clazz.name = name
         return clazz
     return add_class
 

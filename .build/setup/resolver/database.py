@@ -10,6 +10,17 @@ class Database:
         self.proxies.append(proxy)
         proxy.database = proxy
 
+    def get_resolver_type(self, key):
+        for proxy in self.proxies:
+            try:
+                value = proxy.get_resolver_type(key)                
+            except RequestUnhandled:
+                continue
+            else:
+                return value
+        else:
+            return None
+
     def get(self, key):        
         for proxy in self.proxies:
             try:
