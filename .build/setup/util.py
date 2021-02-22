@@ -53,6 +53,21 @@ def copy_dirs(source, target):
     dir_util.copy_tree(str(source), str(target))
 
 
+def render_template_from_string(value, tokens):    
+    try:
+        # setup environment
+        environment = Environment(loader=BaseLoader)
+        environment.filters["fromjson"] = lambda value: json.loads(value)
+
+        # render template
+        template = environment.from_string(value)            
+        result = template.render(tokens, undefined=StrictUndefined)
+    except UndefinedError as exc:
+        raise Exception(f"template placeholder token is missing") from exc
+
+    return result
+
+
 def render_template(fpath, tokens):
     with fpath.open() as fp:
         try:

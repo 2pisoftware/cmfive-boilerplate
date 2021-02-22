@@ -118,3 +118,8 @@ data:
   - resolver: inline
     prop:
       value: true
+- name: xdebug_vscode_port
+  resolvers:
+  - resolver: inline
+    prop:
+      value: 9003
