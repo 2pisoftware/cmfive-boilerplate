@@ -72,9 +72,7 @@ class ProvisionDevelopmentInstance(ActionTemplate):
         self.web.seed_encryption()
         self.web.install_test_packages()
         self.web.install_migration()
-        # ----------------------
-
-        print('asdad')
+        # ----------------------        
 
         # seed admin user once
         if not exists:
