@@ -3,7 +3,6 @@
 - [ ] I'm using the correct PHP Version (7.2 for current, 7.0 for legacy).
 - [ ] Tests are passing.
 - [ ] I've added comments to any new methods I've created or where else relevant.
-- [ ] PHPCS has reported no errors to my changes.
 - [ ] I've replaced magic method usage on DbService classes with the getInstance() static method.
 
 <!-- Add a short description. -->
