@@ -29,7 +29,7 @@ def init_proxies(manifest_manager, resolver_manager):
 def init_database(dirs):    
     # init systems
     manifest_manager = ManifestManager(dirs)
-    provider_manager = ProviderManager.instance(manifest_manager, dirs)
+    provider_manager = ProviderManager(manifest_manager, dirs)
     resolver_manager = ResolverManager(manifest_manager, provider_manager, dirs)    
     manifest_manager.load()    
 
