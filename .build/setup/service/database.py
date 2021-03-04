@@ -58,7 +58,7 @@ class DatabaseService:
                 self._service = DatabaseServiceContainer(self.context)
             else:
                 # database running on host
-                self._service = DatabaseServiceHost()
+                self._service = DatabaseServiceHost(self.context)
 
         return self._service
 
@@ -76,8 +76,8 @@ class DatabaseServiceHost:
     """
     This class represents a database running on a host.
     """
-    def __init__(self):
-        self.config = ConfigManager.instance().config
+    def __init__(self, context):
+        self.config = context.manager.config
 
     def run(self, sql):
         """run sql against database on host"""
