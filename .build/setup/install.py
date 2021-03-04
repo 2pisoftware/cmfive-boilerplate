@@ -15,7 +15,8 @@ from actions import (
     provision_dev,
     provision_test,
     create_production_image,
-    test_config_resolver    
+    test_config_resolver,
+    prime_environment
 )
 
 
@@ -81,6 +82,13 @@ def create_production_image_cmd(tag):
 def test_config_resolver_cmd(environment):
     """test config resolver against environment"""
     print(test_config_resolver(environment))
+
+
+@cli.command('prime-environment')
+@click.argument('environment')
+def prime_environment_cmd(environment):
+    """setup environment without running docker-compose"""
+    prime_environment(environment)
 
 
 if __name__ == '__main__':

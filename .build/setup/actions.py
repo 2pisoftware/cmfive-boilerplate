@@ -183,3 +183,8 @@ def create_production_image(tag):
 def test_config_resolver(environment):
     context = create_shared_context(environment)
     return ConfigManager(environment, context.dirs).config
+
+
+def prime_environment(environment):
+    context = create_shared_context(environment)
+    DockerCompose(context).init_environment()
