@@ -1,19 +1,11 @@
 from .providers import provider_registry
 
 
-class ProviderManager:    
-    _instance = None
-    
+class ProviderManager:
     def __init__(self, manifest_manager, dirs):                
         self.manifest_manager = manifest_manager
         self.dirs = dirs
         self.providers = {}
-
-    @classmethod
-    def instance(cls, manifest_manager=None, dirs=None):
-        if cls._instance is None:
-            cls._instance = cls(manifest_manager, dirs)
-        return cls._instance
 
     def get(self, name):
         if name in self.providers:
