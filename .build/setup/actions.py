@@ -43,7 +43,7 @@ class ActionTemplate:
     def stop_environment(self):
         # teardown cmfive instance
         logger.info('\n-- step 4. teardown cmfive instance --')
-        DockerCompose().down(self.context)
+        DockerCompose(self.context).down()
 
 
 class ProvisionDevelopmentInstance(ActionTemplate):
