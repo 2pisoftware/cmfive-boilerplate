@@ -66,7 +66,55 @@ server {
 		deny all;
 	}
 
-	include /var/www/html/nginx.conf;
+	# Deny access to any of the below file extensions.
+	location ~ \.(json|lock|phar|example|xml|md|config|txt|help|html|ds|yml|yaml|sql)$ {
+		deny all;
+	}
+
+	# Deny access to the storage directory.
+	location ~ /storage {
+		deny all;
+	}
+
+	# Deny access to all dot files in any directory.
+	location ~ ^/\**. {
+		deny all;
+	}
+
+	# Allow access to asset folders in modules
+	location ~ /modules/([A-Za-z0-9]+)/assets {
+		allow all;
+	}
+
+	# Allow access to system templates.
+	location ~ /system/templates {
+		allow all;
+	}
+
+	# Allow access to system module assets.
+	location ~ /system/modules/([A-Za-z0-9]+)/assets {
+		allow all;
+	}
+
+	# Allow access to cache css folder.
+	location ~ /cache/css {
+		allow all;
+	}
+
+	# Allow access to files with the .php extension.
+	location ~ $.php {
+		allow all;
+	}
+
+	# Allow access to the root path.
+	location = / {
+		allow all;
+	}
+
+	# Else deny to everything that hasn't matched
+	location ~ / {
+		try_files $uri $uri/ /index.php?$args;
+	}
 }
 
 
