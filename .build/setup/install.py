@@ -9,11 +9,14 @@ todo:
 """
 import logging
 import click
+from decorator import literal_cmd_options
 from actions import (
     update_default,
     provision_dev,
+    provision_test,
     create_production_image,
-    test_config_resolver    
+    test_config_resolver,
+    prime_environment
 )
 
 
@@ -42,9 +45,29 @@ def update_default_cmd():
 
 
 @cli.command('provision-dev')
-def provision_dev_cmd():
-    """provision cmfive devlopment instance"""
-    provision_dev()
+@click.option('-rc', '--reuse_config', default=False)
+def provision_dev_cmd(reuse_config):
+    """
+    provision cmfive devlopment instance.
+
+    The 'reuse_configs' provides a mechanism for the developer to
+    reuse the same configs that were staged from a subsequant run 
+    of this command. I.e. config.php is not blatted.
+    """
+    if reuse_config:
+        reuse_config = True
+
+    provision_dev(reuse_config)
+
+
+@cli.command('provision-test')
+@literal_cmd_options('test')
+def provision_test_cmd(**kwargs):
+    """
+    provision cmfive test instance.    
+    """            
+    logger = logging.getLogger(__name__)    
+    provision_test(kwargs)
 
 
 @cli.command('create-production-image')
@@ -59,6 +82,13 @@ def create_production_image_cmd(tag):
 def test_config_resolver_cmd(environment):
     """test config resolver against environment"""
     print(test_config_resolver(environment))
+
+
+@cli.command('prime-environment')
+@click.argument('environment')
+def prime_environment_cmd(environment):
+    """setup environment without running docker-compose"""
+    prime_environment(environment)
 
 
 if __name__ == '__main__':

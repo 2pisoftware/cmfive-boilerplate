@@ -10,6 +10,7 @@ import logging
 import os
 import sys
 import json
+import textwrap
 import subprocess
 
 logger = logging.getLogger(__name__)
@@ -50,6 +51,21 @@ def delete_dir(target):
 
 def copy_dirs(source, target):
     dir_util.copy_tree(str(source), str(target))
+
+
+def render_template_from_string(value, tokens):    
+    try:
+        # setup environment
+        environment = Environment(loader=BaseLoader)
+        environment.filters["fromjson"] = lambda value: json.loads(value)
+
+        # render template
+        template = environment.from_string(value)            
+        result = template.render(tokens, undefined=StrictUndefined)
+    except UndefinedError as exc:
+        raise Exception(f"template placeholder token is missing") from exc
+
+    return result
 
 
 def render_template(fpath, tokens):
@@ -110,3 +126,26 @@ def run_scripts(filepath, entrypoint):
 
         # invoke
         function()
+
+
+def create_directory_structure(dirpath, exclude_file):
+    # remove file from 'dirpath'
+    if exclude_file:        
+        dirpath.parents[0].mkdir(parents=True, exist_ok=True)
+    # assumed 'dirpath' is a directory structure
+    else:        
+        dirpath.mkdir(parents=True, exist_ok=True)
+
+
+def write_to_file(filepath, content):
+    create_directory_structure(filepath, True)
+    with open(filepath, "w") as fp:
+        fp.write(content)
+
+
+def dedent_multiline_string(content, remove_firstline):
+    content = textwrap.dedent(content)
+    if remove_firstline:
+        content = "\n".join(content.split('\n')[1:])
+    
+    return content

@@ -4,19 +4,8 @@ from pathlib import Path
 
 
 class Directories:
-    # singleton
-    _instance = None
-
-    def __init__(self, env):
-        if type(self)._instance is None:
-            type(self)._instance = self
-            self._env = env
-
-    @classmethod
-    def instance(cls):
-        assert cls._instance is not None, "singleton is not instantiated"
-
-        return cls._instance
+    def __init__(self, env):        
+        self._env = env
 
     @property
     def cwd(self):
@@ -57,3 +46,7 @@ class Directories:
     @property
     def scripts(self):
         return self.env.joinpath("scripts")
+    
+    @property
+    def vscode(self):
+        return self.root.joinpath(".vscode")

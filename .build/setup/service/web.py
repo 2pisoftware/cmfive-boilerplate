@@ -12,9 +12,9 @@ logger = logging.getLogger(__name__)
 class WebService:
     SERVICE_NAME = "webapp"
 
-    def __init__(self):
-        self.dirs = Directories.instance()
-        self.config = ConfigManager.instance().config
+    def __init__(self, context):
+        self.context = context
+        self.config = self.context.manager.config
 
     # ----------
     # Client API
@@ -28,8 +28,8 @@ class WebService:
 
         # render template into stage dir
         util.inflate_template(
-            self.dirs.cmfive.joinpath("config.php.template"),
-            self.dirs.stage,
+            self.context.dirs.cmfive.joinpath("config.php.template"),
+            self.context.dirs.stage,
             ".template",
             tokens,
             False
@@ -37,8 +37,8 @@ class WebService:
 
         # copy file into container(s)
         for container in DockerCompose.containers_by_service(self.SERVICE_NAME):
-            container.copy_file_into(
-                source=self.dirs.stage.joinpath("config.php"),
+            container.copy_into(
+                source=self.context.dirs.stage.joinpath("config.php"),
                 target="/var/www/html/config.php"
             )
 

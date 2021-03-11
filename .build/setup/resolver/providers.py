@@ -1,4 +1,3 @@
-from botocore.exceptions import ClientError
 import boto3
 
 provider_registry = {}
@@ -14,11 +13,5 @@ def register_provider(name):
 
 @register_provider('aws')
 class AWSProvider:
-    def __init__(self, profile):
-        self.session=boto3.Session(profile_name=profile)
-
-
-@register_provider('local')
-class LocalProvider:
-    def __init__(self, **kwargs):
-        pass
+    def __init__(self, props):        
+        self.session=boto3.Session(profile_name=props["profile"])

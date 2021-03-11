@@ -14,7 +14,7 @@ class Container:
     def run_command(self, command):
         return util.run(command, self.container_name)
 
-    def copy_file_into(self, source, target):
+    def copy_into(self, source, target):
         util.run("docker cp {source} {container_name}:{target}".format(
             source=source,
             container_name=self.container_name,
@@ -31,9 +31,8 @@ class Container:
 
 
 class DockerCompose:
-    def __init__(self):
-        self.dirs = Directories.instance()
-        self.config = ConfigManager.instance().config
+    def __init__(self, context):
+        self.context = context        
 
     # Client API
     def up(self):
@@ -72,24 +71,24 @@ class DockerCompose:
     def create_stage_directory(self):
         """create temp stage dir for image configs"""
         logger.info('create stage directory')
-        util.delete_dir(self.dirs.stage)
-        util.copy_dirs(self.dirs.common, self.dirs.stage)
-        util.copy_dirs(self.dirs.image, self.dirs.stage)
+        util.delete_dir(self.context.dirs.stage)
+        util.copy_dirs(self.context.dirs.common, self.context.dirs.stage)
+        util.copy_dirs(self.context.dirs.image, self.context.dirs.stage)
 
         # optional override
-        if self.dirs.override.exists():
-            util.copy_dirs(self.dirs.override, self.dirs.stage)
+        if self.context.dirs.override.exists():
+            util.copy_dirs(self.context.dirs.override, self.context.dirs.stage)
 
-        util.inflate_templates(self.dirs.stage, ".template", self.config, True)
+        util.inflate_templates(self.context.dirs.stage, ".template", self.context.manager.config, True)
 
     def create_docker_compose_file(self):
         """inflate docker-compose.yml template into root dir"""
         logger.info('create docker compose file')
         util.inflate_template(
-            self.dirs.docker.joinpath("docker-compose.yml.template"),
-            self.dirs.root,
+            self.context.dirs.docker.joinpath("docker-compose.yml.template"),
+            self.context.dirs.root,
             ".template",
-            self.config,
+            self.context.manager.config,
             False
         )
 
@@ -97,18 +96,18 @@ class DockerCompose:
         """inflate Dockerfile into environment/<env> dir"""
         logger.info('create docker file')
         util.inflate_template(
-            self.dirs.docker.joinpath("Dockerfile.template"),
-            self.dirs.env,
+            self.context.dirs.docker.joinpath("Dockerfile.template"),
+            self.context.dirs.env,
             ".template",
-            self.config,
+            self.context.manager.config,
             False
         )
 
     def add_docker_ignore_file(self):
         """copy .dockerignore to root dir if exist"""
         logger.info('add docker ignore file')
-        source = self.dirs.docker.joinpath(".dockerignore")
+        source = self.context.dirs.docker.joinpath(".dockerignore")
 
         if source.exists():
-            target = self.dirs.root.joinpath(".dockerignore")
+            target = self.context.dirs.root.joinpath(".dockerignore")
             target.write_text(source.read_text())
