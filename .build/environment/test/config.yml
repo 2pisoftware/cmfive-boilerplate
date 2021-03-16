@@ -99,7 +99,7 @@ data:
   resolvers:
   - resolver: inline
     prop:
-      value: "develop"
+      value: "feature/PHP7.4"
 # -----------
 # third party
 # -----------
