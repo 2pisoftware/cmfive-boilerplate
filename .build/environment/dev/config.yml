@@ -81,23 +81,7 @@ data:
   resolvers:
   - resolver: inline
     prop:
-      value: "7.4mployment Type and Holiday entries can be created and deleted
- Test  tests/acceptance/staff_StaffAdminCest.php:runTests
- Step  Click "Add Employment Type"
- Fail  Link or Button or CSS or XPath element with 'Add Employment Type' was not found.
-
-Scenario Steps:
-
- 12. $I->click("Add Employment Type") at tests/_support/Helper/CmfiveStaffModule.php:20
- 11. $I->amOnPage("/staff-admin#employmenttypes") at tests/_support/Helper/CmfiveStaffModule.php:19
- 10. $I->addEmploymentType("CmfiveUI","staff_employment_ty...",true,"10.00","8") at tests/acceptance/staff_StaffAdminCest.php:19
- 9. $I->wait(1) at tests/_support/Helper/CmfiveSite.php:108
- 8. $I->click("Login") at tests/_support/Helper/CmfiveSite.php:105
- 7. $I->fillField("password","admin") at tests/_support/Helper/CmfiveSite.php:104
-
-Artifacts:
-
-Png: /var/www/html/test/Codeception/tests/_output/StaffAdminCest.runTests.fail.png"
+      value: "7.4"
 - name: mysql_version
   resolvers:
   - resolver: inline
