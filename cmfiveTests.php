@@ -367,9 +367,16 @@ function launchCodecept($param, $silent = false)
     if ($OK == "OK") {
         try {
             $runner = "cd " . TEST_DIRECTORY . " && vendor" . DS . "bin" . DS . "codecept " . $param;
-            echo shell_exec($runner);
+            $output = [];
+            $return_code = 0;
+            exec($runner, $output, $return_code);
+            echo implode("\n", $output) . "\n";
+            if ($return_code > 0) {
+                exit($return_code);
+            }
         } catch (Exception $e) {
             echo $e->getMessage();
+            exit(1);
         }
     }
 

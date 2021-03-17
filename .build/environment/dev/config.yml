@@ -1,19 +1,125 @@
 ---
+manifest:
+  resolvers:
+  - name: inline    
+    type: literal
+
+data:
+# -----------------
+# database instance
+# -----------------
+- name: db_instance_username
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "root"
+- name: db_instance_password
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "root"
+- name: db_instance_port
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "3306"
+# ----------
 # admin user
-admin_email: admin@2pisoftware.com
-admin_first_name: cmfive
-admin_last_name: cmfive
-admin_login_username: cmfive
-admin_login_password: cmfive
-
-# database
-db_database: cmfive
-db_username: cmfive
-db_password: cmfive
-db_port: '3306'
-
-# services
-php_version: '7.2'
-php_suffix: '7.2'
-mysql_version: '5.7.21'
-mysql_suffix: '5.7'
+# ----------
+- name: admin_login_username
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "cmfive"
+- name: admin_login_password
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "cmfive"
+- name: admin_email
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "cmfive@2pisoftware.com"
+- name: admin_first_name
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "cmfive"
+- name: admin_last_name
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "cmfive"
+# ---------------
+# client database
+# ---------------
+- name: db_username
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "cmfive"
+- name: db_password
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "cmfive"
+- name: db_database
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "cmfive"
+# -------
+# service
+# -------
+- name: php_version
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "7.4"
+- name: php_suffix
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "7.4"
+- name: mysql_version
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "5.7.21"
+- name: mysql_suffix
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "5.7"
+# -----------
+# cmfive core
+# -----------
+- name: cmfive_core_ref
+  resolvers:
+  - resolver: inline
+    prop:
+      value: "develop"
+# -----------
+# third party
+# -----------
+- name: module_configs
+  resolvers:
+  - resolver: inline
+    prop:
+      value: {}
+  modifiers:
+  - modifier: json_serialize
+# ------
+# xdebug
+# ------
+- name: add_php_xdebug_vscode_config
+  resolvers:
+  - resolver: inline
+    prop:
+      value: true
+- name: xdebug_vscode_port
+  resolvers:
+  - resolver: inline
+    prop:
+      value: 9003

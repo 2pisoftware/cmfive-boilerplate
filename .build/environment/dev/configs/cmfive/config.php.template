@@ -18,8 +18,8 @@ Config::set("system.timezone", "Australia/Sydney");
 //========== Database Configuration ==========================
 
 Config::set("database", array(
-    "hostname"  => getenv('DB_HOST') ? : "{{db_hostname}}",
-    "port"  => getenv('DB_PORT') ? : "{{db_port}}",
+    "hostname"  => getenv('DB_HOST') ? : "{{db_instance_endpoint}}",
+    "port"  => getenv('DB_PORT') ? : "{{db_instance_port}}",
     "username"  => getenv('DB_USERNAME') ? : "{{db_username}}",
     "password"  => getenv('DB_PASSWORD') ? : "{{db_password}}",
     "database"  => getenv('DB_DATABASE') ? : "{{db_database}}",
@@ -77,7 +77,7 @@ Config::set("tests",
         ],
         "- Db:" =>
         [
-         "dsn" => "mysql:host={{db_hostname}}:{{db_port}};dbname={{db_database}}",
+         "dsn" => "mysql:host={{db_instance_endpoint}}:{{db_instance_port}};dbname={{db_database}}",
          "user" => "{{db_username}}",
          "password" => "{{db_password}}",
         ],
@@ -126,3 +126,7 @@ Config::set('system.rest_api_key', "abcdefghijklmnopqrstuvwxyz1234567890");
 Config::set('system.rest_include', array(
 	// "Contact"
 ));
+
+{% if module_configs is defined %}
+Config::extendFromJson('{{ module_configs }}');
+{% endif %}
