@@ -1,8 +1,10 @@
-from config import Config
+from collections import namedtuple
 from dirs import Directories
+from config import ConfigManager
 
 
-def init_singletons(env, is_config_local):
-    """initialize singletons"""
-    Directories(env)
-    Config(env, is_config_local)
+SharedContext = namedtuple('SharedContext', ['dirs', 'manager'])
+
+def create_shared_context(env):
+    dirs = Directories(env)
+    return SharedContext(dirs, ConfigManager(env, dirs))

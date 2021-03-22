@@ -10,6 +10,9 @@ desktop.ini
 docker-compose.override.yml
 .env 
 
+.build/environment/*/stage/*
+.build/environment/*/Dockerfile
+
 # IDE Fluff
 .settings
 .buildpath

@@ -477,6 +477,10 @@ function seedAdminUser($parameters = [])
 
 function generateEncryptionKeys()
 {
+    if (!stepOneYieldsWeb()) {
+        return false;
+    }
+
     if (!empty(Config::get("system.encryption"))) {
         echo "\nOrder of steps is important - KEY ALREADY EXISTS";
         echo "\nSetup will not create multiple encryption keys\n\n";

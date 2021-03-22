@@ -95,7 +95,6 @@ class CmfiveSite extends \Codeception\Module
     public function login($I, $username, $password)
     {
         $I->amOnPage('/auth/login');
-        $I->wait(1);
 
         // skip form filling if already logged in
         if (strpos('/auth/login', $I->grabFromCurrentUrl()) !== false) {
@@ -104,8 +103,6 @@ class CmfiveSite extends \Codeception\Module
             $I->fillField('password', $password);
             $I->click('Login');
         }
-
-        $I->wait(1);
     }
 
     public function loginAsAdmin($I)

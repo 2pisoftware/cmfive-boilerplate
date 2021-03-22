@@ -1,3 +1,6 @@
+# Add
+- scripts dir in environment
+
 # Summary
 The `.build` directory contains all the source and configuration files required for continuous delivery and deployment.
 
@@ -46,6 +49,8 @@ The third step the provision performs once the docker-compose environment is up 
 ***prod***
 
 `<add content>`
+
+- add contnet about prod/deploy dir, referenced by cmfive-cicd cdk project
 
 # Setup
 The following steps describe how to set up and activate a Python Virtual Environment to run the `install.py` script. This script is the entry point for the cmfive CLI.
