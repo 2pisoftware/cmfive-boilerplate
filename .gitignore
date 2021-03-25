@@ -12,6 +12,8 @@ docker-compose.override.yml
 
 .build/environment/*/stage/*
 .build/environment/*/Dockerfile
+!.build/environment/default/Dockerfile
+!.build/environment/*/stage/*
 
 # IDE Fluff
 .settings
