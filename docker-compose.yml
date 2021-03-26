@@ -21,7 +21,7 @@ services:
 
   webapp:
     build:
-      context: ./.build/environment/dev/
+      context: ./.build/environment/default/
       dockerfile: Dockerfile
     container_name: nginx-php7.4
     hostname: nginx-php7.4

@@ -16,18 +16,18 @@ RUN apt-get install -y -o "APT::Acquire::Retries=6" \
     vim supervisor nginx gnupg2	
 
 RUN apt-get install -y -o "APT::Acquire::Retries=6" \
-    php{{php_version}}-fpm
+    php7.4-fpm
 
 RUN apt-get update
 RUN apt-get install -y -o "APT::Acquire::Retries=6" \
-    php{{php_version}}-zip \
-    php{{php_version}}-curl \
-    php{{php_version}}-gd \
-    php{{php_version}}-json \
-    php{{php_version}}-mysql \
-    php{{php_version}}-xml \
-    php{{php_version}}-bcmath \
-    php{{php_version}}-mbstring
+    php7.4-zip \
+    php7.4-curl \
+    php7.4-gd \
+    php7.4-json \
+    php7.4-mysql \
+    php7.4-xml \
+    php7.4-bcmath \
+    php7.4-mbstring
 
 # toolbox extras, to allow for DB commands & subnet examination etc
 RUN apt-get update
@@ -41,13 +41,13 @@ RUN apt-get install -y -o "APT::Acquire::Retries=6" \
 RUN apt-get update
 RUN apt-get install -y -o "APT::Acquire::Retries=6" \ 
     phpunit \
-    php{{php_version}}-xdebug
+    php7.4-xdebug
 
 # bootstrap environment
 WORKDIR /bootstrap
 COPY ./stage .
 
-RUN cp fpm/* /etc/php/{{php_version}}/fpm/
+RUN cp fpm/* /etc/php/7.4/fpm/
 RUN cp nginx/nginx.conf /etc/nginx/nginx.conf
 RUN cp nginx/default.conf /etc/nginx/conf.d/default.conf
 RUN cp supervisord.conf /etc/supervisord.conf
