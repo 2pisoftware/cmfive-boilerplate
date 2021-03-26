@@ -41,7 +41,7 @@ RUN apt-get install -y -o "APT::Acquire::Retries=6" \
 RUN apt-get update
 RUN apt-get install -y -o "APT::Acquire::Retries=6" \ 
     phpunit \
-    php-xdebug
+    php7.4-xdebug
 
 # bootstrap environment
 WORKDIR /bootstrap
