@@ -42,6 +42,17 @@ Config::set("database", array(
     ]
 ));
 
+Config::set("report.database", array(
+    "hostname"  => getenv('DB_HOST') ? : "{{db_instance_endpoint}}",
+    "port"  => getenv('DB_PORT') ? : "{{db_instance_port}}",
+    "username"  => getenv('DB_USERNAME') ? : "cmfive",
+    "password"  => getenv('DB_PASSWORD') ? : "cmfive",
+    "database"  => getenv('DB_DATABASE') ? : "cmfive",
+    "driver"    => getenv('DB') ? : "mysql"
+));
+
+Config::set('system.environment', 'development');
+
 //=========== Email Layer Configuration =====================
 
 Config::append('email', array(
