@@ -5,7 +5,7 @@ use Symfony\Component\Yaml\Yaml;
 
 if (!(isset($argc) && isset($argv))) {
     echo "No action is possible.";
-    exit();
+    exit(1);
 }
 
 defined('DS') || define('DS', DIRECTORY_SEPARATOR);
@@ -138,27 +138,38 @@ function offerMenuTests()
 
 function moduleRunner($runModule, $silent = false)
 {
-
     unitRunner($runModule);
     purgeTestCode();
     registerConfig();
     $found = chaseModules("all");
     registerHelpers($found);
-    //$silent = false;
+
+    $module_found = false;
 
     foreach ($found as $capabilities => $capability) {
-        if ($capabilities == "Tests") {
-            foreach ($capability as $module => $resources) {
-                if ($module == $runModule) {
-                    foreach ($resources as $resource) {
-                        $codeCeptCommand = DEBUG_RUN . "  " . $resource;
-                        $packBar = "\nO" . str_repeat("-", strlen($codeCeptCommand) + 2) . "O\n";
-                        echo $packBar . "| " . $codeCeptCommand . " |" . $packBar;
-                        $silent = launchCodecept($codeCeptCommand, $silent);
-                    }
-                }
+        if ($capabilities !== "Tests") {
+            continue;
+        }
+
+        foreach ($capability as $module => $resources) {
+            if ($module !== $runModule) {
+                continue;
+            }
+
+            $module_found = true;
+
+            foreach ($resources as $resource) {
+                $codeCeptCommand = DEBUG_RUN . "  " . $resource;
+                $packBar = "\nO" . str_repeat("-", strlen($codeCeptCommand) + 2) . "O\n";
+                echo $packBar . "| " . $codeCeptCommand . " |" . $packBar;
+                $silent = launchCodecept($codeCeptCommand, $silent);
             }
         }
+    }
+
+    if (!$module_found) {
+        echo "Error: Unable to find $runModule module\n";
+        exit(1);
     }
 }
 
