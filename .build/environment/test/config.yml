@@ -1,7 +1,7 @@
 ---
 manifest:
   resolvers:
-  - name: inline    
+  - name: inline
     type: literal
 
 data:
@@ -99,7 +99,7 @@ data:
   resolvers:
   - resolver: inline
     prop:
-      value: "feature/PHP7.4"
+      value: "master"
 # -----------
 # third party
 # -----------

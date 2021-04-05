@@ -16,4 +16,4 @@ jobs:
             - name: Codesniffer
               uses: pipeline-components/php-codesniffer@v0.12.3
               with:
-                  options: -s -p --colors --extensions=php --runtime-set testVersion 7.2
+                  options: -s -p --colors --extensions=php --runtime-set testVersion 7.4
