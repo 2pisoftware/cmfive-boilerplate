@@ -27,7 +27,8 @@ RUN apt-get install -y -o "APT::Acquire::Retries=6" \
     php7.4-mysql \
     php7.4-xml \
     php7.4-bcmath \
-    php7.4-mbstring
+    php7.4-mbstring \
+    php7.4-intl
 
 # toolbox extras, to allow for DB commands & subnet examination etc
 RUN apt-get update
