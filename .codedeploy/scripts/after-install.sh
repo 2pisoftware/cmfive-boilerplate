@@ -1,4 +1,4 @@
 #!/bin/bash
 
-cd /var/www/cmfive-boilerplate
+cd ../..
 sudo chown -R ubuntu:ubuntu .

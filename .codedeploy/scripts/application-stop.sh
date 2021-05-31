@@ -1,5 +1,4 @@
 #/bin/bash
 
-cd /var/www/cmfive-boilerplate
-pwd >> temp.txt
+cd ../..
 docker-compose down

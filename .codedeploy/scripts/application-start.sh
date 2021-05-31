@@ -1,6 +1,6 @@
 #/bin/bash
 
-cd /var/www/cmfive-boilerplate
+cd ../..
 docker-compose up -d
 docker exec -it $(docker-compose ps -q webapp) /bin/bash
 ./composer.phar self-update --2
