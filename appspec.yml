@@ -1,5 +1,8 @@
 version: 0.0
 os: linux
+files:
+  - source: /
+    destination: /home/ubuntu/cmfive-boilerplate
 hooks:
   AfterInstall:
     - location: .codedeploy/scripts/after-install.sh

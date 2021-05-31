@@ -1,3 +1,4 @@
 #/bin/bash
 
-ls -la
+rm cache/config.cache
+rm cache/classdirectory.cache
