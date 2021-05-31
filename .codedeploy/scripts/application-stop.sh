@@ -1,4 +1,3 @@
 #/bin/bash
 
-cd /var/www/cmfive-boilerplate
-docker-compose down
+cd /var/www/cmfive-boilerplate && docker-compose down
