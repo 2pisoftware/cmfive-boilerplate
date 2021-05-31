@@ -2,4 +2,4 @@ version: 0.0
 os: linux
 hooks:
   AfterInstall:
-    - location: after-install.sh
+    - location: .codedeploy/scripts/after-install.sh
