@@ -1,4 +1,4 @@
 #/bin/bash
 
-ls -la
+cd /var/www/cmfive-boilerplate
 docker-compose down
