@@ -1,4 +1,6 @@
 #/bin/bash
 
-pwd >> /home/ubuntu/temp-stop.txt
-ls -la >> /home/ubuntu/temp-stop1.txt
+if [ -d "/var/www/cmfive-boilerplate" ]; then
+    cd /var/www/cmfive-boilerplate
+    docker-compose down
+fi
