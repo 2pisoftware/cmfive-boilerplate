@@ -8,6 +8,20 @@ if (!(isset($argc) && isset($argv))) {
     exit(1);
 }
 
+$GLOBALS["verbose"] = false;
+
+foreach ($argv as $arg) {
+    switch ($arg) {
+        case "-v":
+        case "--verbose":
+            $GLOBALS["verbose"] = true;
+            break;
+        default:
+            // fallthrough.
+            break;
+    }
+}
+
 defined('DS') || define('DS', DIRECTORY_SEPARATOR);
 
 defined('TEST_DIRECTORY') || define('TEST_DIRECTORY', 'test' . DS . 'Codeception');
@@ -193,7 +207,7 @@ function unitRunner($run_module)
                         // Execute unit test, saving the output and status code.
                         executeUnitTest($file_name, $output, $status_code);
 
-                        // If we received a non-zero status code, the test failed. Print the output to console.
+                        // If we received a non-zero status code, the test failed. Print the output to console and exit with that status code.
                         if ($status_code !== 0) {
                             $file_name = PHPUNIT_RUN . "  " . UNIT_DESTINATION . DS . $resource . " ";
                             $packBar = "\n*" . str_repeat("-", strlen($file_name) + 11) . "*\n";
@@ -202,6 +216,8 @@ function unitRunner($run_module)
                             foreach ($output as $o) {
                                 echo "\e[31m$o\n\e[39m";
                             }
+
+                            exit($status_code);
                         }
                     }
                 }
@@ -233,7 +249,10 @@ function genericRunner($argc, $argv)
     registerConfig();
     $found = chaseModules("all");
     registerHelpers($found);
-    reportModules($found);
+
+    if ($GLOBALS["verbose"]) {
+        reportModules($found);
+    }
 
     echo "\n --- To launch: --- \ncmfiveTests [run] [module_testfile.php] [silent]";
     echo "\n --- Or: --- \ncmfiveTests [unit] [module]\n\n";
