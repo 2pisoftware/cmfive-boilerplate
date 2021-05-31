@@ -5,7 +5,7 @@ files:
     destination: /var/www/cmfive-boilerplate
 hooks:
   ApplicationStop:
-    - location: .codedeploy/scripts/application-stop.sh
+    - location: .codedeploy/scripts/application-stop-new.sh
       timout: 300
       runas: root
   AfterInstall:
