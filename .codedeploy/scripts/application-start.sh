@@ -1,5 +1,5 @@
 #/bin/bash
 
-docker-compose down
 cd /var/www/cmfive-boilerplate
+docker-compose down
 docker-compose up -d
