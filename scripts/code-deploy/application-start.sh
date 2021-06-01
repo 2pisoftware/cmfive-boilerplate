@@ -1,7 +1,7 @@
 #/bin/bash
 
 cd /var/www/cmfive-boilerplate
-docker-compose down
+# docker-compose down
 docker-compose up -d
 
 # Update to Composer V2.
