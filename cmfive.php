@@ -363,7 +363,7 @@ COMPOSER;
     return json_decode($composer_string, true);
 }
 
-function installThirdPartyLibraries(string $composer_json)
+function installThirdPartyLibraries(array $composer_json)
 {
     if (!stepOneYieldsWeb()) {
         return false;
