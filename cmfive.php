@@ -335,7 +335,8 @@ function sketchComposerForCore($reference)
         "version": "1.0",
         "description": "A boilerplate project layout for Cmfive",
         "require": {
-            "2pisoftware/cmfive-core": "dev-$reference"
+            "2pisoftware/cmfive-core": "dev-$reference",
+            "aws/aws-sdk-php": "^3.24"
         },
         "config": {
             "vendor-dir": "composer/vendor",
@@ -362,7 +363,7 @@ COMPOSER;
     return json_decode($composer_string, true);
 }
 
-function installThirdPartyLibraries($composer_json = null)
+function installThirdPartyLibraries(string $composer_json)
 {
     if (!stepOneYieldsWeb()) {
         return false;
@@ -375,10 +376,6 @@ function installThirdPartyLibraries($composer_json = null)
     }
 
     $w = new Web();
-
-    if (!$composer_json) {
-        $composer_json = sketchComposerForCore();
-    }
 
     $dependencies_array = [];
     foreach ($w->modules() as $module) {
