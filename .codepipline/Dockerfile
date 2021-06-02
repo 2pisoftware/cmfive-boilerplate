@@ -54,7 +54,6 @@ RUN cp configs/fpm/* /etc/php/7.4/fpm/
 RUN cp configs/nginx/nginx.conf /etc/nginx/nginx.conf
 RUN cp configs/nginx/default.conf /etc/nginx/conf.d/default.conf
 RUN cp configs/supervisord.conf /etc/supervisord.conf
-RUN rm -rf configs
 
 RUN mkdir /run/php
 
