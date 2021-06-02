@@ -5,18 +5,18 @@ files:
     destination: /var/www/cmfive-boilerplate
 hooks:
   BeforeInstall:
-    - location: .codedeploy/scripts/before-install.sh
+    - location: .codepipeline/codedeploy/before-install.sh
       timout: 300
       runas: root
   AfterInstall:
-    - location: .codedeploy/scripts/after-install.sh
+    - location: .codepipeline/codedeploy/after-install.sh
       timout: 300
       runas: root
   ApplicationStart:
-    - location: .codedeploy/scripts/application-start.sh
+    - location: .codepipeline/codedeploy/application-start.sh
       timout: 300
       runas: root
   ApplicationStop:
-    - location: .codedeploy/scripts/application-stop.sh
+    - location: .codepipeline/codedeploy/application-stop.sh
       timout: 300
       runas: root
