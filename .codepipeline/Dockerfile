@@ -53,7 +53,7 @@ RUN ls -la
 RUN ls -la /var/www/html
 
 # bootstrap environment
-WORKDIR /bootstrap
+WORKDIR /var/www/html
 
 RUN ls -la
 RUN ls -la /var/www/html
