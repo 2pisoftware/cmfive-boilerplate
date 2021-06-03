@@ -50,8 +50,7 @@ RUN pwd
 # copy application code
 COPY . /var/www/html
 
-RUN ls -la
-RUN pwd
+RUN ls /var/www/html
 
 # bootstrap environment
 WORKDIR /bootstrap
