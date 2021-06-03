@@ -44,19 +44,8 @@ RUN apt-get install -y -o "APT::Acquire::Retries=6" \
     phpunit \
     php-xdebug
 
-RUN ls -la
-RUN pwd
+WORKDIR /var/www/html
 
-# copy application code
-COPY . /var/www/html
-
-RUN ls /var/www/html
-
-# bootstrap environment
-WORKDIR /bootstrap
-
-RUN ls -la
-RUN pwd
 RUN cp .codepipeline/configs/fpm/* /etc/php/7.4/fpm/
 RUN cp .codepipeline/configs/nginx/nginx.conf /etc/nginx/nginx.conf
 RUN cp .codepipeline/configs/nginx/default.conf /etc/nginx/conf.d/default.conf
