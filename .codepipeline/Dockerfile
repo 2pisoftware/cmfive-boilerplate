@@ -50,10 +50,10 @@ COPY . /var/www/html
 # bootstrap environment
 WORKDIR /bootstrap
 
-RUN cp configs/fpm/* /etc/php/7.4/fpm/
-RUN cp configs/nginx/nginx.conf /etc/nginx/nginx.conf
-RUN cp configs/nginx/default.conf /etc/nginx/conf.d/default.conf
-RUN cp configs/supervisord.conf /etc/supervisord.conf
+RUN cp .codepipeline/configs/fpm/* /etc/php/7.4/fpm/
+RUN cp .codepipeline/configs/nginx/nginx.conf /etc/nginx/nginx.conf
+RUN cp .codepipeline/configs/nginx/default.conf /etc/nginx/conf.d/default.conf
+RUN cp .codepipeline/configs/supervisord.conf /etc/supervisord.conf
 
 RUN mkdir /run/php
 
