@@ -4,7 +4,7 @@ services:
   webapp:
     build:
       context: .
-      dockerfile: ./.codepipeline/Dockerfile
+      dockerfile: Dockerfile
     container_name: nginx-php7.4
     hostname: nginx-php7.4
     environment:
