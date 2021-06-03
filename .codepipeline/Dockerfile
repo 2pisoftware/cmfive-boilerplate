@@ -46,6 +46,11 @@ RUN apt-get install -y -o "APT::Acquire::Retries=6" \
 
 WORKDIR /var/www/html
 
+RUN pwd
+RUN ls -la
+RUN ll .codepipeline
+RUN ll .codepipeline/configs
+RUN ll .codepipeline/configs/fpm
 RUN cp .codepipeline/configs/fpm/* /etc/php/7.4/fpm/
 RUN cp .codepipeline/configs/nginx/nginx.conf /etc/nginx/nginx.conf
 RUN cp .codepipeline/configs/nginx/default.conf /etc/nginx/conf.d/default.conf
