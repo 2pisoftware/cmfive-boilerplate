@@ -1,3 +1,3 @@
 #/bin/bash
 
-sudo rm -rf /var/www/cmfive-boilerplate
+rm -rf /var/www/cmfive-boilerplate

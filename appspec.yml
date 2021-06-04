@@ -7,11 +7,11 @@ hooks:
   BeforeInstall:
     - location: .codepipeline/codedeploy/before-install.sh
       timout: 300
-      runas: ubuntu
+      runas: root
   AfterInstall:
     - location: .codepipeline/codedeploy/after-install.sh
       timout: 300
-      runas: ubuntu
+      runas: root
   ApplicationStart:
     - location: .codepipeline/codedeploy/application-start.sh
       timout: 300
@@ -19,4 +19,4 @@ hooks:
   ApplicationStop:
     - location: .codepipeline/codedeploy/application-stop.sh
       timout: 300
-      runas: ubuntu
+      runas: root
