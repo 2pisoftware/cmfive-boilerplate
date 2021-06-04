@@ -47,8 +47,15 @@ RUN apt-get install -y -o "APT::Acquire::Retries=6" \
 COPY . /var/www/html
 
 # bootstrap environment
-WORKDIR /var/www/html
-RUN cp .codepipeline/configs/fpm/* /etc/php/7.4/fpm/
-RUN cp .codepipeline/configs/nginx/nginx.conf /etc/nginx/nginx.conf
-RUN cp .codepipeline/configs/nginx/default.conf /etc/nginx/conf.d/default.conf
-RUN cp .codepipeline/configs/supervisord.conf /etc/supervisord.conf
+WORKDIR /bootstrap
+
+COPY /.codepipeline/configs/start.sh .
+COPY /.codepipeline/configs/fpm/* /etc/php/7.4/fpm/
+COPY /.codepipeline/configs/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY /.codepipeline/configs/nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY /.codepipeline/configs/supervisord.conf /etc/supervisord.conf
+
+RUN mkdir /run/php
+
+RUN chmod -R 777 start.sh
+CMD ["/bootstrap/start.sh"]
