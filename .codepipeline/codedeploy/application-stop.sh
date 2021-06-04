@@ -1,6 +1,6 @@
 #/bin/bash
 
-cd /var/www/cmfive-boilerplate
-ls -la
-pwd
-docker-compose down
+if [ -d "/var/www/cmfive-boilerplate" ]; then
+    cd /var/www/cmfive-boilerplate
+    docker-compose down
+fi
