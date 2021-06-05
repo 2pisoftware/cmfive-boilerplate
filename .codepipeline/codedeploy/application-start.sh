@@ -17,9 +17,5 @@ fi
 if [ -f "cache/config.cache" ]; then
     sudo rm cache/config.cache
 fi
-if [ -d "storage/log" ]; then
-    sudo rm storage/log/*
-fi
-if [ -d "storage/session" ]; then
-    sudo rm storage/session/*
-fi
+sudo rm storage/log/* || true
+sudo rm storage/session/* || true
