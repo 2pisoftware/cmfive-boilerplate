@@ -58,4 +58,5 @@ COPY /.codepipeline/configs/supervisord.conf /etc/supervisord.conf
 RUN mkdir /run/php
 
 RUN chmod -R 777 start.sh
+USER www-data
 CMD ["/bootstrap/start.sh"]
