@@ -10,3 +10,8 @@ docker exec $(cd /var/www/cmfive-boilerplate && docker-compose ps -q webapp) mkd
 docker exec $(cd /var/www/cmfive-boilerplate && docker-compose ps -q webapp) php cmfive.php install core
 docker exec $(cd /var/www/cmfive-boilerplate && docker-compose ps -q webapp) chown -R www-data:www-data /var/www/html
 docker exec $(cd /var/www/cmfive-boilerplate && docker-compose ps -q webapp) php cmfive.php install migrations
+
+sudo rm cache/classdirectory.cache
+sudo rm cache/config.cache
+sudo rm storage/log/*
+sudo rm storage/session/*
