@@ -28,7 +28,7 @@ order allow,deny
 </Files>
 
 # Allow all files with the following extensions.
-<Files ~ "\.(jpg|png|ico|jpeg|gif|css|js|woff|ttf|html)$">
+<Files ~ "\.(svg|jpg|png|ico|jpeg|gif|css|js|woff|ttf|html)$">
    Allow from all
 </Files>
 
@@ -36,5 +36,5 @@ order allow,deny
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_URI} !\.(jpg|png|ico|jpeg|gif|css|js)$
+RewriteCond %{REQUEST_URI} !\.(svg|jpg|png|ico|jpeg|gif|css|js)$
 RewriteRule ^(.*)$ /index.php [NC,L,QSA]
