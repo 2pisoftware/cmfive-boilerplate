@@ -38,18 +38,12 @@ RUN apt-get install -y -o "APT::Acquire::Retries=6" \
     curl \
     mysql-client-5.7
 
-# PHP extras, for test+debug
-RUN apt-get update
-RUN apt-get install -y -o "APT::Acquire::Retries=6" \
-    phpunit \
-    php-xdebug
-
 COPY . /var/www/html
 
 # bootstrap environment
 WORKDIR /bootstrap
 
-COPY /.codepipeline/configs/start.sh .
+COPY /.codepipeline/configs/start-prod.sh .
 COPY /.codepipeline/configs/fpm/* /etc/php/7.4/fpm/
 COPY /.codepipeline/configs/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY /.codepipeline/configs/nginx/default.conf /etc/nginx/conf.d/default.conf
@@ -57,6 +51,5 @@ COPY /.codepipeline/configs/supervisord.conf /etc/supervisord.conf
 
 RUN mkdir /run/php
 
-RUN chmod -R 777 start.sh
-USER www-data
-CMD ["/bootstrap/start.sh"]
+RUN chmod -R 777 start-prod.sh
+CMD ["/bootstrap/start-prod.sh"]
