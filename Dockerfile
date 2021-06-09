@@ -41,7 +41,12 @@ RUN apt-get install -y -o "APT::Acquire::Retries=6" \
 # PHP extras, for test+debug
 RUN apt-get update
 RUN apt-get install -y -o "APT::Acquire::Retries=6" \
-    phpunit
+    phpunit \
+    
+
+RUN apt-get update
+RUN apt-get install -y -o "APT::Acquire::Retries=6" \
+    php7.4-xdebug
 
 COPY . /var/www/html
 
