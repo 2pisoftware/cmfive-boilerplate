@@ -1,0 +1,22 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /var/www/cmfive-boilerplate
+hooks:
+  BeforeInstall:
+    - location: .codepipeline/codedeploy/before-install.sh
+      timout: 300
+      runas: root
+  AfterInstall:
+    - location: .codepipeline/codedeploy/after-install.sh
+      timout: 300
+      runas: root
+  ApplicationStart:
+    - location: .codepipeline/codedeploy/application-start.sh
+      timout: 300
+      runas: ubuntu
+  ApplicationStop:
+    - location: .codepipeline/codedeploy/application-stop.sh
+      timout: 300
+      runas: root
