@@ -1,5 +1,7 @@
 #!/bin/bash
 
+./test/.install/install.sh
+
 #setup for XDebug
 
 if ping -c 1 host.docker.internal; then INTERNAL_HOST_IP=host.docker.internal; \
