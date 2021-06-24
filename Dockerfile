@@ -46,6 +46,8 @@ RUN apt-get install -y -o "APT::Acquire::Retries=6" \
 RUN apt-get update
 RUN apt-get install -y -o "APT::Acquire::Retries=6" \
     php7.4-xdebug
+    
+RUN docker-php-ext-enable xdebug
 
 COPY . /var/www/html
 
