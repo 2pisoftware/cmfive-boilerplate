@@ -43,11 +43,9 @@ RUN apt-get update
 RUN apt-get install -y -o "APT::Acquire::Retries=6" \
     phpunit
 
-RUN apt-get update
-RUN apt-get install -y -o "APT::Acquire::Retries=6" \
-    php7.4-xdebug
-    
-RUN docker-php-ext-enable xdebug
+# RUN apt-get update
+# RUN apt-get install -y -o "APT::Acquire::Retries=6" \
+#     php7.4-xdebug
 
 COPY . /var/www/html
 
