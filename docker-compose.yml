@@ -41,7 +41,7 @@ services:
     links:
       - mysqldb
       - seleniumsrv
-    user: ${UID}[:$GID]
+    user: ${USER_ID}[:$GROUP_ID]
   # ------------------------------------------------------------
   # For IDE&Debug symlinks are best made on the HOST FS
   # Otherwise, to customise mounts etc:
