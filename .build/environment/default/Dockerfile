@@ -13,7 +13,7 @@ RUN apt-get install -y locales-all
 # allow retries & break up apt-get for recovery
 # of build from apt cache in case of connection failures
 RUN apt-get install -y -o "APT::Acquire::Retries=6" \
-    vim supervisor nginx gnupg2
+    vim supervisor nginx gnupg2	
 
 RUN apt-get install -y -o "APT::Acquire::Retries=6" \
     php7.4-fpm
@@ -40,25 +40,20 @@ RUN apt-get install -y -o "APT::Acquire::Retries=6" \
 
 # PHP extras, for test+debug
 RUN apt-get update
-RUN apt-get install -y -o "APT::Acquire::Retries=6" \
-    phpunit
-
-RUN apt-get update
-RUN apt-get install -y -o "APT::Acquire::Retries=6" \
+RUN apt-get install -y -o "APT::Acquire::Retries=6" \ 
+    phpunit \
     php7.4-xdebug
-
-COPY . /var/www/html
 
 # bootstrap environment
 WORKDIR /bootstrap
+COPY ./stage .
 
-COPY /.codepipeline/configs/start-dev.sh .
-COPY /.codepipeline/configs/fpm/* /etc/php/7.4/fpm/
-COPY /.codepipeline/configs/nginx/nginx.conf /etc/nginx/nginx.conf
-COPY /.codepipeline/configs/nginx/default.conf /etc/nginx/conf.d/default.conf
-COPY /.codepipeline/configs/supervisord.conf /etc/supervisord.conf
+RUN cp fpm/* /etc/php/7.4/fpm/
+RUN cp nginx/nginx.conf /etc/nginx/nginx.conf
+RUN cp nginx/default.conf /etc/nginx/conf.d/default.conf
+RUN cp supervisord.conf /etc/supervisord.conf
 
 RUN mkdir /run/php
 
-RUN chmod -R 777 start-dev.sh
-CMD ["/bootstrap/start-dev.sh"]
+RUN chmod -R 777 start.sh
+CMD ["/bootstrap/start.sh"]
