@@ -7,7 +7,7 @@ cd /var/www/cmfive-boilerplate
 docker-compose up -d
 docker exec $(cd /var/www/cmfive-boilerplate && docker-compose ps -q webapp) mkdir /var/www/html/storage/log
 docker exec $(cd /var/www/cmfive-boilerplate && docker-compose ps -q webapp) mkdir /var/www/html/storage/session
-docker exec $(cd /var/www/cmfive-boilerplate && docker-compose ps -q webapp) php cmfive.php install core $CMFIVE_BRANCH_NAME
+docker exec $(cd /var/www/cmfive-boilerplate && docker-compose ps -q webapp) php cmfive.php install core $CMFIVE_CORE_BRANCH
 docker exec $(cd /var/www/cmfive-boilerplate && docker-compose ps -q webapp) php cmfive.php install migrations
 docker exec $(cd /var/www/cmfive-boilerplate && docker-compose ps -q webapp) chown -R www-data:www-data /var/www/html
 
