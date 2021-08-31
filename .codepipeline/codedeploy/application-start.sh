@@ -9,7 +9,7 @@ docker exec $(cd /var/www/cmfive-boilerplate && docker-compose ps -q webapp) mkd
 docker exec $(cd /var/www/cmfive-boilerplate && docker-compose ps -q webapp) mkdir /var/www/html/storage/session
 
 source /etc/profile
-docker exec $(cd /var/www/cmfive-boilerplate && docker-compose ps -q webapp) php cmfive.php install core $
+docker exec $(cd /var/www/cmfive-boilerplate && docker-compose ps -q webapp) php cmfive.php install core $CMFIVE_CORE_BRANCH
 cd composer/vendor/2pisoftware/cmfive-core/system/templates/base
 sudo npm ci
 sudo npm run production
