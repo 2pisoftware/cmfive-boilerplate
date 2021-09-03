@@ -1,16 +1,16 @@
 version: '3'
 
 services:
-  webapp:
+  cmfive:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        CMFIVE_CORE_BRANCH: ${CMFIVE_CORE_BRANCH}
     container_name: nginx-php7.4
     hostname: nginx-php7.4
     environment:
       - TZ=Australia/Sydney
-    volumes:
-      - ./:/var/www/html
     ports:
       - "3000:3000"
     networks:
