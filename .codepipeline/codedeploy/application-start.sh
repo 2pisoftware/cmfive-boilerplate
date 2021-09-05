@@ -1,28 +1,17 @@
 #/bin/bash
 
+# Install updates.
 sudo apt update
 sudo apt upgrade -y
+sudo apt autoclean
+sudo apt autoremove -y
 
+# Reload any environment variables that have been set since the last restart.
+source /etc/profile
+
+# Create the Cmfive container.
 cd /var/www/cmfive-boilerplate
 docker-compose up -d
-docker exec $(cd /var/www/cmfive-boilerplate && docker-compose ps -q webapp) mkdir /var/www/html/storage/log
-docker exec $(cd /var/www/cmfive-boilerplate && docker-compose ps -q webapp) mkdir /var/www/html/storage/session
 
-source /etc/profile
-docker exec $(cd /var/www/cmfive-boilerplate && docker-compose ps -q webapp) php cmfive.php install core $CMFIVE_CORE_BRANCH
-cd composer/vendor/2pisoftware/cmfive-core/system/templates/base
-sudo npm ci
-sudo npm run production
-
-cd /var/www/cmfive-boilerplate
-docker exec $(cd /var/www/cmfive-boilerplate && docker-compose ps -q webapp) php cmfive.php install migrations
-docker exec $(cd /var/www/cmfive-boilerplate && docker-compose ps -q webapp) chown -R www-data:www-data /var/www/html
-
-if [ -f "cache/classdirectory.cache" ]; then
-    sudo rm cache/classdirectory.cache
-fi
-if [ -f "cache/config.cache" ]; then
-    sudo rm cache/config.cache
-fi
-sudo rm storage/log/* || true
-sudo rm storage/session/* || true
+# Run migrations.
+docker exec nginx-php7.4 php cmfive.php install migrations

@@ -33,8 +33,8 @@ RUN apt install -y \
     supervisor
 
 # Install NodeJS and NPM, requires cURL to be installed first.
-# RUN curl -fsSL https://deb.nodesource.com/setup_14.x | -E bash -
-# RUN apt install -y nodejs
+RUN curl -fsSL https://deb.nodesource.com/setup_14.x | bash
+RUN apt install -y nodejs
 
 # Copy Cmfive Boilerplate files into directory for Nginx.
 COPY . /var/www/html
@@ -45,7 +45,8 @@ RUN php cmfive.php install core $CMFIVE_CORE_BRANCH
 
 # Install NPM dependencies.
 WORKDIR /var/www/html/composer/vendor/2pisoftware/cmfive-core/system/templates/base
-# RUN npm ci
+RUN npm ci
+RUN npm run production
 
 # Set file permissions.
 WORKDIR /var/www/html
