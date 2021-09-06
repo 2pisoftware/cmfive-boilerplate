@@ -15,3 +15,7 @@ docker-compose up -d
 
 # Run migrations.
 docker exec nginx-php7.4 php cmfive.php install migrations
+
+# Clear cache.
+docker exec nginx-php7.4 rm cache/config.cache
+docker exec nginx-php7.4 rm cache/classdirectory.cache
