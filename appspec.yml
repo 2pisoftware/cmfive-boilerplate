@@ -14,7 +14,7 @@ hooks:
       runas: root
   ApplicationStart:
     - location: .codepipeline/codedeploy/application-start.sh
-      timeout: 300
+      timeout: 600
       runas: ubuntu
   ApplicationStop:
     - location: .codepipeline/codedeploy/application-stop.sh
