@@ -11,6 +11,7 @@ source /etc/profile
 
 # Create the Cmfive container.
 cd /var/www/cmfive-boilerplate
+docker-compose build --no-cache
 docker-compose up -d
 
 # Run migrations.
