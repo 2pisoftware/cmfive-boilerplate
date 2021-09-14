@@ -1,7 +1,10 @@
 # Ubuntu 18.04 is a requirement for MYSQL 5.7.
 FROM ubuntu:18.04
 
- # Fetch Cmfive Core branch name from Docker Compose file.
+# Fetch required args.
+ARG AWS_ACCESS_KEY_ID
+ARG AWS_SECRET_ACCESS_KEY
+ARG AWS_SESSION_TOKEN
 ARG CMFIVE_CORE_BRANCH
 
 # Prevent install locking up of TZ or other user inputs.
