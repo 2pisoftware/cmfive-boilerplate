@@ -2,8 +2,6 @@
 
 echo "Running Application Start"
 
-# Restarting Nginx.
-systemctl restart nginx
-
-# Starting supervisord.
-supervisord -n -c /etc/supervisord.conf
+# Start Nginx and PHP FPM.
+systemctl start nginx
+systemctl start php7.4-fpm

@@ -2,7 +2,8 @@
 
 echo "Running After Install"
 
-cd /var/www/cmfive-boilerplate
+mv /var/www/cmfive-boilerplate /var/www/html
+cd /var/www/html
 
 # Copy config files.
 cp codepipeline/configs/fpm/* /etc/php/7.4/fpm/

@@ -2,7 +2,11 @@
 
 echo "Running Application Stop"
 
+# Stop Nginx and PHP FPM.
+systemctl stop nginx
+systemctl stop php7.4-fpm
+
 # Remove the old files.
-if [ -d "/var/www/cmfive-boilerplate" ]; then
-    rm -rf /var/www/cmfive-boilerplate
+if [ -d "/var/www/html" ]; then
+    rm -rf /var/www/html
 fi
