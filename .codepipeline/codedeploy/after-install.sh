@@ -2,14 +2,12 @@
 
 echo "Running After Install"
 
+# Rename directory.
 mv /var/www/cmfive-boilerplate /var/www/html
 cd /var/www/html
 
-# Copy config files.
-cp codepipeline/configs/fpm/* /etc/php/7.4/fpm/
-cp codepipeline/configs/nginx/nginx.conf /etc/nginx/nginx.conf
-cp codepipeline/configs/nginx/default.conf /etc/nginx/conf.d/default.conf
-cp codepipeline/configs/supervisord.conf /etc/supervisord.conf
+# Update permissions.
+sudo chown -R www-data:www-data .
 
 # Run migrations.
 php cmfive.php install migrations
