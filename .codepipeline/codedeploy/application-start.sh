@@ -1,22 +1,9 @@
 #/bin/bash
 
-# Install updates.
-sudo apt update
-sudo apt upgrade -y
-sudo apt autoclean
-sudo apt autoremove -y
+echo "Running Application Start"
 
-# Reload any environment variables that have been set since the last restart.
-source /etc/profile
+# Restarting Nginx.
+systemctl restart nginx
 
-# Create the Cmfive container.
-cd /var/www/cmfive-boilerplate
-docker-compose build --no-cache
-docker-compose up -d
-
-# Run migrations.
-docker exec nginx-php7.4 php cmfive.php install migrations
-
-# Clear cache.
-docker exec nginx-php7.4 rm cache/config.cache
-docker exec nginx-php7.4 rm cache/classdirectory.cache
+# Starting supervisord.
+supervisord -n -c /etc/supervisord.conf
