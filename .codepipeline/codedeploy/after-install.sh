@@ -6,6 +6,9 @@ echo "Running After Install"
 mv /var/www/cmfive-boilerplate /var/www/html
 cd /var/www/html
 
+# Create symlink to system.
+sudo ln -s /var/www/html/composer/vendor/2pisoftware/cmfive-core/system /var/www/html/system
+
 # Update permissions.
 sudo chown -R www-data:www-data .
 
