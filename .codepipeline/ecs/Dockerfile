@@ -58,13 +58,13 @@ RUN chown -R www-data:www-data .
 # Bootstrap environment.
 WORKDIR /bootstrap
 
-COPY /.codepipeline/configs/start-prod.sh .
-COPY /.codepipeline/configs/fpm/* /etc/php/7.4/fpm/
-COPY /.codepipeline/configs/nginx/nginx.conf /etc/nginx/nginx.conf
-COPY /.codepipeline/configs/nginx/default.conf /etc/nginx/conf.d/default.conf
-COPY /.codepipeline/configs/supervisord.conf /etc/supervisord.conf
+COPY /.codepipeline/ecs/configs/start.sh .
+COPY /.codepipeline/ecs/configs/fpm/* /etc/php/7.4/fpm/
+COPY /.codepipeline/ecs/configs/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY /.codepipeline/ecs/configs/nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY /.codepipeline/ecs/configs/supervisord/supervisord.conf /etc/supervisord.conf
 
 RUN mkdir /run/php
 
-RUN chmod -R 777 start-prod.sh
-CMD ["/bootstrap/start-prod.sh"]
+RUN chmod -R 777 start.sh
+CMD ["/bootstrap/start.sh"]
