@@ -53,10 +53,10 @@ COPY . /var/www/html
 WORKDIR /bootstrap
 
 COPY /.codepipeline/local-dev/start.sh .
-COPY /.codepipeline/ecs/configs/fpm/* /etc/php/7.4/fpm/
-COPY /.codepipeline/ecs/configs/nginx/nginx.conf /etc/nginx/nginx.conf
-COPY /.codepipeline/ecs/configs/nginx/default.conf /etc/nginx/conf.d/default.conf
-COPY /.codepipeline/ecs/configs/supervisord/supervisord.conf /etc/supervisord.conf
+COPY /.codepipeline/local-dev/configs/fpm/* /etc/php/7.4/fpm/
+COPY /.codepipeline/local-dev/configs/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY /.codepipeline/local-dev/configs/nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY /.codepipeline/local-dev/configs/supervisord/supervisord.conf /etc/supervisord.conf
 
 RUN mkdir /run/php
 
