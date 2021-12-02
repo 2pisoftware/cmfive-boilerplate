@@ -202,6 +202,8 @@ function unitRunner($run_module)
                             foreach ($output as $o) {
                                 echo "\e[31m$o\n\e[39m";
                             }
+
+                            exit($status_code);
                         }
                     }
                 }

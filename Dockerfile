@@ -52,13 +52,13 @@ COPY . /var/www/html
 # bootstrap environment
 WORKDIR /bootstrap
 
-COPY /.codepipeline/configs/start-dev.sh .
-COPY /.codepipeline/configs/fpm/* /etc/php/7.4/fpm/
-COPY /.codepipeline/configs/nginx/nginx.conf /etc/nginx/nginx.conf
-COPY /.codepipeline/configs/nginx/default.conf /etc/nginx/conf.d/default.conf
-COPY /.codepipeline/configs/supervisord.conf /etc/supervisord.conf
+COPY /.codepipeline/local-dev/start.sh .
+COPY /.codepipeline/local-dev/configs/fpm/* /etc/php/7.4/fpm/
+COPY /.codepipeline/local-dev/configs/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY /.codepipeline/local-dev/configs/nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY /.codepipeline/local-dev/configs/supervisord/supervisord.conf /etc/supervisord.conf
 
 RUN mkdir /run/php
 
-RUN chmod -R 777 start-dev.sh
-CMD ["/bootstrap/start-dev.sh"]
+RUN chmod -R 777 start.sh
+CMD ["/bootstrap/start.sh"]
