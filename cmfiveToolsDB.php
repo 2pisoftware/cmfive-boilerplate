@@ -344,7 +344,7 @@ function purgeDB()
 
     $result = $result = $w->db->sql($query)->fetchall();
     foreach ($result as $table) {
-        $tb = $table['table_name'];
+        $tb = $table[0];
         $query = "DROP TABLE IF EXISTS " . $tb . ";";
         $result = $w->db->sql($query)->execute();
     }
