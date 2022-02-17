@@ -86,12 +86,12 @@ data:
   resolvers:
   - resolver: inline
     prop:
-      value: "9"
+      value: "8"
 - name: mysql_suffix
   resolvers:
   - resolver: inline
     prop:
-      value: "9"
+      value: "8"
 # -----------
 # cmfive core
 # -----------
