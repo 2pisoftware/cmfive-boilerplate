@@ -76,22 +76,22 @@ data:
   resolvers:
   - resolver: inline
     prop:
-      value: "7.4"
+      value: "8.1"
 - name: php_suffix
   resolvers:
   - resolver: inline
     prop:
-      value: "7.4"
+      value: "8.1"
 - name: mysql_version
   resolvers:
   - resolver: inline
     prop:
-      value: "5.7.21"
+      value: "9"
 - name: mysql_suffix
   resolvers:
   - resolver: inline
     prop:
-      value: "5.7"
+      value: "9"
 # -----------
 # cmfive core
 # -----------
