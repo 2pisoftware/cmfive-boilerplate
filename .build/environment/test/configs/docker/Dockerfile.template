@@ -1,5 +1,5 @@
 # ubuntu version limited for simple mysql5.7 packaging
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 # prevent install locking up o TZ or other user inputs
 ENV DEBIAN_FRONTEND=noninteractive
@@ -26,10 +26,9 @@ RUN apt-get install -y -o "APT::Acquire::Retries=6" \
     php{{php_version}}-json \
     php{{php_version}}-mysql \
     php{{php_version}}-xml \
-    php{{php_version}}-bcmath
-    
-# intl and mbstring are internal libraries as of PHP8
-RUN if [ "{{php_version}}" = "7.4"]; then apt-get install -y php7.4-intl php7.4-mbstring; fi
+    php{{php_version}}-bcmath \
+    php{{php_version}}-mbstring \
+    php{{php_version}}-intl
 
 # toolbox extras, to allow for DB commands & subnet examination etc
 RUN apt-get update
