@@ -1,5 +1,5 @@
 click==7.1.2
-Jinja2==2.11.3
+Jinja2==2.11.0
 pyyaml==5.4
 boto3==1.16.57
 requests==2.25.0
