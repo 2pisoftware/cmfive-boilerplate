@@ -80,12 +80,6 @@ Config::set(
     ]
 );
 
-//======= define openssl encryption key and initialization vector ============
-Config::set('system.encryption', [
-    'key' => '',
-    'iv'  => ''
-]);
-
 //========= Anonymous Access ================================
 // bypass authentication if sent from the following IP addresses
 // specify an IP address and an array of allowed actions from that IP
