@@ -4,7 +4,7 @@ version: '3'
 services:
 
   mysqldb:
-    image: mysql:8
+    image: mysql:8-debian
     container_name: mysql-8
     hostname: mysql-8
     # command: --sql-mode=""
