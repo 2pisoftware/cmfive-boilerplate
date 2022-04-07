@@ -4,7 +4,7 @@ version: '3'
 services:
 
   mysqldb:
-    image: mysql:8.0.28-debian
+    image: mysql:8
     container_name: mysql-8
     hostname: mysql-8
     # command: --sql-mode=""
@@ -14,7 +14,7 @@ services:
       - MYSQL_ROOT_PASSWORD=root
       - TZ=Australia/Sydney
     volumes:
-    - dbdata:/var/lib/mysql:delegated
+      - dbdata:/var/lib/mysql:delegated
     # 'delegated' may be faster on mac or win?
     networks:
       - default
