@@ -9,7 +9,7 @@ services:
     hostname: mysql-8
     # command: --sql-mode=""
     ports:
-      - "3309:3306"
+      - "3306:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - TZ=Australia/Sydney
