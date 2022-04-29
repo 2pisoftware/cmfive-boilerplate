@@ -17,7 +17,7 @@ codeception/module-db \
 codeception/module-webdriver \
 codeception/module-phpbrowser
 
-./composer update --no-dev --prefer-dist --no-interaction --optimize-autoloader --apcu-autoloader;
+./composer update --prefer-dist --no-interaction --optimize-autoloader --apcu-autoloader;
 
 vendor/bin/codecept bootstrap ;
 
