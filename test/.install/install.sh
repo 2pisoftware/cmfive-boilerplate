@@ -11,7 +11,7 @@ curl -sS https://getcomposer.org/installer | php -- \
         --install-dir=. ;
         
 ./composer config minimum-stability dev
-./composer -q require codeception/codeception --dev ;
+./composer -q require codeception/codeception:5.0.0-RC3 --dev ;
 
 ./composer require --no-update codeception/module-asserts \
 codeception/module-db \
