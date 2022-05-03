@@ -22,9 +22,9 @@ defined('STEP_DIRECTORY') || define('STEP_DIRECTORY', DS . 'acceptance' . DS . '
 defined('HELP_DIRECTORY') || define('HELP_DIRECTORY', DS . 'acceptance' . DS . 'helpers');
 defined('UNIT_DIRECTORY') || define('UNIT_DIRECTORY', DS . 'unit');
 
-defined('CEST_DESTINATION') || define('CEST_DESTINATION', TEST_DIRECTORY . DS . 'tests' . DS . 'Acceptance');
-defined('STEP_DESTINATION') || define('STEP_DESTINATION', TEST_DIRECTORY . DS . 'tests' . DS . 'Support' . DS . 'Step' . DS . 'Acceptance');
-defined('HELP_DESTINATION') || define('HELP_DESTINATION', TEST_DIRECTORY . DS . 'tests' . DS . 'Support' . DS . 'Helper');
+defined('CEST_DESTINATION') || define('CEST_DESTINATION', TEST_DIRECTORY . DS . 'tests' . DS . 'acceptance');
+defined('STEP_DESTINATION') || define('STEP_DESTINATION', TEST_DIRECTORY . DS . 'tests' . DS . '_support' . DS . 'Step' . DS . 'Acceptance');
+defined('HELP_DESTINATION') || define('HELP_DESTINATION', TEST_DIRECTORY . DS . 'tests' . DS . '_support' . DS . 'Helper');
 defined('UNIT_DESTINATION') || define('UNIT_DESTINATION', 'test' . DS . 'unit');
 
 defined('SHARED_SOURCE') || define('SHARED_SOURCE', 'boilerplate');
@@ -56,7 +56,7 @@ $loadedParam = [
     'UA_TestConfig' =>  "tests.config"
 ];
 
-defined('DEBUG_RUN') || define('DEBUG_RUN', "run --steps --debug Acceptance");
+defined('DEBUG_RUN') || define('DEBUG_RUN', "run --steps --debug acceptance");
 defined('PHPUNIT_RUN') || define('PHPUNIT_RUN', "");
 
 ini_set('display_errors', 1);
@@ -503,7 +503,7 @@ function registerHelpers($moduleCapabilities)
     // hence could feed test data (CSV,SQL etc)
     // $sharedParam & registerBoilerplateParametersmake it work
 
-    $destPath = BOILERPLATE_TEST_DIRECTORY . DS . "Acceptance.suite.yml";
+    $destPath = BOILERPLATE_TEST_DIRECTORY . DS . "acceptance.suite.yml";
     $HelperYML = fopen($destPath, "w");
 
     if (!$HelperYML) {
@@ -517,7 +517,7 @@ function registerHelpers($moduleCapabilities)
         if ($capabilities == "Helpers") {
             foreach ($capability as $handler => $resources) {
                 foreach ($resources as $resource) {
-                    fwrite($HelperYML, "                        -  Support\\Helper\\" . $resource . ":\n");
+                    fwrite($HelperYML, "                        -  Helper\\" . $resource . ":\n");
                     // per notes above, can insert required values here...
                     $from = $moduleCapabilities['Paths'][$handler][0];
                     $from = substr($from, 0, strpos($from, "acceptance")) . "acceptance" . DS;
