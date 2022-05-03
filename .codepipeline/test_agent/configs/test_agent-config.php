@@ -56,7 +56,10 @@ Config::append('email', [
     "password"    => '<password>',
 ]);
 
-//========== TestRunner Configuration ==========================
+//========== TestRunner Configuration ========================== 
+    Config::set("system.environment", "development"); 
+    Config::set("core_template.foundation.reveal.animation", "none"); 
+    Config::set("core_template.foundation.reveal.animation_speed", 0); 
 //========== must be "ENABLED" to run ==========================
 Config::set(
     "tests",
