@@ -64,7 +64,7 @@ Config::append('email', [
 Config::set(
     "tests",
     [
-        "testrunner"  => "ENABLED",
+        "testrunner"  => "",
         "config" => '',
         "yaml" =>
         [
