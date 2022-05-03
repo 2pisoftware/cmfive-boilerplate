@@ -517,7 +517,7 @@ function registerHelpers($moduleCapabilities)
         if ($capabilities == "Helpers") {
             foreach ($capability as $handler => $resources) {
                 foreach ($resources as $resource) {
-                    fwrite($HelperYML, "                        -  Helper\\" . $resource . ":\n");
+                    fwrite($HelperYML, "                        -  Support\\Helper\\" . $resource . ":\n");
                     // per notes above, can insert required values here...
                     $from = $moduleCapabilities['Paths'][$handler][0];
                     $from = substr($from, 0, strpos($from, "acceptance")) . "acceptance" . DS;
