@@ -57,9 +57,9 @@ Config::append('email', [
 ]);
 
 //========== TestRunner Configuration ========================== 
-    Config::set("system.environment", "development"); 
-    Config::set("core_template.foundation.reveal.animation", "none"); 
-    Config::set("core_template.foundation.reveal.animation_speed", 0); 
+Config::set("system.environment", "development");
+Config::set("core_template.foundation.reveal.animation", "none");
+Config::set("core_template.foundation.reveal.animation_speed", 0);
 //========== must be "ENABLED" to run ==========================
 Config::set(
     "tests",
@@ -83,10 +83,12 @@ Config::set(
             ],
             "- Db:" =>
             [
-                "dsn" => "{getenv('DB') ?: 'mysql'}:host={getenv('DB_HOST') ?: 'localhost'}"
-                .":{getenv('DB_PORT') ?: ''};dbname={getenv('DB_DATABASE') ?: '<database>'}",
-                "user" => "{getenv('DB_USERNAME') ?: '<username>'}",
-                "password" => "{getenv('DB_PASSWORD') ?: '<password>'}",
+                "dsn" => (getenv('DB') ?: 'mysql')
+                    . ":host=" . (getenv('DB_HOST') ?: 'localhost')
+                    . ":" . (getenv('DB_PORT') ?: '')
+                    . ";dbname=" . (getenv('DB_DATABASE') ?: '<database>'),
+                "user" => (getenv('DB_USERNAME') ?: '<username>'),
+                "password" => (getenv('DB_PASSWORD') ?: '<password>'),
             ],
             "- Asserts:" => "",
         ]

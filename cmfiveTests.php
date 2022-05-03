@@ -470,7 +470,7 @@ function reportModules($moduleCapabilities)
 
 function registerConfig()
 {
-    $destPath = BOILERPLATE_TEST_DIRECTORY . DS . "Acceptance.suite.dist.yml";
+    $destPath = BOILERPLATE_TEST_DIRECTORY . DS . "acceptance.suite.dist.yml";
     $ConfigYML = fopen($destPath, "w");
 
     if (!$ConfigYML) {
@@ -503,7 +503,7 @@ function registerHelpers($moduleCapabilities)
     // hence could feed test data (CSV,SQL etc)
     // $sharedParam & registerBoilerplateParametersmake it work
 
-    $destPath = BOILERPLATE_TEST_DIRECTORY . DS . "Acceptance.suite.yml";
+    $destPath = BOILERPLATE_TEST_DIRECTORY . DS . "acceptance.suite.yml";
     $HelperYML = fopen($destPath, "w");
 
     if (!$HelperYML) {
