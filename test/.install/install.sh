@@ -22,4 +22,4 @@ codeception/module-phpbrowser
 
 vendor/bin/codecept bootstrap ;
 
-chmod -R 777 tests/* ;
+chmod -R 774 tests/* ;
