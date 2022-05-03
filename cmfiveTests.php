@@ -56,7 +56,7 @@ $loadedParam = [
     'UA_TestConfig' =>  "tests.config"
 ];
 
-defined('DEBUG_RUN') || define('DEBUG_RUN', "run --steps --debug acceptance");
+defined('DEBUG_RUN') || define('DEBUG_RUN', "run --steps --debug Acceptance");
 defined('PHPUNIT_RUN') || define('PHPUNIT_RUN', "");
 
 ini_set('display_errors', 1);
