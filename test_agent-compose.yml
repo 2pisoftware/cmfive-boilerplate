@@ -1,0 +1,61 @@
+# Cmfive v3.x requires PHP7.2 and MySQL 5.7
+version: '3'
+
+services:
+
+  mysqldb:
+    image: mysql:8
+    container_name: mysql-8
+    hostname: mysql-8
+    # command: --sql-mode=""
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - TZ=Australia/Sydney
+    volumes:
+      - dbdata:/var/lib/mysql:delegated
+    # 'delegated' may be faster on mac or win?
+    networks:
+      - default
+
+  webapp:
+    build:
+      context: .
+      dockerfile: .codepipeline/test_agent/Dockerfile
+    container_name: nginx-php8.1
+    hostname: nginx-php8.1
+    environment:
+      - TZ=Australia/Sydney
+    volumes:
+      - ./:/var/www/html
+      - ./test/Codeception/tests/boilerplate:/var/www/html/test/Codeception/tests/boilerplate
+    ports:
+      - "3000:3000"
+    networks:
+      - default
+    restart: unless-stopped
+    working_dir: /var/www/html
+    links:
+      - mysqldb
+      - seleniumsrv
+
+  seleniumsrv:
+    # promoting:
+    # docker run --net=cmfive-boilerplate_default --network-alias=selenium314 -p 4444:4444 selenium/standalone-chrome:3.14.0
+    image: selenium/standalone-chrome:3.14.0
+    container_name: selenium314
+    hostname: selenium314
+    ports:
+      - "4444:4444"
+    environment:
+      - TZ=Australia/Sydney
+    networks:
+      - default
+
+volumes:
+  dbdata:
+    driver: local
+
+networks:
+  default:
