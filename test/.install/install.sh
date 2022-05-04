@@ -16,7 +16,7 @@ curl -sS https://getcomposer.org/installer | php -- \
 ./composer require --no-update codeception/module-asserts \
 codeception/module-db \
 codeception/module-webdriver \
-codeception/module-phpbrowser
+codeception/module-phpbrowser --dev
 
 ./composer update --prefer-source --no-interaction --no-progress --optimize-autoloader --ansi;
 
