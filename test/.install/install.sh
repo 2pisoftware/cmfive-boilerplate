@@ -13,9 +13,9 @@ curl -sS https://getcomposer.org/installer | php -- \
 ./composer config minimum-stability dev
 ./composer -q require codeception/codeception:4.1.31 --dev ;
 
-./composer require --no-update codeception/module-asserts:3.0.0 \
+./composer require --no-update codeception/module-asserts:2.0.1 \
 codeception/module-db:3.0.1 \
-codeception/module-webdriver:3.1.1 \
+codeception/module-webdriver:2.0.2 \
 codeception/module-phpbrowser:2.0.2
 
 ./composer update --prefer-source --no-interaction --no-progress --optimize-autoloader --ansi;
