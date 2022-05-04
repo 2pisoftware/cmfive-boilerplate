@@ -23,4 +23,4 @@ codeception/module-phpbrowser:2.0.2
 vendor/bin/codecept bootstrap ;
 
 chmod -R 774 tests/* ;
-mkdir tests/acceptance;
+# mkdir tests/acceptance;
