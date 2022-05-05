@@ -156,7 +156,12 @@ class CmfiveSite extends \Codeception\Module
 
     public function isUsingBootstrap5($I)
     {
-        return $I->tryToSeeElement('html.theme');
+        try {
+            $I->seeElement('html.theme');
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     public function clickCmfiveNavbar($I, $category, $link)
