@@ -23,7 +23,7 @@ defined('HELP_DIRECTORY') || define('HELP_DIRECTORY', DS . 'acceptance' . DS . '
 defined('UNIT_DIRECTORY') || define('UNIT_DIRECTORY', DS . 'unit');
 
 defined('CEST_DESTINATION') || define('CEST_DESTINATION', TEST_DIRECTORY . DS . 'tests' . DS . 'acceptance');
-defined('STEP_DESTINATION') || define('STEP_DESTINATION', TEST_DIRECTORY . DS . 'tests' . DS . '_support' . DS . 'step' . DS . 'acceptance');
+defined('STEP_DESTINATION') || define('STEP_DESTINATION', TEST_DIRECTORY . DS . 'tests' . DS . '_support' . DS . 'Step' . DS . 'Acceptance');
 defined('HELP_DESTINATION') || define('HELP_DESTINATION', TEST_DIRECTORY . DS . 'tests' . DS . '_support' . DS . 'Helper');
 defined('UNIT_DESTINATION') || define('UNIT_DESTINATION', 'test' . DS . 'unit');
 
