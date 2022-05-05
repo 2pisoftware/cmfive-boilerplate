@@ -168,8 +168,8 @@ class CmfiveSite extends \Codeception\Module
     {
         if ($this->isUsingBootstrap5($I)) {
             // $I->waitForElement(".navbar-nav .nav-item .nav-link", 2);
-            $I->click($category, ".navbar-nav .nav-item a.nav-link");
-            $I->click($link, ".navbar-nav .nav-item .dropdown-menu.show a");
+            $I->click("#topnav_" . str_replace(" ", "_", strtolower($category)) . "_dropdown_link"); // ".navbar-nav .nav-item a.nav-link");
+            $I->click($link, "#topnav_" . str_replace(" ", "_", strtolower($category)) . "_dropdown_link + .dropdown-menu");
             $I->wait(1);
         } else {
             //$category, "section.top-bar-section ul.left"
