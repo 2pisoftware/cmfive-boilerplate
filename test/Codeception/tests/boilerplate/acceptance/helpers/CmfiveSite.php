@@ -154,16 +154,27 @@ class CmfiveSite extends \Codeception\Module
         $I->amOnPage('/auth/logout');
     }
 
+    public function isUsingBootstrap5($I)
+    {
+        return $I->tryToSeeElement('html.theme');
+    }
 
     public function clickCmfiveNavbar($I, $category, $link)
     {
-        //$category, "section.top-bar-section ul.left"
-        $I->waitForElement("//section[@class='top-bar-section']/ul[@class='left']/li/a[contains(text(),'{$category}')]", 2);
-        $I->click("//section[@class='top-bar-section']/ul[@class='left']/li/a[contains(text(),'{$category}')]");
-        $I->moveMouseOver(['css' => '#topnav_' . strtolower($category)]);
-        $I->waitForText($link);
-        $I->click($link, '#topnav_' . strtolower($category));
-        $I->wait(1);
+        if ($this->isUsingBootstrap5($I)) {
+            // $I->waitForElement(".navbar-nav .nav-item .nav-link", 2);
+            $I->click($category, ".navbar-nav .nav-item a.nav-link");
+            $I->click($link, ".navbar-nav .nav-item .dropdown-menu.show a");
+            $I->wait(1);
+        } else {
+            //$category, "section.top-bar-section ul.left"
+            $I->waitForElement("//section[@class='top-bar-section']/ul[@class='left']/li/a[contains(text(),'{$category}')]", 2);
+            $I->click("//section[@class='top-bar-section']/ul[@class='left']/li/a[contains(text(),'{$category}')]");
+            $I->moveMouseOver(['css' => '#topnav_' . strtolower($category)]);
+            $I->waitForText($link);
+            $I->click($link, '#topnav_' . strtolower($category));
+            $I->wait(1);
+        }
     }
 
     public function waitForBackendToRefresh($I)
