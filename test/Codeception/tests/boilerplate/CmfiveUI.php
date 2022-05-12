@@ -69,7 +69,7 @@ class CmfiveUI extends \Codeception\Actor
 
     public function findTableRowMatching($columnNumber, $matchValue)
     {
-        if ($this->isUsingBootstrap5($I)) {
+        if ($this->isUsingBootstrap5($this)) {
             $rows = $this->grabMultiple('.table-responsive ul li:nth-child(' . $columnNumber . ')');
             if (count($rows) == 0) { // but what if it was a resized non-sorting table??
                 $rows = $this->grabMultiple("//.table-responsive/ul/li[" . $columnNumber . "]");
