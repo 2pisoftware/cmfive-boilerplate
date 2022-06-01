@@ -72,7 +72,7 @@ class CmfiveUI extends \Codeception\Actor
         if ($this->isUsingBootstrap5($this)) {
             $rows = $this->grabMultiple('.table-responsive ul li:nth-child(' . $columnNumber . ')');
             if (count($rows) == 0) { // but what if it was a resized non-sorting table??
-                $rows = $this->grabMultiple("//.table-responsive/ul/li[" . $columnNumber . "]");
+                $rows = $this->grabMultiple(".table-responsive ul li:nth-child(" . ($columnNumber + 1) . ")");
             }
             if (is_array($rows)) {
                 foreach ($rows as $k => $v) {
