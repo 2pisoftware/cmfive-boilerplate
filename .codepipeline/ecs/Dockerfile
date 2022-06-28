@@ -23,16 +23,15 @@ RUN apt install -y \
     mysql-client-5.7 \
     nano \
     nginx \
-    php7.4-bcmath \
-    php7.4-curl \
-    php7.4-fpm \
-    php7.4-gd \
-    php7.4-intl \
-    php7.4-json \
-    php7.4-mbstring \
-    php7.4-mysql \
-    php7.4-xml \
-    php7.4-zip \
+    php8.1-bcmath \
+    php8.1-curl \
+    php8.1-fpm \
+    php8.1-gd \
+    php8.1-intl \
+    php8.1-mbstring \
+    php8.1-mysql \
+    php8.1-xml \
+    php8.1-zip \
     supervisor
 
 # Install NodeJS and NPM, requires cURL to be installed first.
@@ -59,7 +58,7 @@ RUN chown -R www-data:www-data .
 WORKDIR /bootstrap
 
 COPY /.codepipeline/ecs/configs/start.sh .
-COPY /.codepipeline/ecs/configs/fpm/* /etc/php/7.4/fpm/
+COPY /.codepipeline/ecs/configs/fpm/* /etc/php/8.1/fpm/
 COPY /.codepipeline/ecs/configs/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY /.codepipeline/ecs/configs/nginx/default.conf /etc/nginx/conf.d/default.conf
 COPY /.codepipeline/ecs/configs/supervisord/supervisord.conf /etc/supervisord.conf
