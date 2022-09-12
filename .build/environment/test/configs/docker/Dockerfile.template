@@ -1,5 +1,5 @@
 # ubuntu version limited for simple mysql5.7 packaging
-FROM ubuntu:18.04
+FROM ubuntu:bionic-20220801
 
 # prevent install locking up o TZ or other user inputs
 ENV DEBIAN_FRONTEND=noninteractive
