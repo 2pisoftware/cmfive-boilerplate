@@ -342,7 +342,7 @@ function sketchComposerForCore($reference, $phpVersion)
     // 2nd cut default, to master vs deployed PHP version
     if (is_null($reference) || is_null($phpVersion)) {
             $reference = "master";
-            $phpVersion = isnull($phpVersion) ? (PHP_MAJOR_VERSION .".". PHP_MINOR_VERSION) : $phpVersion;
+            $phpVersion = is_null($phpVersion) ? (PHP_MAJOR_VERSION .".". PHP_MINOR_VERSION) : $phpVersion;
     }
 
     $composer_string = <<<COMPOSER
