@@ -333,7 +333,7 @@ function sketchComposerForCore($reference, $phpVersion)
             $phpVersion = "7.0";
         } else {
             $reference = "master";
-            $phpVersion = isnull($phpVersion) ? (PHP_MAJOR_VERSION .".". PHP_MINOR_VERSION) : $phpVersion;
+            $phpVersion = is_null($phpVersion) ? (PHP_MAJOR_VERSION .".". PHP_MINOR_VERSION) : $phpVersion;
         }
     }
 
