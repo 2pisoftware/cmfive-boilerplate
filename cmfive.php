@@ -262,10 +262,10 @@ function refreshComposerAvailability()
 
 function cmdinstallCoreLibraries($pCount, $parameters = [])
 {
-    installCoreLibraries(($pCount > 2) ? $parameters[2] : null);
+    installCoreLibraries(($pCount > 2) ? $parameters[2] : null, ($pCount > 3) ? $parameters[3] : null);
 };
 
-function installCoreLibraries($branch)
+function installCoreLibraries($branch = null, $phpVersion = null)
 {
     // name     : 2pisoftware/cmfive-core
     // descrip. :
@@ -282,7 +282,13 @@ function installCoreLibraries($branch)
         echo ("Installing {$branch} from core repository.\n");
     }
 
-    $composer_json = sketchComposerForCore($branch);
+    if (is_null($phpVersion)) {
+        echo ("No PHP version for Composer was specified.\n");
+    } else {
+        echo ("Asserting PHP version ({$phpVersion}) for Composer.\n");
+    }
+
+    $composer_json = sketchComposerForCore($branch, $phpVersion);
 
     file_put_contents('./composer.json', json_encode($composer_json, JSON_PRETTY_PRINT));
 
@@ -310,7 +316,7 @@ function installCoreLibraries($branch)
     installThirdPartyLibraries($composer_json);
 }
 
-function sketchComposerForCore($reference)
+function sketchComposerForCore($reference, $phpVersion)
 {
     // name     : 2pisoftware/cmfive-core
     // descrip. :
@@ -321,11 +327,13 @@ function sketchComposerForCore($reference)
     // dist     : []
     // names    : 2pisoftware/cmfive-core
 
-    if (is_null($reference)) {
+    if (is_null($reference) || is_null($phpVersion)) {
         if (PHP_MAJOR_VERSION === 7 && PHP_MINOR_VERSION === 0) {
             $reference = "legacy/PHP7.0";
+            $phpVersion = "7.0";
         } else {
             $reference = "master";
+            $phpVersion = is_null($phpVersion) ? (PHP_MAJOR_VERSION .".". PHP_MINOR_VERSION) : $phpVersion;
         }
     }
 
@@ -341,7 +349,10 @@ function sketchComposerForCore($reference)
         "config": {
             "vendor-dir": "composer/vendor",
             "cache-dir": "composer/cache",
-            "bin-dir": "composer/bin"
+            "bin-dir": "composer/bin",
+            "platform": {
+                "php": "$phpVersion"
+            }
         },
         "repositories": [
             {
