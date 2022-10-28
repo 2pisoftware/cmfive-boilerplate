@@ -77,7 +77,7 @@ Config::set(
                 "port" => "4444",
                 "capabilities" =>
                 [
-                    "chromeOptions" => ["args" => ["--headless"]]
+                    "chromeOptions" => ["args" => ["--headless"]],
                     "acceptInsecureCerts" => true,
                     "goog:chromeOptions" => "w3c: false"
                 ]
