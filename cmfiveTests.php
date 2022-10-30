@@ -493,6 +493,8 @@ function registerConfig()
 
     fwrite($ConfigYML, $hdr);
 
+    echo "Configured as:\n".$codeceptionConfig."\n";
+
     $setup = Yaml::dump($codeceptionConfig, 99);
     $setup = str_replace("'-", "-", $setup);
     $setup = str_replace(":':", ":", $setup);
