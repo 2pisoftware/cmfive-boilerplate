@@ -296,7 +296,11 @@ function allowRunner()
                 return false;
             }
             return true;
+        } else {
+            echo "Test runner not enabled in config\n";   
         }
+    } else {
+        echo "system/web.php not found\n";   
     }
     return false;
 }
