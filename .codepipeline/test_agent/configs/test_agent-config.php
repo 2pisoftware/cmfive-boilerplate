@@ -77,18 +77,11 @@ Config::set(
                 "port" => "4444",
                 "capabilities" =>
                 [
-                    "" => [
-                        "args" => [
-                            "--headless", "--disable-gpu",
-                             "--window-size=1920,1200",
-                             "--ignore-certificate-errors",
-                             "--disable-extensions",
-                             "--no-sandbox",
-                             "--disable-dev-shm-usage"]
-                        ]
-                        ],
                     "acceptInsecureCerts" => true,
-                    "goog:chromeOptions" => "w3c: false"
+                    "goog:chromeOptions" => [
+                        "w3c" => "false",
+                        "args" => '["--headless","--disable-gpu","--window-size=1920,1200","--ignore-certificate-errors","--disable-extensions","--no-sandbox","--disable-dev-shm-usage"]'
+                    ]
                 ]
             ],
             "- Db:" =>
