@@ -10,8 +10,8 @@ curl -sS https://getcomposer.org/installer | php -- \
         --filename=composer \
         --install-dir=. ;
         
-./composer config minimum-stability dev
 ./composer -q require codeception/codeception:4.1.31 --dev ;
+./composer config minimum-stability dev
 
 ./composer require -W --no-update codeception/module-asserts:2.0.1 \
 codeception/module-db:2.0.2 \
