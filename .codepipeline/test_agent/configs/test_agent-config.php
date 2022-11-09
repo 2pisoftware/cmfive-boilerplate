@@ -70,10 +70,10 @@ Config::set(
         [
             "- WebDriver:" =>
             [
-                "url" => "http://127.0.0.1:3000",
+                "url" => "http://webapp:3000",
                 "browser" => "chrome",
                 "wait" => "60",
-                "host" => "127.0.0.1",
+                "host" => "selenium314",
                 "port" => "4444",
                 "capabilities" =>
                 [
