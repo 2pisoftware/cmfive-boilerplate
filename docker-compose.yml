@@ -64,15 +64,15 @@ services:
   # ------------------------------------------------------------
 
   seleniumsrv:
-    # promoting:
-    # docker run --net=cmfive-boilerplate_default --network-alias=selenium314 -p 4444:4444 selenium/standalone-chrome:3.14.0
-    image: selenium/standalone-chrome:105.0
+    # promoting:image: selenium/standalone-chrome:110.0
     container_name: selenium314
     hostname: selenium314
     ports:
       - "4444:4444"
     environment:
       - TZ=Australia/Sydney
+      - START_XVFB=false
+    shm_size: '4gb'
     networks:
       - default
 

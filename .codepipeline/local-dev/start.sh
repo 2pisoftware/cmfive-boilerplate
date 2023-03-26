@@ -1,6 +1,6 @@
 #!/bin/bash
 
-./test/.install/install.sh
+# ./test/.install/install.sh
 
 #setup for XDebug
 
