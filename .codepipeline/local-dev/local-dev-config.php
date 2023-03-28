@@ -12,8 +12,7 @@ Config::set("system.timezone", "Australia/Sydney");
 
 //========== Database Configuration ==========================
 Config::set("database", [
-    "hostname"  =>  "localhost",
-    "port"  =>  "",
+    "hostname"  =>  "mysqldb",
     "username"  =>  "cmfive",
     "password"  =>  "cmfive",
     "database"  =>  "cmfive",
@@ -37,8 +36,7 @@ Config::set("database", [
 ]);
 
 Config::set("report.database", [
-    "hostname"  =>  "localhost",
-    "port"  =>  "",
+    "hostname"  =>  "mysqldb",
     "username"  =>  "cmfivero",
     "password"  =>  "cmfivero",
     "database"  =>  "cmfive",
