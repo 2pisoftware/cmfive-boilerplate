@@ -29,9 +29,6 @@ services:
       - TZ=Australia/Sydney
     volumes:
       - ./:/var/www/html
-      - ../mod:/var/www/mod
-      - ../cmfive-core:/var/www/core
-      - codecept:/var/www/html/test/Codeception
       - ./test/Codeception/tests/boilerplate:/var/www/html/test/Codeception/tests/boilerplate
       - ./test/Codeception/tests/_output:/var/www/html/test/Codeception/tests/_output
     ports:
