@@ -59,10 +59,12 @@ Config::set("system.environment", "development");
 Config::set("core_template.foundation.reveal.animation", "none");
 Config::set("core_template.foundation.reveal.animation_speed", 0);
 //========== must be "ENABLED" to run ==========================
+//========== "config" will pass through to CmfiveSite helper ===
+Config::set('system.environment', "development");
 Config::set(
     "tests",
     [
-        "testrunner"  => "",
+        "testrunner"  => "ENABLED",
         "config" => '',
         "yaml" =>
         [
@@ -70,7 +72,7 @@ Config::set(
             [
                 "url" => "http://webapp:3000",
                 "browser" => "chrome",
-                "wait" => "60",
+                "wait" => "8",
                 "host" => "seleniumDrv",
                 "port" => "4444",
                 "capabilities" =>
@@ -78,18 +80,23 @@ Config::set(
                     "acceptInsecureCerts" => true,
                     "goog:chromeOptions" => [
                         "w3c" => "false",
-                        "args" => '["--headless","--disable-gpu","--window-size=1920,1200","--ignore-certificate-errors","--disable-extensions","--no-sandbox","--disable-dev-shm-usage"]'
+                        "args" => '['
+                        .'"--headless=new","--disable-gpu",'
+                        .'"-proxy-bypass-list=*","--proxy-server=direct://","--dns-prefetch-disable",'
+                        .'"--disk-cache-size=0","–-media-cache-size=0",'
+                        .'"--window-size=1920,1200","--disable-remote-fonts",'
+                        .'"--ignore-certificate-errors","--disable-extensions","--no-sandbox",'
+                        // .'"--enable-logging=/var/customlog/ch.log","--v=1'
+                        .'"--disable-dev-shm-usage"'
+                        .']'
                     ]
                 ]
             ],
             "- Db:" =>
             [
-                "dsn" => (getenv('DB') ?: 'mysql')
-                    . ":host=" . (getenv('DB_HOST') ?: 'localhost')
-                    . ":" . (getenv('DB_PORT') ?: '')
-                    . ";dbname=" . (getenv('DB_DATABASE') ?: '<database>'),
-                "user" => (getenv('DB_USERNAME') ?: '<username>'),
-                "password" => (getenv('DB_PASSWORD') ?: '<password>'),
+                "dsn" => "mysql:host=mysqldb:3306;dbname=cmfive",
+                "user" => "cmfive",
+                "password" => "cmfive",
             ],
             "- Asserts:" => "",
         ]
