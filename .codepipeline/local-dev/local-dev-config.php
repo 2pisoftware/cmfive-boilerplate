@@ -12,11 +12,11 @@ Config::set("system.timezone", "Australia/Sydney");
 
 //========== Database Configuration ==========================
 Config::set("database", [
-    "hostname"  => getenv('DB_HOST') ?: "localhost",
-    "port"  => getenv('DB_PORT') ?: "",
-    "username"  => getenv('DB_USERNAME') ?: "<username>",
-    "password"  => getenv('DB_PASSWORD') ?: "<password>",
-    "database"  => getenv('DB_DATABASE') ?: "<database>",
+    "hostname"  =>  "localhost",
+    "port"  =>  "",
+    "username"  =>  "cmfive",
+    "password"  =>  "cmfive",
+    "database"  =>  "cmfive",
     "driver"    => getenv('DB') ?: "mysql",
     "backups" =>
     [
@@ -37,11 +37,11 @@ Config::set("database", [
 ]);
 
 Config::set("report.database", [
-    "hostname"  => getenv('DB_HOST') ?: "localhost",
-    "port"  => getenv('DB_PORT') ?: "",
-    "username"  => getenv('DB_USERNAME') ?: "<username>",
-    "password"  => getenv('DB_PASSWORD') ?: "<password>",
-    "database"  => getenv('DB_DATABASE') ?: "<database>",
+    "hostname"  =>  "localhost",
+    "port"  =>  "",
+    "username"  =>  "cmfivero",
+    "password"  =>  "cmfivero",
+    "database"  =>  "cmfive",
     "driver"    => getenv('DB') ?: "mysql",
 ]);
 
