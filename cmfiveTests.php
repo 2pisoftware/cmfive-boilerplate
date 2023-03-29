@@ -297,10 +297,10 @@ function allowRunner()
             }
             return true;
         } else {
-            echo "Test runner not enabled in config\n";   
+            echo "Test runner not enabled in config\n";
         }
     } else {
-        echo "system/web.php not found\n";   
+        echo "system/web.php not found\n";
     }
     return false;
 }
@@ -480,7 +480,7 @@ function registerConfig()
     if (!$ConfigYML) {
         return;
     }
-    
+
     $codeceptionConfig = ["modules" => ["enabled" => Config::get("tests.yaml")]];
     if (!$codeceptionConfig) {
         return;
@@ -519,14 +519,14 @@ function registerHelpers($moduleCapabilities)
     }
 
     $hdr = "actor: CmfiveUI\n"
-    ."gherkin:\n"
-    ."    contexts:\n"
-    ."        default:\n"
-    ."            - \Tests\Support\AcceptanceTester\n"
-    ."            - \Tests\Support\CmfiveUI\n"
-    ."modules:\n"
-    ."            enabled:\n";
-    
+        . "gherkin:\n"
+        . "    contexts:\n"
+        . "        default:\n"
+        . "            - \Tests\Support\AcceptanceTester\n"
+        . "            - \Tests\Support\CmfiveUI\n"
+        . "modules:\n"
+        . "            enabled:\n";
+
     fwrite($HelperYML, $hdr);
 
     foreach ($moduleCapabilities as $capabilities => $capability) {
