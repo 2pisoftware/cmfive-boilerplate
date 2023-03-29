@@ -607,7 +607,6 @@ function chaseModules($module_name)
                 if (!empty($fileShift)) {
                     try {
                         copy($file['source'], $file['dest']);
-                        chmod($file['dest'], 0777);
 
                         if (isset($file['helper'])) {
                             $moduleCapabilities['Helpers'][$module][] =  $file['helper'];
