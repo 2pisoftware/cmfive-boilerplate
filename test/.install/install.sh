@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#setup for Codeception
+#setup for Codeception:
 
 SCRIPTPATH="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 cd "${SCRIPTPATH}/../Codeception"
