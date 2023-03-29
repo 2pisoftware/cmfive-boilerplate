@@ -35,4 +35,4 @@ php cmfive.php
 [select option 3 and fill in the prompts]
 ```
 
-From there, navigate to [https://localhost:9002](https://localhost:9002) and log in with your admin account
+From there, navigate to [https://localhost:9002](https://localhost:9002) and log in with your admin account.
