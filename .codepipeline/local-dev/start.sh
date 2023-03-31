@@ -13,14 +13,15 @@ echo "zend_extension=xdebug.so" > /etc/php/8.1/fpm/conf.d/20-xdebug.ini \
 	&& echo "[xdebug]" >> /etc/php/8.1/fpm/conf.d/20-xdebug.ini \
 	&& echo "xdebug.remote_enable=1" >> /etc/php/8.1/fpm/conf.d/20-xdebug.ini \
 	&& echo "xdebug.remote_host=${INTERNAL_HOST_IP}" >> /etc/php/8.1/fpm/conf.d/20-xdebug.ini \
+	&& echo "xdebug.client_host=${INTERNAL_HOST_IP}" >> /etc/php/8.1/fpm/conf.d/20-xdebug.ini \
+	&& echo "xdebug.remote_port=9003" >> /etc/php/8.1/fpm/conf.d/20-xdebug.ini \
+	&& echo "xdebug.client_port=9003" >> /etc/php/8.1/fpm/conf.d/20-xdebug.ini \
 	&& echo "xdebug.remote_connect_back=0" >> /etc/php/8.1/fpm/conf.d/20-xdebug.ini \
 	&& echo "xdebug.remote_autostart=1" >> /etc/php/8.1/fpm/conf.d/20-xdebug.ini \
 	&& echo "xdebug.remote_handler=dbgp" >> /etc/php/8.1/fpm/conf.d/20-xdebug.ini \
 	&& echo "xdebug.max_nesting_level=250" >> /etc/php/8.1/fpm/conf.d/20-xdebug.ini \
-	&& echo "xdebug.client_host=${INTERNAL_HOST_IP}" >> /etc/php/8.1/fpm/conf.d/20-xdebug.ini \
-	&& echo "xdebug.mode=debug" >> /etc/php/8.1/fpm/conf.d/20-xdebug.ini \
-	&& echo "xdebug.start_with_request=yes" >> /etc/php/8.1/fpm/conf.d/20-xdebug.ini \
-	&& echo "xdebug.client_port=9003" >> /etc/php/8.1/fpm/conf.d/20-xdebug.ini
+	&& echo "xdebug.mode=debug" >> /etc/php/8.1/fpm/conf.d/20-xdebug.ini
+	# && echo "xdebug.start_with_request=yes" >> /etc/php/8.1/fpm/conf.d/20-xdebug.ini \
 
 
 supervisord -n -c /etc/supervisord.conf
