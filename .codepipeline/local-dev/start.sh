@@ -18,6 +18,4 @@ echo "zend_extension=xdebug.so" > /etc/php/8.1/fpm/conf.d/20-xdebug.ini \
 	&& echo "xdebug.remote_log=/tmp/xdebug.log" >> /etc/php/8.1/fpm/conf.d/20-xdebug.ini \
 	&& echo "xdebug.max_nesting_level=250" >> /etc/php/8.1/fpm/conf.d/20-xdebug.ini \
 
-service php8.1-fpm restart
-
 supervisord -n -c /etc/supervisord.conf
