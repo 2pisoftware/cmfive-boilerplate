@@ -1,0 +1,21 @@
+{
+  "name": "cmfive-tests",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "node build.js",
+    "test": "npx playwright test"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@playwright/test": "^1.32.1",
+    "glob": "^9.3.2",
+    "glob-fs": "^0.1.7"
+  },
+  "devDependencies": {
+    "@types/node": "^18.15.11",
+    "typescript": "^5.0.2"
+  }
+}
