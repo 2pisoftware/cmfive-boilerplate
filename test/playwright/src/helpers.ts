@@ -1,12 +1,13 @@
+import { Page } from "@playwright/test";
 
-const HOST = 'http://localhost:3500';
+const HOST = 'http://localhost:3000';
 
 export class PlaywrightHelper {
     constructor(parameters) {
         
     }
 
-    static async login(page, user, password) {
+    static async login(page: Page, user: string, password: string) {
         await page.goto(HOST + '/auth/login');
         const input_login = page.locator('#login');
         await input_login.click();
@@ -15,5 +16,9 @@ export class PlaywrightHelper {
         await input_password.click();
         await input_password.fill(password);
         await page.getByRole('button', { name: 'Login' }).click();
+    }
+
+    static async isBootstrap5(page: Page): Promise<boolean> {
+        return await page.locator("html.theme").count() == 1;
     }
 }
