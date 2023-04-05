@@ -50,3 +50,6 @@ venv/
 
 .build/environment/prod/stage/
 .build/environment/prod/Dockerfile
+
+# Node Files
+test/playwright/node_modules/
