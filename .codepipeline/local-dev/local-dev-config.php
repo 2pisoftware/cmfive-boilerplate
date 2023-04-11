@@ -47,11 +47,11 @@ Config::set("report.database", [
 Config::append('email', [
     "layer"    => "smtp",   // smtp or sendmail or aws
     "command" => "",        // used for sendmail layer only
-    "host"    => "smtp.gmail.com",
+    "host"    => "email-smtp.ap-southeast-2.amazonaws.com",
     "port"    => 465,
     "auth"    => true,
-    "username"    => '<email>',
-    "password"    => '<password>',
+    "username"    => getenv('SMTP_USERNAME') ?: '<email>',
+    "password"    => getenv('SMTP_PASSWORD') ?: '<password>',
 ]);
 
 //========== TestRunner Configuration ========================== 
