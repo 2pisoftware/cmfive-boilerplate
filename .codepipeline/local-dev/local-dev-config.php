@@ -4,7 +4,7 @@
 Config::set('main.application_name', 'Cmfive');
 Config::set('main.company_name', '2pi Software');
 Config::set('main.company_url', 'https://2pisoftware.com');
-Config::set('main.company_support_email', '');
+Config::set('main.company_support_email', getenv('SMTP_SENDER') ?: '');
 
 //=============== Timezone ===================================
 date_default_timezone_set('Australia/Sydney');
