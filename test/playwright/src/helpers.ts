@@ -3,11 +3,13 @@ import { DateTime } from "luxon";
 
 const HOST = "http://localhost:3000";
 
-export class PlaywrightHelper {
+export class CmfiveHelper {
     constructor(parameters)
     {
 
     }
+
+    static randomID = (prefix: string) => prefix + (Math.random() + 1).toString(36).substring(7)
 
     static async login(page: Page, user: string, password: string)
     {
@@ -59,12 +61,10 @@ export class PlaywrightHelper {
             throw new Error("date.toISODate() returned null");
         else
             await expect(page.locator("#" + field)).toHaveValue(expectedDate);
-    }
+    }   
+}
 
-
-    /**
-     * ancient (two days ago) code
-     */
+    /*
 
     // NEEDS WORK
     static async fillDateTimePicker(page: Page, field: string, date: DateTime) {
@@ -90,4 +90,4 @@ export class PlaywrightHelper {
     }
 
     // static async fillForm(page: Page, data: WhatIsThis) what is data? array of ... keyvalue pairs? keyvalue pairs are strings like "name:value"?
-}
+    */
