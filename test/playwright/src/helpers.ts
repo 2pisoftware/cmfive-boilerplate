@@ -11,6 +11,11 @@ export class CmfiveHelper {
 
     static randomID = (prefix: string) => prefix + (Math.random() + 1).toString(36).substring(7)
 
+    static getRowByText(page: Page, text: string)
+    {
+        return page.locator('tr:has-text("' + text + '")');
+    }
+
     static async login(page: Page, user: string, password: string)
     {
         await page.goto(HOST + "/auth/login");
