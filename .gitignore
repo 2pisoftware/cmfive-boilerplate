@@ -53,3 +53,4 @@ venv/
 
 # Node Files
 test/playwright/node_modules/
+test/playwright/test-results/

@@ -1,7 +1,7 @@
 import { Page, expect } from "@playwright/test";
 import { DateTime } from "luxon";
 
-const HOST = "http://localhost:3000";
+const HOST = "http://localhost:3500";
 
 export class CmfiveHelper {
     constructor(parameters)
