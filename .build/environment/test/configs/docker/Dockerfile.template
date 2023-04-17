@@ -1,5 +1,5 @@
 # ubuntu version limited for simple mysql5.7 packaging
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 # prevent install locking up o TZ or other user inputs
 ENV DEBIAN_FRONTEND=noninteractive
@@ -23,7 +23,7 @@ RUN apt-get install -y -o "APT::Acquire::Retries=6" \
     php{{php_version}}-zip \
     php{{php_version}}-curl \
     php{{php_version}}-gd \
-    php{{php_version}}-json \
+    # php{{php_version}}-json \
     php{{php_version}}-mysql \
     php{{php_version}}-xml \
     php{{php_version}}-bcmath \
@@ -36,7 +36,7 @@ RUN apt-get install -y -o "APT::Acquire::Retries=6" \
     git \
     iputils-ping \
     curl \
-    mysql-client-5.7
+    mysql-client-8.0
 
 # PHP extras, for test+debug
 RUN apt-get update

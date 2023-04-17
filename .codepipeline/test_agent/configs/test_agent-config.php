@@ -36,6 +36,15 @@ Config::set("database", [
     ]
 ]);
 
+Config::set("report.database", [
+    "hostname"  => getenv('DB_HOST') ?: "localhost",
+    "port"  => getenv('DB_PORT') ?: "",
+    "username"  => getenv('DB_USERNAME') ?: "<username>",
+    "password"  => getenv('DB_PASSWORD') ?: "<password>",
+    "database"  => getenv('DB_DATABASE') ?: "<database>",
+    "driver"    => getenv('DB') ?: "mysql",
+]);
+
 //=========== Email Layer Configuration =====================
 Config::append('email', [
     "layer"    => "smtp",   // smtp or sendmail or aws
@@ -47,7 +56,10 @@ Config::append('email', [
     "password"    => '<password>',
 ]);
 
-//========== TestRunner Configuration ==========================
+//========== TestRunner Configuration ========================== 
+Config::set("system.environment", "development");
+Config::set("core_template.foundation.reveal.animation", "none");
+Config::set("core_template.foundation.reveal.animation_speed", 0);
 //========== must be "ENABLED" to run ==========================
 Config::set(
     "tests",
@@ -66,15 +78,18 @@ Config::set(
                 "capabilities" =>
                 [
                     "acceptInsecureCerts" => true,
-                    "goog:chromeOptions" => "w3c: false"
+                    "goog:chromeOptions" => [
+                        "w3c" => "false",
+                        "args" => '["--headless","--disable-gpu","--window-size=1920,1200","--ignore-certificate-errors","--disable-extensions","--no-sandbox","--disable-dev-shm-usage"]'
+                    ]
                 ]
             ],
             "- Db:" =>
             [
                 "dsn" => (getenv('DB') ?: 'mysql')
-                .":host=".(getenv('DB_HOST') ?: 'localhost')
-                .":".(getenv('DB_PORT') ?: '')
-                .";dbname=".(getenv('DB_DATABASE') ?: '<database>'),
+                    . ":host=" . (getenv('DB_HOST') ?: 'localhost')
+                    . ":" . (getenv('DB_PORT') ?: '')
+                    . ";dbname=" . (getenv('DB_DATABASE') ?: '<database>'),
                 "user" => (getenv('DB_USERNAME') ?: '<username>'),
                 "password" => (getenv('DB_PASSWORD') ?: '<password>'),
             ],

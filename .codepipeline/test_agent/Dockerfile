@@ -51,7 +51,7 @@ COPY . /var/www/html
 # bootstrap environment
 WORKDIR /bootstrap
 
-COPY /.codepipeline/local-dev/start.sh .
+COPY /.codepipeline/test_agent/start.sh .
 COPY /.codepipeline/local-dev/configs/fpm/* /etc/php/8.1/fpm/
 COPY /.codepipeline/local-dev/configs/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY /.codepipeline/local-dev/configs/nginx/default.conf /etc/nginx/conf.d/default.conf

@@ -4,4 +4,4 @@ echo "Running Application Start"
 
 # Start Nginx and PHP FPM.
 systemctl start nginx
-systemctl start php7.4-fpm
+systemctl start php8.1-fpm
