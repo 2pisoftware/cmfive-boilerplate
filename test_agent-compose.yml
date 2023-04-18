@@ -4,17 +4,17 @@ version: '3'
 services:
 
   mysqldb:
-    image: mysql:8
-    container_name: mysql-8
-    hostname: mysql-8
-    # command: --sql-mode=""
+    image: mysql:5.7.21
+    container_name: mysql-5.7
+    hostname: mysql-5.7
+    command: --sql-mode=""
     ports:
-      - "3306:3306"
+      - "3308:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - TZ=Australia/Sydney
     volumes:
-      - dbdata:/var/lib/mysql:delegated
+    - dbdata:/var/lib/mysql:delegated
     # 'delegated' may be faster on mac or win?
     networks:
       - default
@@ -23,8 +23,8 @@ services:
     build:
       context: .
       dockerfile: .codepipeline/test_agent/Dockerfile
-    container_name: nginx-php8.1
-    hostname: nginx-php8.1
+    container_name: nginx-php7.4
+    hostname: nginx-php7.4
     environment:
       - TZ=Australia/Sydney
     volumes:
