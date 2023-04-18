@@ -154,18 +154,32 @@ class CmfiveSite extends \Codeception\Module
         $I->amOnPage('/auth/logout');
     }
 
+    public function isUsingBootstrap5($I)
+    {
+        try {
+            $I->seeElement('html.theme');
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
 
     public function clickCmfiveNavbar($I, $category, $link)
     {
-        //$category, "section.top-bar-section ul.left"
-        $I->waitForElement("//section[@class='top-bar-section']/ul[@class='left']/li/a[contains(text(),'{$category}')]", 2);
-        $I->click("//section[@class='top-bar-section']/ul[@class='left']/li/a[contains(text(),'{$category}')]");
-        // Codeception type hints don't like old style : 'css' => '#topnav_' . strtolower($category)]
-        // see: https://github.com/Codeception/module-webdriver/issues/70
-        $I->moveMouseOver("//section[@class='top-bar-section']/ul[@class='left']/li/a[contains(text(),'{$category}')]");
-        $I->waitForText($link);
-        $I->click($link, '#topnav_' . strtolower($category));
-        $I->wait(1);
+        if ($this->isUsingBootstrap5($I)) {
+            // $I->waitForElement(".navbar-nav .nav-item .nav-link", 2);
+            $I->click("#topnav_" . str_replace(" ", "_", strtolower($category)) . "_dropdown_link"); // ".navbar-nav .nav-item a.nav-link");
+            $I->click($link, "#topnav_" . str_replace(" ", "_", strtolower($category)) . "_dropdown_link + .dropdown-menu");
+            $I->wait(1);
+        } else {
+            //$category, "section.top-bar-section ul.left"
+            $I->waitForElement("//section[@class='top-bar-section']/ul[@class='left']/li/a[contains(text(),'{$category}')]", 2);
+            $I->click("//section[@class='top-bar-section']/ul[@class='left']/li/a[contains(text(),'{$category}')]");
+            $I->moveMouseOver(['css' => '#topnav_' . strtolower($category)]);
+            $I->waitForText($link);
+            $I->click($link, '#topnav_' . strtolower($category));
+            $I->wait(1);
+        }
     }
 
     public function waitForBackendToRefresh($I)

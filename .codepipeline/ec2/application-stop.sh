@@ -4,7 +4,7 @@ echo "Running Application Stop"
 
 # Stop Nginx and PHP FPM.
 systemctl stop nginx
-systemctl stop php7.4-fpm
+systemctl stop php8.1-fpm
 
 # Remove the old files.
 if [ -d "/var/www/html" ]; then

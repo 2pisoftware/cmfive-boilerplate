@@ -71,20 +71,17 @@ Config::set(
             ],
             "- Db:" =>
             [
-                "dsn" => "mysql:host=localhost:3306;dbname=<database>",
-                "user" => "<username>",
-                "password" => "<password>",
+                "dsn" => (getenv('DB') ?: 'mysql')
+                .":host=".(getenv('DB_HOST') ?: 'localhost')
+                .":".(getenv('DB_PORT') ?: '')
+                .";dbname=".(getenv('DB_DATABASE') ?: '<database>'),
+                "user" => (getenv('DB_USERNAME') ?: '<username>'),
+                "password" => (getenv('DB_PASSWORD') ?: '<password>'),
             ],
             "- Asserts:" => "",
         ]
     ]
 );
-
-//======= define openssl encryption key and initialization vector ============
-Config::set('system.encryption', [
-    'key' => '',
-    'iv'  => ''
-]);
 
 //========= Anonymous Access ================================
 // bypass authentication if sent from the following IP addresses

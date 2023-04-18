@@ -69,18 +69,36 @@ class CmfiveUI extends \Codeception\Actor
 
     public function findTableRowMatching($columnNumber, $matchValue)
     {
-        $rows = $this->grabMultiple('.tablesorter tbody tr td:nth-child(' . $columnNumber . ')');
-        if (count($rows) == 0) { // but what if it was a resized non-sorting table??
-            $rows = $this->grabMultiple("//table/tbody/tr/td[" . $columnNumber . "]");
-        }
-        if (is_array($rows)) {
-            foreach ($rows as $k => $v) {
-                if (trim($v) == trim($matchValue)) {
-                    return $k + 1;
+        if ($this->isUsingBootstrap5($this)) {
+            $rows = $this->grabMultiple('.table-responsive ul li:nth-child(' . $columnNumber . ')');
+            if (count($rows) == 0) {
+                $rows = $this->grabMultiple(".table-responsive table tbody tr td:nth-child(" . $columnNumber . ")");
+            }
+            if (count($rows) == 0) {
+                $rows = $this->grabMultiple(".tablesorter tbody tr td:nth-child(" . $columnNumber . ")");
+            }
+            if (is_array($rows)) {
+                foreach ($rows as $k => $v) {
+                    if (trim($v) == trim($matchValue)) {
+                        return $k + 1;
+                    }
                 }
             }
+            return false;
+        } else {
+            $rows = $this->grabMultiple('.tablesorter tbody tr td:nth-child(' . $columnNumber . ')');
+            if (count($rows) == 0) { // but what if it was a resized non-sorting table??
+                $rows = $this->grabMultiple("//table/tbody/tr/td[" . $columnNumber . "]");
+            }
+            if (is_array($rows)) {
+                foreach ($rows as $k => $v) {
+                    if (trim($v) == trim($matchValue)) {
+                        return $k + 1;
+                    }
+                }
+            }
+            return false;
         }
-        return false;
     }
 
 /*******************************************************
