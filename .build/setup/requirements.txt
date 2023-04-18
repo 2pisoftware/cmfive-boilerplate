@@ -4,4 +4,4 @@ pyyaml==5.4
 boto3==1.16.57
 requests==2.25.0
 jsonschema==3.2.0
-MarkupSafe==2.0.1
+markupsafe==2.0.1
