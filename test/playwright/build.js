@@ -23,6 +23,9 @@ function copyFiles(sourceGlob, destDir) {
 }
 
 // Copy the test files to the build directory
-
+// External module tests should have test and helper files copied into ./src
 copyFiles('../../system/modules/**/tests/playwright/*.test.ts', './src');
+copyFiles('../../system/modules/**/tests/playwright/*.helper.ts', './src');
+
 copyFiles('../../modules/**/tests/playwright/*.test.ts', './src');
+copyFiles('../../modules/**/tests/playwright/*.helper.ts', './src');
