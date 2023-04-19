@@ -70,15 +70,18 @@ Config::set(
         [
             "- WebDriver:" =>
             [
-            "url" => "http://webapp:3000",
-            "browser" => "chrome",
-            "wait" => "60",
-            "host" => "selenium314",
-            "port" => "4444",
-            "capabilities" =>
+                "url" => "http://webapp:3000",
+                "browser" => "chrome",
+                "wait" => "60",
+                "host" => "selenium314",
+                "port" => "4444",
+                "capabilities" =>
                 [
-                "acceptInsecureCerts" => true,
-                "goog:chromeOptions" => "w3c: false"
+                    "acceptInsecureCerts" => true,
+                    "goog:chromeOptions" => [
+                        "w3c" => "false",
+                        "args" => '["--headless","--disable-gpu","--window-size=1920,1200","--ignore-certificate-errors","--disable-extensions","--no-sandbox","--disable-dev-shm-usage"]'
+                    ]
                 ]
             ],
             "- Db:" =>
