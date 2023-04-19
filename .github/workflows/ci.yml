@@ -9,6 +9,13 @@ jobs:
     #     steps:
     #         - uses: actions/checkout@v2
     #         - uses: michaelw90/PHP-Lint@master
+    
+    phplint:
+        name: PHP Lint
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - uses: StephaneBour/actions-php-lint@8.1
     php-codesniffer74:
         name: PHP CS 7.4
         runs-on: ubuntu-latest
