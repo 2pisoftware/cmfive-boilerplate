@@ -4,7 +4,7 @@ import { HOST, CmfiveHelper } from "./cmfive.helper";
 export class AdminHelper {
     static async createUser(page: Page, username: string, password: string, firstname: string, lastname: string, email: string, permissions: string[] = [])
     {
-        await page.waitForTimeout(500); // let page load so next line doesn't fail if previous function ended on a redirect to user list
+        await page.waitForTimeout(100); // let page load so next line doesn't fail if previous function ended on a redirect to user list
         if(page.url() != HOST + "/admin/users#internal")
             await CmfiveHelper.clickCmfiveNavbar(page, "Admin", "List Users");
         await page.waitForURL(HOST + "/admin/users#internal");
@@ -35,7 +35,7 @@ export class AdminHelper {
 
     static async deleteUser(page: Page, username: string)
     {
-        await page.waitForTimeout(500); // let page load so next line doesn't fail if previous function ended on a redirect to user list
+        await page.waitForTimeout(100); // let page load so next line doesn't fail if previous function ended on a redirect to user list
         if(page.url() != HOST + "/admin/users#internal")
             await CmfiveHelper.clickCmfiveNavbar(page, "Admin", "List Users");
         await page.waitForURL(HOST + "/admin/users#internal");
@@ -49,7 +49,7 @@ export class AdminHelper {
 
     static async editUser(page: Page, username: string, data: [string, string][])
     {
-        await page.waitForTimeout(500); // let page load so next line doesn't fail if previous function ended on a redirect to user list
+        await page.waitForTimeout(100); // let page load so next line doesn't fail if previous function ended on a redirect to user list
         if(page.url() != HOST + "/admin/users#internal")
             await CmfiveHelper.clickCmfiveNavbar(page, "Admin", "List Users");
         await page.waitForURL(HOST + "/admin/users#internal");
