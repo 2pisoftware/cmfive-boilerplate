@@ -41,12 +41,12 @@ test("Test that users, groups & permissions are assignable", async ({ page }) =>
 
     const parentgroup = CmfiveHelper.randomID("usergroup_");
     const usergroup = CmfiveHelper.randomID("usergroup_");
-    await AdminHelper.createUserGroup(page, parentgroup);
-    await AdminHelper.createUserGroup(page, usergroup);
-    await AdminHelper.addUserGroupMember(page, parentgroup, usergroup.toUpperCase());
-    await AdminHelper.addUserGroupMember(page, usergroup, user+"_firstName " + user+"_lastName");
+    const parentgroupID = await AdminHelper.createUserGroup(page, parentgroup);
+    const usergroupID = await AdminHelper.createUserGroup(page, usergroup);
+    await AdminHelper.addUserGroupMember(page, parentgroup, parentgroupID, usergroup.toUpperCase());
+    await AdminHelper.addUserGroupMember(page, usergroup, usergroupID, user+"_firstName " + user+"_lastName");
     
-    await AdminHelper.editUserGroupPermissions(page, usergroup, ["user", "comment"]);
+    await AdminHelper.editUserGroupPermissions(page, usergroup, usergroupID, ["user", "comment"]);
     await CmfiveHelper.clickCmfiveNavbar(page, "Admin", "List Users");
     await CmfiveHelper.getRowByText(page, user).getByRole("button", {name: "Permissions"}).click();
     await expect(page.getByRole("checkbox", {name: "comment"})).toBeChecked();
@@ -90,7 +90,6 @@ test("Test that users, groups & permissions are assignable", async ({ page }) =>
 //     await CmfiveHelper.getRowByText(page, user).getByRole("button", {name: "Edit"}).click();
 //     await expect(page.getByText("President")).toBeVisible();
 
-//     await CmfiveHelper.clickCmfiveNavbar(page, "Admin", "Lookup");
 //     await AdminHelper.deleteLookup(page, "President");
 //     await expect(page.getByText("Cannot delete lookup as it is used as a title for the contacts: " + user+"_firstName " + user+"_lastName")).toBeVisible();
 
@@ -113,7 +112,7 @@ test("Test that Cmfive Admin handles templates", async ({ page }) => {
     await CmfiveHelper.login(page, "admin", "admin");
     
     const template = CmfiveHelper.randomID("template_");
-    await AdminHelper.createTemplate(page, template, "Admin", "Templates", [
+    const templateID = await AdminHelper.createTemplate(page, template, "Admin", "Templates", [
          "<table width='100%' align='center' class='form-table' cellpadding='1'>"
         ,"    <tr>"
         ,"        <td colspan='2' style='border:none;'>"
@@ -131,7 +130,7 @@ test("Test that Cmfive Admin handles templates", async ({ page }) => {
     ]);
 
     
-    const templateTestPage = await AdminHelper.demoTemplate(page, template);
+    const templateTestPage = await AdminHelper.demoTemplate(page, template, templateID);
 
     await expect(templateTestPage.getByText("Test Company")).toBeVisible();
 });
