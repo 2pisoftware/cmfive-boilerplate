@@ -62,7 +62,6 @@ export class TimelogHelper  {
         await page.getByRole("link", {name: taskName, exact: true}).click();
         await page.getByRole("link", {name: "Time Log"}).click();
 
-        await CmfiveHelper.acceptDialog(page);
         await CmfiveHelper.getRowByText(page, timelog).getByRole("button", {name: "Delete"}).click();
 
         await page.reload();

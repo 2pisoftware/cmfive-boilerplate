@@ -6,6 +6,7 @@ test.describe.configure({mode: 'parallel'});
 
 test("Test that an admin can create and delete a user", async ({ page }) => {
     test.setTimeout(GLOBAL_TIMEOUT);
+    CmfiveHelper.acceptDialog(page);
 
     await CmfiveHelper.login(page, "admin", "admin");
     
@@ -24,6 +25,7 @@ test("Test that an admin can create and delete a user", async ({ page }) => {
 
 test("Test that users, groups & permissions are assignable", async ({ page }) => {
     test.setTimeout(GLOBAL_TIMEOUT);
+    CmfiveHelper.acceptDialog(page);
 
     await CmfiveHelper.login(page, "admin", "admin");
     
@@ -105,10 +107,6 @@ test("Test that users, groups & permissions are assignable", async ({ page }) =>
 //     await expect(page.getByText("Lookup Item deleted")).toBeVisible();
 // });
 
-/**
- * How to check that rendertemplate page opened?
- * How to check that rendertemplate page has specific content?
- */
 test("Test that Cmfive Admin handles templates", async ({ page }) => {
     test.setTimeout(GLOBAL_TIMEOUT);
 

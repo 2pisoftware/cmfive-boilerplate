@@ -8,6 +8,7 @@ test.describe.configure({mode: 'parallel'});
 
 test("You can create a Timelog using Timer" , async ({page}) => {
     test.setTimeout(GLOBAL_TIMEOUT);
+    CmfiveHelper.acceptDialog(page);
 
     await CmfiveHelper.login(page, "admin", "admin");
     
@@ -29,6 +30,7 @@ test("You can create a Timelog using Timer" , async ({page}) => {
 
 test("You can create a Timelog using Add Timelog" , async ({page}) => {
     test.setTimeout(GLOBAL_TIMEOUT);
+    CmfiveHelper.acceptDialog(page);
 
     await CmfiveHelper.login(page, "admin", "admin");
     
