@@ -3,12 +3,14 @@ name: CI
 on: pull_request
 
 jobs:
+    # WAS: michaelw90/PHP-Lint@master, stuck on docker PHP7.3!
+    # WORKS for: StephaneBour/actions-php-lint@8.1 = simply "php -l"
     phplint:
         name: PHP Lint
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v2
-            - uses: michaelw90/PHP-Lint@master
+            - uses: actions/checkout@v3
+            - uses: overtrue/phplint@5.3.0
     php-codesniffer74:
         name: PHP CS 7.4
         runs-on: ubuntu-latest
