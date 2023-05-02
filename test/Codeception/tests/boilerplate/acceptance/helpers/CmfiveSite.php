@@ -1,6 +1,6 @@
 <?php
 
-namespace Helper;
+namespace Tests\Support\Helper;
 
 use PDO;
 
@@ -11,7 +11,7 @@ class CmfiveSite extends \Codeception\Module
     // should have SHARED basics.
 
     // auth details
-    protected $requiredFields =   [
+    protected array $requiredFields =   [
         'basePath',
         'testAdminUsername',
         'testAdminPassword',
@@ -31,7 +31,7 @@ class CmfiveSite extends \Codeception\Module
     ];
 
     // HOOK: before test
-    public function _before(\Codeception\TestCase $test)
+    public function _before($test)
     {
         $this->getTestDB();
         $this->runMigrations();
@@ -168,7 +168,10 @@ class CmfiveSite extends \Codeception\Module
     {
         if ($this->isUsingBootstrap5($I)) {
             // $I->waitForElement(".navbar-nav .nav-item .nav-link", 2);
-            $I->click("#topnav_" . str_replace(" ", "_", strtolower($category)) . "_dropdown_link"); // ".navbar-nav .nav-item a.nav-link");
+            // $I->click("#topnav_" . str_replace(" ", "_", strtolower($category)) . "_dropdown_link"); // ".navbar-nav .nav-item a.nav-link");
+
+            $I->waitForElementClickable(".//a[@id='topnav_" . str_replace(" ", "_", strtolower($category)) . "_dropdown_link']",2);
+            $I->click(".//a[@id='topnav_" . str_replace(" ", "_", strtolower($category)) . "_dropdown_link']");
             $I->click($link, "#topnav_" . str_replace(" ", "_", strtolower($category)) . "_dropdown_link + .dropdown-menu");
             $I->wait(1);
         } else {

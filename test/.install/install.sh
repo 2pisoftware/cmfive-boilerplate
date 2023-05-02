@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#setup for Codeception
+#setup for Codeception:
 
 SCRIPTPATH="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 cd "${SCRIPTPATH}/../Codeception"
@@ -10,17 +10,17 @@ curl -sS https://getcomposer.org/installer | php -- \
         --filename=composer \
         --install-dir=. ;
         
-./composer -q require codeception/codeception:4.1.31 --dev ;
+./composer -q require codeception/codeception:5.0.10 --dev ;
 ./composer config minimum-stability dev
 
-./composer require -W --no-update codeception/module-asserts:2.0.1 \
-codeception/module-db:2.0.2 \
-codeception/module-webdriver:2.0.2 \
-codeception/module-phpbrowser:2.0.2
+./composer require -W --no-update codeception/module-asserts:3.0.0 \
+codeception/module-db:3.1.0 \
+codeception/module-webdriver:4.0.0 \
+codeception/module-phpbrowser:3.0.0
 
 ./composer update --prefer-source --no-interaction --no-progress --optimize-autoloader --ansi;
 
-vendor/bin/codecept bootstrap ;
+php vendor/bin/codecept bootstrap;
 
-chmod -R 774 tests/* ;
+chmod -R 777 tests/* ;
 # mkdir tests/acceptance;

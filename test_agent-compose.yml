@@ -41,11 +41,9 @@ services:
       - seleniumsrv
 
   seleniumsrv:
-    # promoting:
-    # docker run --net=cmfive-boilerplate_default --network-alias=selenium314 -p 4444:4444 selenium/standalone-chrome:3.14.0
-    image: selenium/standalone-chrome:3.14.0
-    container_name: selenium314
-    hostname: selenium314
+    image: selenium/standalone-chrome:111.0
+    container_name: seleniumDrv
+    hostname: seleniumDrv
     ports:
       - "4444:4444"
     environment:
