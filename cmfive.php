@@ -331,11 +331,18 @@ function sketchComposerForCore($reference, $phpVersion)
         if (PHP_MAJOR_VERSION === 7 && PHP_MINOR_VERSION === 0) {
             $reference = "legacy/PHP7.0";
             $phpVersion = "7.0";
-        } else {
-            $reference = "master";
+        }
+        if (PHP_MAJOR_VERSION === 7 && PHP_MINOR_VERSION === 4) {
+            $reference = "legacy/PHP7.4";
+            $phpVersion = "7.4";
+        }
+        if (is_null($reference) || is_null($phpVersion)) {
+            $reference = is_null($reference) ? "master" : $reference;
             $phpVersion = is_null($phpVersion) ? (PHP_MAJOR_VERSION .".". PHP_MINOR_VERSION) : $phpVersion;
         }
     }
+
+    echo ("Composer has ref's as " . $reference . " & " . $phpVersion . ".\n");
 
     $composer_string = <<<COMPOSER
     {
