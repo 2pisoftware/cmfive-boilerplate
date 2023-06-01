@@ -1,7 +1,7 @@
 import { Page, expect } from "@playwright/test";
 import { DateTime } from "luxon";
 
-export const HOST = "http://localhost:3000";
+export const HOST = "http://127.0.0.1:3000";
 export const GLOBAL_TIMEOUT = 600_000;
 
 export class CmfiveHelper {

@@ -42,7 +42,7 @@ export class AdminHelper {
 
 
         await CmfiveHelper.getRowByText(page, username).getByRole("button", {name: "Remove"}).click();
-        await page.getByRole("button", {name: "Delete user"}).click();
+        await page.getByRole("button", {name: "Delete user", exact: true}).click();
     
         await expect(page.getByText("User " + username + " deleted.")).toBeVisible();
     }
@@ -87,9 +87,9 @@ export class AdminHelper {
             
         await page.getByRole("link", {name: "New Item", exact: true}).click();
 
-        await page.getByLabel("Type").selectOption(type);
+        await page.getByRole('combobox', { name: 'Type' }).selectOption(type);
         await page.getByLabel("Code").fill(code);
-        await page.getByLabel("Title").fill(lookup);
+        await page.getByLabel("Title", {exact: true}).fill(lookup);
         await page.getByRole("button", {name: "Save"}).click();
 
         await expect(page.getByText("Lookup Item added")).toBeVisible();
@@ -112,13 +112,13 @@ export class AdminHelper {
         await page.waitForSelector("#cmfive-modal", {state: "visible"});
 
         if(data["Type"] != undefined)
-            await page.getByLabel("Type").selectOption(data["Type"]);
+            await page.getByLabel("Type", {exact: true}).selectOption(data["Type"]);
 
         if(data["Code"] != undefined)
-            await page.getByLabel("Code").fill(data["Code"]);
+            await page.getByLabel("Key", {exact: true}).fill(data["Code"]);
         
         if(data["Title"] != undefined)
-            await page.getByLabel("Title").fill(data["Title"]);
+            await page.getByLabel("Value", {exact: true}).fill(data["Title"]);
 
         await page.getByRole("button", {name: "Update"}).click();
 
