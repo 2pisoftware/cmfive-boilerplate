@@ -4,68 +4,64 @@ import { AdminHelper} from "./admin.helper";
 
 test.describe.configure({mode: 'parallel'});
 
-// test("Test that an admin can create and delete a user", async ({ page }) => {
-//     test.setTimeout(GLOBAL_TIMEOUT);
-//     CmfiveHelper.acceptDialog(page);
+test("Test that an admin can create and delete a user", async ({ page }) => {
+    test.setTimeout(GLOBAL_TIMEOUT);
+    CmfiveHelper.acceptDialog(page);
 
-//     await CmfiveHelper.login(page, "admin", "admin");
+    await CmfiveHelper.login(page, "admin", "admin");
     
-//     const user = CmfiveHelper.randomID("user_");
-//     await AdminHelper.createUser(
-//         page,
-//         user,
-//         user+"_password",
-//         user+"_firstName",
-//         user+"_lastName",
-//         user+"@localhost.com"
-//     );
+    const user = CmfiveHelper.randomID("user_");
+    await AdminHelper.createUser(
+        page,
+        user,
+        user+"_password",
+        user+"_firstName",
+        user+"_lastName",
+        user+"@localhost.com"
+    );
 
-//     await AdminHelper.deleteUser(page, user);
-// });
+    await AdminHelper.deleteUser(page, user);
+});
 
-// test("Test that users, groups & permissions are assignable", async ({ page }) => {
-//     test.setTimeout(GLOBAL_TIMEOUT);
-//     CmfiveHelper.acceptDialog(page);
+test("Test that users, groups & permissions are assignable", async ({ page }) => {
+    test.setTimeout(GLOBAL_TIMEOUT);
+    CmfiveHelper.acceptDialog(page);
 
-//     await CmfiveHelper.login(page, "admin", "admin");
+    await CmfiveHelper.login(page, "admin", "admin");
     
-//     const user = CmfiveHelper.randomID("user_");
-//     await AdminHelper.createUser(
-//         page,
-//         user,
-//         user+"_password",
-//         user+"_firstName",
-//         user+"_lastName",
-//         user+"@localhost.com"
-//     );
+    const user = CmfiveHelper.randomID("user_");
+    await AdminHelper.createUser(
+        page,
+        user,
+        user+"_password",
+        user+"_firstName",
+        user+"_lastName",
+        user+"@localhost.com"
+    );
 
-//     const parentgroup = CmfiveHelper.randomID("usergroup_");
-//     const usergroup = CmfiveHelper.randomID("usergroup_");
-//     const parentgroupID = await AdminHelper.createUserGroup(page, parentgroup);
-//     const usergroupID = await AdminHelper.createUserGroup(page, usergroup);
-//     await AdminHelper.addUserGroupMember(page, parentgroup, parentgroupID, usergroup.toUpperCase());
-//     await AdminHelper.addUserGroupMember(page, usergroup, usergroupID, user+"_firstName " + user+"_lastName");
+    const parentgroup = CmfiveHelper.randomID("usergroup_");
+    const usergroup = CmfiveHelper.randomID("usergroup_");
+    const parentgroupID = await AdminHelper.createUserGroup(page, parentgroup);
+    const usergroupID = await AdminHelper.createUserGroup(page, usergroup);
+    await AdminHelper.addUserGroupMember(page, parentgroup, parentgroupID, usergroup.toUpperCase());
+    await AdminHelper.addUserGroupMember(page, usergroup, usergroupID, user+"_firstName " + user+"_lastName");
     
-//     await AdminHelper.editUserGroupPermissions(page, usergroup, usergroupID, ["user", "comment"]);
-//     await CmfiveHelper.clickCmfiveNavbar(page, "Admin", "List Users");
-//     await CmfiveHelper.getRowByText(page, user).getByRole("button", {name: "Permissions"}).click();
-//     await expect(page.getByRole("checkbox", {name: "comment"})).toBeChecked();
-//     await expect(page.getByRole("checkbox", {name: "comment"})).toBeDisabled();
+    await AdminHelper.editUserGroupPermissions(page, usergroup, usergroupID, ["user", "comment"]);
+    await CmfiveHelper.clickCmfiveNavbar(page, "Admin", "List Users");
+    await CmfiveHelper.getRowByText(page, user).getByRole("button", {name: "Permissions"}).click();
+    await expect(page.getByRole("checkbox", {name: "comment"})).toBeChecked();
+    await expect(page.getByRole("checkbox", {name: "comment"})).toBeDisabled();
 
-//     await AdminHelper.deleteUserGroup(page, usergroup);
-//     await CmfiveHelper.clickCmfiveNavbar(page, "Admin", "List Users");
-//     await CmfiveHelper.getRowByText(page, user).getByRole("button", {name: "Permissions"}).click();
-//     await expect(page.getByRole("checkbox", {name: "comment"})).not.toBeChecked();
-//     await expect(page.getByRole("checkbox", {name: "comment"})).not.toBeDisabled();
+    await AdminHelper.deleteUserGroup(page, usergroup);
+    await CmfiveHelper.clickCmfiveNavbar(page, "Admin", "List Users");
+    await CmfiveHelper.getRowByText(page, user).getByRole("button", {name: "Permissions"}).click();
+    await expect(page.getByRole("checkbox", {name: "comment"})).not.toBeChecked();
+    await expect(page.getByRole("checkbox", {name: "comment"})).not.toBeDisabled();
 
-//     await AdminHelper.deleteUserGroup(page, parentgroup);
-//     await AdminHelper.deleteUser(page, user);
-// });
+    await AdminHelper.deleteUserGroup(page, parentgroup);
+    await AdminHelper.deleteUser(page, user);
+});
 
-
-// /**
-//  * Cannot edit user Titles?
-//  */
 test("Test that Cmfive Admin handles lookups", async ({ page }) => {
     test.setTimeout(GLOBAL_TIMEOUT);
     CmfiveHelper.acceptDialog(page);
