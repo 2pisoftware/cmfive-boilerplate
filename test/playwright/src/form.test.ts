@@ -12,9 +12,9 @@ test("Test that forms can be created, edited and deleted", async ({ page }) => {
     await CmfiveHelper.login(page, "admin", "admin");
 
     const form = CmfiveHelper.randomID("form_");
-    const form_edited = form+"_edited";
-    const description = "For testing purposes";
-    const description_edited = "For testing purposes, but edited";
+    const form_edited = form + "_edited";
+    const description = form + "For testing purposes";
+    const description_edited = form + "For testing purposes, but edited";
 
     await FormHelper.createForm(page, form, description);
     await FormHelper.editForm(page, form, form_edited, description_edited);
@@ -64,6 +64,10 @@ test("Test that form applications can be created, edited and deleted", async ({ 
 
     await CmfiveHelper.clickCmfiveNavbar(page, "Form", "Applications");
     await page.getByRole("link", {name: application}).click();
+
+    //
+    // @todo: Need to attach the form to the application first (under application edit)
+    //
 
     await page.getByRole("button", {name: "Add new "+form}).click();
     await page.waitForSelector("#cmfive-modal", {state: "visible"});

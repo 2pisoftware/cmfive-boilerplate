@@ -1,8 +1,8 @@
 import { Page, expect } from "@playwright/test";
 import { DateTime } from "luxon";
 
-export const HOST = "http://127.0.0.1:3000";
-export const GLOBAL_TIMEOUT = 600_000;
+export const HOST = (process.env.TEST_HOST ?? "http://127.0.0.1") + ":" + (process.env.TEST_PORT ?? "3000");
+export const GLOBAL_TIMEOUT = process.env.TIMEOUT ?? 60_000;
 
 export class CmfiveHelper {
     static randomID = (prefix: string) => prefix + (Math.random() + 1).toString(36).substring(7)

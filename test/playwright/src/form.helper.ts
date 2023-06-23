@@ -65,13 +65,15 @@ export class FormHelper {
         await page.getByLabel("Title").fill(application);
         await page.getByLabel("Description").fill(description);
 
-        await page.screenshot({path: "before.png"});
         await page.getByLabel("Active").check({force: true});
-        await page.screenshot({path: "after.png"});
 
-        await page.getByRole("button", {name: "Save"}).click();
+        await page.waitForSelector("div[id^='form-application-'] a.button");
+        await page.locator("div[id^='form-application-'] a.button.small:not(.secondary)").click(); // .getByText("Save", {exact: true})
 
-        await CmfiveHelper.clickCmfiveNavbar(page, "Form", "Applications");
+        await page.waitForResponse(new RegExp('/form-vue/save_application/*'));
+
+        // No need to navigate as the page doesn't redirect
+        // await CmfiveHelper.clickCmfiveNavbar(page, "Form", "Applications");
         await expect(page.getByText(application)).toBeVisible();
     }
 
