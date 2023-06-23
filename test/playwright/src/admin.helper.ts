@@ -21,7 +21,6 @@ export class AdminHelper {
         await page.getByLabel("Last Name").fill(lastname);
         await page.getByLabel("Email").fill(email);
 
-
         if(permissions.length == 0)
             permissions.push("user");
         
