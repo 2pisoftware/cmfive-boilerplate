@@ -5,17 +5,26 @@
 - If the webpage gives a MONOLOGGER error, run `bash ./.codespaces/scripts/02_postCreateScript.sh`
 - If not, Cmfive is ready for your Playwright tests
 
+
 # Get Playwright Working
 - Grab the latest version of nvm from https://nvm.sh using the `curl` command
 - Close the current terminal after nvm is downloaded, and open a new terminal
-- nvm install 18 (or whatever version, Playwright needs at least version 14)
 - cd cmfive-boilerplate
 - git switch feature/PlaywrightMigration
-- cd test/playwright
+
+- nvm install 12
+- nvm use 12
+- cd system/templates/base
+- npm i
+- npm run dev
+
+- cd ../../../test/playwright
+- nvm install 18
+- nvm use 18
 - npm i
 - npx playwright install
-- sudo npx playwright install-deps
+- npx playwright install-deps
+
 
 # Run Playwright Tests
-- npx playwright test (cwd should be playwright/)
-
+- npx playwright test (cwd should be cmfive-boilerplate/test/playwright/)
