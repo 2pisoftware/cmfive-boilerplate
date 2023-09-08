@@ -63,24 +63,29 @@ test("Test that form applications can be created, edited and deleted", async ({ 
     await FormHelper.addFormField(page, form, form+"_truth", form+"_truth", "Yes/No");
 
     await CmfiveHelper.clickCmfiveNavbar(page, "Form", "Applications");
+    await CmfiveHelper.getRowByText(page, application).getByRole("button", { name: "Edit" }).click();
+    
+    await page.getByRole("button", { name: "Attach form" }).click();
+    
+    await page.waitForSelector("#form_application_form_modal", {state: "visible"});
+    const attach_form_modal = page.locator("#form_application_form_modal");
+    await attach_form_modal.getByLabel("Form").selectOption(form);
+    await attach_form_modal.getByText("Save").click();
+
+    await CmfiveHelper.clickCmfiveNavbar(page, "Form", "Applications");
     await page.getByRole("link", {name: application}).click();
-
-    //
-    // @todo: Need to attach the form to the application first (under application edit)
-    //
-
     await page.getByRole("button", {name: "Add new "+form}).click();
-    await page.waitForSelector("#cmfive-modal", {state: "visible"});
+    await page.waitForSelector("#cmfive-modal", { state: "visible" });
     const modal = page.locator("#cmfive-modal");
 
     await modal.getByLabel(form+"_name").fill(form+" name");
 
     await modal.getByLabel(form+"_clocked").click();
     await page.waitForSelector("#ui-datepicker-div");
-    await modal.getByRole("link", {name: "1", exact: true}).click();
-    await expect(page.locator("#"+form+"_clocked")).toHaveValue(DateTime.now().set({day: 1}).toFormat("dd/MM/yyyy") as string);
+    await page.locator("#ui-datepicker-div").getByRole("link", {name: "1", exact: true}).click();
+    await expect(page.locator("#"+form+"_clocked")).toHaveValue(DateTime.now().set({day: 1}).toFormat("dd/MM/yyyy") as string + " 12:00 am");
 
-    await modal.getByLabel(form+"_truth").check();
+    await modal.getByText(form+"_truth").click();
 
     await modal.getByRole("button", {name: "Save"}).click();
 

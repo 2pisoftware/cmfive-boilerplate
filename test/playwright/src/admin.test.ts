@@ -78,30 +78,41 @@ test("Test that Cmfive Admin handles lookups", async ({ page }) => {
         user+"@localhost.com"
     );
 
-    await AdminHelper.editUser(page, user, [["Title", "Prime Minister"]]);
-    await CmfiveHelper.clickCmfiveNavbar(page, "Admin", "Lookup");
-    await expect(page.getByText("Prime Minister").first()).toBeVisible();
+    const lookup_1 = user + "_lookup_1";
+    const lookup_2 = user + "_lookup_2";
+    const lookup_3 = user + "_lookup_3";
 
-    await AdminHelper.editLookup(page, "Prime Minister", {"Title": "President"});
+    await AdminHelper.editUser(page, user, [["Title", lookup_1]]);
+    await CmfiveHelper.clickCmfiveNavbar(page, "Admin", "Lookup");
+    await expect(page.getByText(lookup_1).first()).toBeVisible();
+
+    await AdminHelper.editLookup(page, lookup_1, {"Title": lookup_2});
     await CmfiveHelper.clickCmfiveNavbar(page, "Admin", "List Users");
     await CmfiveHelper.getRowByText(page, user).getByRole("button", {name: "Edit"}).click();
     await page.getByText("Title").click();
     await page.waitForTimeout(500);
-    await expect((await page.content()).includes("President")).toBeTruthy();
+    await expect((await page.content()).includes(lookup_2)).toBeTruthy();
     
-    await AdminHelper.deleteLookup(page, "President");
+    await AdminHelper.deleteLookup(page, lookup_2);
     await expect(page.getByText("Cannot delete lookup as it is used as a title for the contacts: " + user+"_firstName " + user+"_lastName")).toBeVisible();
 
-    await AdminHelper.createLookup(page, "title", "The Honerable", "The Honerable");
-    await expect(page.getByText("The Honerable").first()).toBeVisible();
+    await AdminHelper.createLookup(page, "title", lookup_3, lookup_3);
+    await expect(page.getByText(lookup_3).first()).toBeVisible();
 
-    await AdminHelper.editUser(page, user, [["Title", "The Honerable"]]);
+    await AdminHelper.editUser(page, user, [["Title", lookup_3]]);
     await CmfiveHelper.clickCmfiveNavbar(page, "Admin", "Lookup");
-    await AdminHelper.deleteLookup(page, "President");
+    await AdminHelper.deleteLookup(page, lookup_2);
     await expect(page.getByText("Lookup Item deleted")).toBeVisible();
 
     await AdminHelper.deleteUser(page, user);
-    await AdminHelper.deleteLookup(page, "The Honerable");
+    
+    await AdminHelper.deleteLookup(page, lookup_1);
+    await expect(page.getByText("Lookup Item deleted")).toBeVisible();
+
+    await AdminHelper.deleteLookup(page, lookup_2);
+    await expect(page.getByText("Lookup Item deleted")).toBeVisible();
+
+    await AdminHelper.deleteLookup(page, lookup_3);
     await expect(page.getByText("Lookup Item deleted")).toBeVisible();
 });
 
