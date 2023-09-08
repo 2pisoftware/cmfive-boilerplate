@@ -13,23 +13,27 @@ export class AdminHelper {
 
         await page.waitForSelector("#cmfive-modal", {state: "visible"});
 
-        await page.getByLabel("Active", {exact: true}).check();
-        await page.getByLabel("Login Required").fill(username);
-        await page.getByLabel("Password", {exact: true}).fill(password);
-        await page.getByLabel("Repeat Password").fill(password);
-        await page.getByLabel("First Name").fill(firstname);
-        await page.getByLabel("Last Name").fill(lastname);
-        await page.getByLabel("Email").fill(email);
+        await page.locator("#is_active").check();
+        await page.locator("#login").fill(username);
+        await page.locator("#password").fill(password);
+        await page.locator("#password2").fill(password);
+        await page.locator("#firstname").fill(firstname);
+        await page.locator("#lastname").fill(lastname);
+        await page.locator("#email").fill(email);
+
+        await page.getByRole("button", {name: "Save"}).click();
+        await expect(page.getByText("User " + username + " added")).toBeVisible();
+
+        await CmfiveHelper.getRowByText(page, username).getByRole("button", {name: "Permissions"}).click();
 
         if(permissions.length == 0)
             permissions.push("user");
         
         for(let permission of permissions)
-            await page.getByText(permission, {exact: true}).check();
+            await page.locator("#check_"+permission).check();
 
-        await page.getByRole("button", {name: "Save"}).click();
-
-        await expect(page.getByText("User " + username + " added")).toBeVisible();
+        await page.getByRole("button", { name: "Save" }).click();
+        await expect(page.getByText("Permissions are updated")).toBeVisible();
     }
 
     static async deleteUser(page: Page, username: string)
@@ -40,23 +44,36 @@ export class AdminHelper {
         await page.waitForURL(HOST + "/admin/users#internal");
 
 
-        await CmfiveHelper.getRowByText(page, username).getByRole("button", {name: "Remove"}).click();
+        await CmfiveHelper.getRowByText(page, username).getByRole("button", {name: "Delete"}).click();
         await page.getByRole("button", {name: "Delete user", exact: true}).click();
     
         await expect(page.getByText("User " + username + " deleted.")).toBeVisible();
     }
 
-    static async editUser(page: Page, username: string, data: [string, string][])
-    {
+    static async editUser(page: Page, username: string, data: [string, string][]) {
         await page.waitForTimeout(100); // let page load so next line doesn't fail if previous function ended on a redirect to user list
-        if(page.url() != HOST + "/admin/users#internal")
+        if (page.url() != HOST + "/admin/users#internal")
             await CmfiveHelper.clickCmfiveNavbar(page, "Admin", "List Users");
         await page.waitForURL(HOST + "/admin/users#internal");
 
-        await CmfiveHelper.getRowByText(page, username).getByRole("button", {name: "Edit"}).click();
+        await CmfiveHelper.getRowByText(page, username).getByRole("button", { name: "Edit" }).click();
 
-        for(let [label, value] of data)
-            await page.getByLabel(label, {exact: true}).fill(value);
+        for (let [label, value] of data) {
+            if (label == "Title") {
+                await page.getByLabel(label, { exact: true }).selectOption(value);
+            }
+            else if (label == "Active" || label == "Admin" || label == "External") {
+                if (value == "true") {
+                    await page.getByLabel(label, { exact: true }).check();
+                }
+                else {
+                    await page.getByLabel(label, { exact: true }).uncheck();
+                }
+            }
+            else {
+                await page.getByLabel(label, { exact: true }).fill(value);
+            }
+        }
 
         await page.getByRole("button", {name: "Update"}).click();
 
@@ -84,13 +101,13 @@ export class AdminHelper {
         if(page.url() != HOST + "/admin/lookup#tab-1")
             await CmfiveHelper.clickCmfiveNavbar(page, "Admin", "Lookup");
             
-        await page.getByRole("link", {name: "New Item", exact: true}).click();
+        await page.getByRole("link", { name: "New Item", exact: true }).click();
 
-        await page.getByRole('combobox', { name: 'Type' }).selectOption(type);
+        await page.locator("#type").selectOption(type);
         await page.getByLabel("Code").fill(code);
-        await page.getByLabel("Title", {exact: true}).fill(lookup);
-        await page.getByRole("button", {name: "Save"}).click();
+        await page.getByLabel("Title", { exact: true }).fill(lookup);
 
+        await page.getByRole("button", {name: "Save"}).click();
         await expect(page.getByText("Lookup Item added")).toBeVisible();
     }
 
@@ -135,12 +152,12 @@ export class AdminHelper {
         await page.getByRole("button", {name: "New Group"}).click();
         await page.waitForSelector("#cmfive-modal", {state: "visible"});
 
-        await page.getByLabel("Group Title: Required").fill(usergroup);
+        await page.locator("#title").fill(usergroup);
         await page.getByRole("button", {name: "Save"}).click();
 
-        await expect(page.getByText("New group added!")).toBeVisible();
+        await expect(page.getByText("New group added")).toBeVisible();
 
-        await CmfiveHelper.getRowByText(page, usergroup).getByRole("button", {name: "More Info"});
+        await CmfiveHelper.getRowByText(page, usergroup).getByRole("button", {name: "Edit"});
         return page.url().split("/moreInfo/")[1];
     }
 
@@ -151,7 +168,7 @@ export class AdminHelper {
 
         await CmfiveHelper.getRowByText(page, usergroup).getByRole("button", {name: "Delete"}).click();
 
-        await expect(page.getByText("Group is deleted!")).toBeVisible();
+        await expect(page.getByText("Group is deleted")).toBeVisible();
     }
 
     static async addUserGroupMember(page: Page, usergroup: string, usergroupID: string, user: string, owner: boolean = false)
@@ -160,18 +177,18 @@ export class AdminHelper {
             if(page.url() != HOST + "/admin/groups")
                 await CmfiveHelper.clickCmfiveNavbar(page, "Admin", "List Groups");
             
-            await CmfiveHelper.getRowByText(page, usergroup).getByRole("button", {name: "More Info"}).click();   
+            await CmfiveHelper.getRowByText(page, usergroup).getByRole("button", {name: "Edit"}).click();   
         }
 
         await page.getByRole("button", {name: "New Member"}).click();
         await page.waitForSelector("#cmfive-modal", {state: "visible"});
 
-        await page.getByLabel("Select Member: Required").selectOption(user);
+        await page.locator("#member_id").selectOption(user);
 
         if(owner)
-            await page.getByLabel("Owner").check();
+            await page.locator("#is_owner").check();
         else
-            await page.getByLabel("Owner").uncheck();
+            await page.locator("#is_owner").uncheck();
 
         await page.getByRole("button", {name: "Save"}).click();
 
@@ -184,12 +201,12 @@ export class AdminHelper {
             if(page.url() != HOST + "/admin/groups")
                 await CmfiveHelper.clickCmfiveNavbar(page, "Admin", "List Groups");
             
-            await CmfiveHelper.getRowByText(page, usergroup).getByRole("button", {name: "More Info"}).click();   
+            await CmfiveHelper.getRowByText(page, usergroup).getByRole("button", {name: "Edit"}).click();   
         }
 
         await CmfiveHelper.getRowByText(page, user).getByRole("link", {name: "Delete"}).click();
 
-        await expect(page.getByText("Member is deleted!")).toBeVisible();
+        await expect(page.getByText("Member is deleted")).toBeVisible();
     }
 
     static async editUserGroupPermissions(page: Page, usergroup: string, usergroupID: string, permissions: string[])
@@ -198,17 +215,17 @@ export class AdminHelper {
             if(page.url() != HOST + "/admin/groups")
                 await CmfiveHelper.clickCmfiveNavbar(page, "Admin", "List Groups");
             
-            await CmfiveHelper.getRowByText(page, usergroup).getByRole("button", {name: "More Info"}).click();   
+            await CmfiveHelper.getRowByText(page, usergroup).getByRole("button", {name: "Edit"}).click();   
         }
 
         await page.getByRole("button", {name: "Edit Permissions"}).click();
 
         for(let permission of permissions)
-            await page.getByText(permission, {exact: true}).check();
+            await page.locator("#check_"+permission).check();
 
         await page.getByRole("button", {name: "Save"}).click();
 
-        await expect(page.getByText("Permissions are updated!")).toBeVisible();
+        await expect(page.getByText("Permissions are updated")).toBeVisible();
     }
 
     /**

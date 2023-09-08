@@ -49,14 +49,14 @@ test("Test that users, groups & permissions are assignable", async ({ page }) =>
     await AdminHelper.editUserGroupPermissions(page, usergroup, usergroupID, ["user", "comment"]);
     await CmfiveHelper.clickCmfiveNavbar(page, "Admin", "List Users");
     await CmfiveHelper.getRowByText(page, user).getByRole("button", {name: "Permissions"}).click();
-    await expect(page.getByRole("checkbox", {name: "comment"})).toBeChecked();
-    await expect(page.getByRole("checkbox", {name: "comment"})).toBeDisabled();
+    await expect(page.locator("#check_comment")).toBeChecked();
+    await expect(page.locator("#check_comment")).toBeDisabled();
 
     await AdminHelper.deleteUserGroup(page, usergroup);
     await CmfiveHelper.clickCmfiveNavbar(page, "Admin", "List Users");
     await CmfiveHelper.getRowByText(page, user).getByRole("button", {name: "Permissions"}).click();
-    await expect(page.getByRole("checkbox", {name: "comment"})).not.toBeChecked();
-    await expect(page.getByRole("checkbox", {name: "comment"})).not.toBeDisabled();
+    await expect(page.locator("#check_comment")).not.toBeChecked();
+    await expect(page.locator("#check_comment")).not.toBeDisabled();
 
     await AdminHelper.deleteUserGroup(page, parentgroup);
     await AdminHelper.deleteUser(page, user);
@@ -82,6 +82,7 @@ test("Test that Cmfive Admin handles lookups", async ({ page }) => {
     const lookup_2 = user + "_lookup_2";
     const lookup_3 = user + "_lookup_3";
 
+    await AdminHelper.createLookup(page, "title", lookup_1, lookup_1);
     await AdminHelper.editUser(page, user, [["Title", lookup_1]]);
     await CmfiveHelper.clickCmfiveNavbar(page, "Admin", "Lookup");
     await expect(page.getByText(lookup_1).first()).toBeVisible();
