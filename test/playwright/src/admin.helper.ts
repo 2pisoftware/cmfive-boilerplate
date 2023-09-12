@@ -75,10 +75,9 @@ export class AdminHelper {
             }
         }
 
-        await page.getByRole("button", {name: "Update"}).click();
+        await page.getByRole("button", {name: "Save"}).click();
 
-        await page.waitForEvent("requestfinished");
-        await expect(page.getByText("Account details updated").nth(3)).toBeVisible();
+        await expect(page.getByText("User details updated")).toBeVisible();
     }
 
     static async createLookupType(page: Page, type: string, code: string, lookup: string)
@@ -90,7 +89,7 @@ export class AdminHelper {
 
         await page.getByLabel("or Add New Type").fill(type);
         await page.getByLabel("Code").fill(code);
-        await page.getByLabel("Title").fill(lookup);
+        await page.getByLabel("Title", { exact: true }).fill(lookup);
         await page.getByRole("button", {name: "Save"}).click();
 
         await expect(page.getByText("Lookup Item added")).toBeVisible();
@@ -103,7 +102,7 @@ export class AdminHelper {
             
         await page.getByRole("link", { name: "New Item", exact: true }).click();
 
-        await page.locator("#type").selectOption(type);
+        await page.getByRole("combobox").selectOption(type);
         await page.getByLabel("Code").fill(code);
         await page.getByLabel("Title", { exact: true }).fill(lookup);
 
@@ -125,18 +124,19 @@ export class AdminHelper {
             await CmfiveHelper.clickCmfiveNavbar(page, "Admin", "Lookup");
         
         await CmfiveHelper.getRowByText(page, lookup).getByRole("button", {name: "Edit"}).click();
-        await page.waitForSelector("#cmfive-modal", {state: "visible"});
+        await page.waitForSelector("#cmfive-modal", { state: "visible" });
+        const modal = page.locator("#cmfive-modal");
 
         if(data["Type"] != undefined)
-            await page.getByLabel("Type", {exact: true}).selectOption(data["Type"]);
+            await modal.locator("#type").selectOption(data["Type"]);
 
         if(data["Code"] != undefined)
-            await page.getByLabel("Key", {exact: true}).fill(data["Code"]);
+            await modal.locator("#code").fill(data["Code"]);
         
         if(data["Title"] != undefined)
-            await page.getByLabel("Value", {exact: true}).fill(data["Title"]);
+            await modal.locator("#title").fill(data["Title"]);
 
-        await page.getByRole("button", {name: "Update"}).click();
+        await modal.getByRole("button", {name: "Update"}).click();
 
         await expect(page.getByText("Lookup Item edited")).toBeVisible();
     }
@@ -246,7 +246,7 @@ export class AdminHelper {
         await page.getByRole("link", {name: "Template", exact: true}).click();
         await page.locator("#template_title").fill(templateTitle);
         
-        await page.locator(".CodeMirror-lines").click();
+        await page.locator("#template_body").nth(1).click();
 
         // code mirror auto completes open/closed html tags, so skip writing them
         // typing <table> puts cursor on new line between <table> and </table>

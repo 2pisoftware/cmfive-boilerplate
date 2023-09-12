@@ -82,6 +82,7 @@ test("Test that Cmfive Admin handles lookups", async ({ page }) => {
     const lookup_2 = user + "_lookup_2";
     const lookup_3 = user + "_lookup_3";
 
+    await AdminHelper.createLookupType(page, "title", "Title", "Title");
     await AdminHelper.createLookup(page, "title", lookup_1, lookup_1);
     await AdminHelper.editUser(page, user, [["Title", lookup_1]]);
     await CmfiveHelper.clickCmfiveNavbar(page, "Admin", "Lookup");
@@ -90,8 +91,7 @@ test("Test that Cmfive Admin handles lookups", async ({ page }) => {
     await AdminHelper.editLookup(page, lookup_1, {"Title": lookup_2});
     await CmfiveHelper.clickCmfiveNavbar(page, "Admin", "List Users");
     await CmfiveHelper.getRowByText(page, user).getByRole("button", {name: "Edit"}).click();
-    await page.getByText("Title").click();
-    await page.waitForTimeout(500);
+    await page.getByRole('combobox', { name: 'Title' }).click();
     await expect((await page.content()).includes(lookup_2)).toBeTruthy();
     
     await AdminHelper.deleteLookup(page, lookup_2);
@@ -106,12 +106,6 @@ test("Test that Cmfive Admin handles lookups", async ({ page }) => {
     await expect(page.getByText("Lookup Item deleted")).toBeVisible();
 
     await AdminHelper.deleteUser(page, user);
-    
-    await AdminHelper.deleteLookup(page, lookup_1);
-    await expect(page.getByText("Lookup Item deleted")).toBeVisible();
-
-    await AdminHelper.deleteLookup(page, lookup_2);
-    await expect(page.getByText("Lookup Item deleted")).toBeVisible();
 
     await AdminHelper.deleteLookup(page, lookup_3);
     await expect(page.getByText("Lookup Item deleted")).toBeVisible();
@@ -144,4 +138,45 @@ test("Test that Cmfive Admin handles templates", async ({ page }) => {
     const templateTestPage = await AdminHelper.demoTemplate(page, template, templateID);
 
     await expect(templateTestPage.getByText("Test Company")).toBeVisible();
+});
+
+test("Test that Cmfive Admin can create/run/rollback migrations", async ({ page }) => {
+    test.setTimeout(GLOBAL_TIMEOUT);
+    CmfiveHelper.acceptDialog(page);
+
+    await CmfiveHelper.login(page, "admin", "admin");
+
+    await CmfiveHelper.clickCmfiveNavbar(page, "Admin", "Migrations");
+
+    // create migration
+    await page.getByRole("link", { name: "Individual" }).click();
+    await page.getByRole("button", { name: "Create an admin migration" }).click();
+    await page.waitForSelector("#cmfive-modal", { state: "visible" });
+    const modal = page.locator("#cmfive-modal");
+
+    const migration = "Migration"+CmfiveHelper.randomID("").toUpperCase();
+    await modal.locator("#name").fill(migration);
+    await modal.getByRole("button", { name: "Save" }).click();
+    await expect(page.getByText("Migration created")).toBeVisible();
+
+    // test that migration can be run/rolled back from "Individual" migrations tab
+    await page.getByRole("link", { name: "Individual" }).click();
+
+    await CmfiveHelper.getRowByText(page, "Admin"+migration).getByRole("button", { name: "Migrate to here" }).click();
+    await expect(page.getByText("1 migration has run.")).toBeVisible();
+
+    await CmfiveHelper.getRowByText(page, "Admin" + migration).getByRole("button", { name: "Rollback to here" }).click();
+    await expect(page.getByText("1 migration has rolled back")).toBeVisible();
+
+    // test that migration can be run/rolled back from "Individual" migrations tab
+    await page.getByRole("link", { name: "Batch" }).click();
+
+    await page.getByRole("button", { name: "Not Installed" }).click();
+    await expect(page.getByRole("cell", { name: "admin - Admin" + migration })).toBeVisible();
+
+    await page.getByRole("button", { name: "Install migrations" }).click();
+    await expect(page.getByText("1 migration has run.")).toBeVisible();
+
+    await page.getByRole("button", { name: "Rollback latest batch" }).click();
+    await expect(page.getByText("1 migration rolled back")).toBeVisible();
 });
