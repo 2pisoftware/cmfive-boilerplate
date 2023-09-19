@@ -170,8 +170,6 @@ test("Test that Cmfive Admin can create/run/rollback migrations", async ({ page 
 
     // test that migration can be run/rolled back from "Individual" migrations tab
     await page.getByRole("link", { name: "Batch" }).click();
-
-    await page.getByRole("button", { name: "Not Installed" }).click();
     await expect(page.getByRole("cell", { name: "admin - Admin" + migration })).toBeVisible();
 
     await page.getByRole("button", { name: "Install migrations" }).click();
