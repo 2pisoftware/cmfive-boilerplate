@@ -1,5 +1,5 @@
 import { Page, expect } from "@playwright/test";
-import { CmfiveHelper } from "./cmfive.helper";
+import { CmfiveHelper, HOST } from "./cmfive.helper";
 
 export class ChannelsHelper {
     static async createWebChannel(page: Page, channel: Record<string, string | boolean>)
@@ -8,19 +8,18 @@ export class ChannelsHelper {
 
         await CmfiveHelper.clickCmfiveNavbar(page, "Channels", "List Channels");
         await page.getByRole("button", { name: "Add Web Channel" }).click();
-        await page.waitForSelector("#cmfive-modal", {state: "visible"});
-        const modal = page.locator("#cmfive-modal");
+        await page.waitForURL(HOST + "/channel-web/edit", {waitUntil: "load"});
 
         for(let option of ["Name", "Web API URL"])
-            if(channel[option] !== undefined) await modal.getByLabel(option, {exact: true}).fill(channel[option] as string);
+            if(channel[option] !== undefined) await page.getByLabel(option, {exact: true}).fill(channel[option] as string);
 
         for(let option of ["Is Active", "Run processors?"])
             if(channel[option] !== undefined) {
-                if(channel[option] === true) await modal.getByLabel(option, {exact: true}).check();
-                else if(channel[option] === false) await modal.getByLabel(option, {exact: true}).uncheck();
+                if(channel[option] === true) await page.getByLabel(option, {exact: true}).check();
+                else if(channel[option] === false) await page.getByLabel(option, {exact: true}).uncheck();
             }
 
-        await modal.getByRole("button", {name: "Save"}).click();
+        await page.getByRole("button", {name: "Save"}).click();
     }
 
     static async editWebChannel(page: Page, channel: Record<string, string | boolean>, edit: Record<string, string | boolean>): Promise<Record<string, string | boolean>>
@@ -79,29 +78,29 @@ export class ChannelsHelper {
 
         await CmfiveHelper.clickCmfiveNavbar(page, "Channels", "List Channels");
         await page.getByRole("button", { name: "Add Email Channel" }).click();
-        await page.waitForSelector("#cmfive-modal", {state: "visible"});
-        const modal = page.locator("#cmfive-modal");
+        console.log(page.url())
+        await page.waitForURL(HOST + "/channel-email/edit", {waitUntil: "load"});
 
-        await modal.getByRole("combobox", {name: "Protocol"}).selectOption(channel["Protocol"] as string);
+        await page.getByRole("combobox", {name: "Protocol"}).selectOption(channel["Protocol"] as string);
 
         if(channel["Post Read Action"] !== undefined)
-            await modal.getByRole("combobox", {name: "Post Read Action"}).selectOption(channel["Post Read Action"] as string);
+            await page.getByRole("combobox", {name: "Post Read Action"}).selectOption(channel["Post Read Action"] as string);
 
-        if(channel["Port"] !== undefined) await modal.getByLabel("Port Only required for non-standard port configuarations", {exact: true}).fill(channel["Port"] as string);
+        if(channel["Port"] !== undefined) await page.getByLabel("Port Only required for non-standard port configuarations", {exact: true}).fill(channel["Port"] as string);
 
         for(let option of ["Name", "Server URL", "Username", "Password"])
-            await modal.getByLabel(option + " Required", {exact: true}).fill(channel[option] as string);
+            await page.getByLabel(option + " Required", {exact: true}).fill(channel[option] as string);
 
         for(let option of ["Folder", "To", "From", "Subject", "CC", "Body", "Post Read Data"])
-            if(channel[option] !== undefined) await modal.getByLabel(option, {exact: true}).fill(channel[option] as string);
+            if(channel[option] !== undefined) await page.getByLabel(option, {exact: true}).fill(channel[option] as string);
 
         for(let option of ["Is Active", "Run processors?", "Use Auth?", "Verify Peer", "Allow self signed certificates"])
             if(channel[option] !== undefined) {
-                if(channel[option] === true) await modal.getByLabel(option, {exact: true}).check();
-                else if(channel[option] === false) await modal.getByLabel(option, {exact: true}).uncheck();
+                if(channel[option] === true) await page.getByLabel(option, {exact: true}).check();
+                else if(channel[option] === false) await page.getByLabel(option, {exact: true}).uncheck();
             }
 
-        await modal.getByRole("button", {name: "Save"}).click();
+        await page.getByRole("button", {name: "Save"}).click();
     }
 
     static async editEmailChannel(page: Page, channel: Record<string, string | boolean>, edit: Record<string, string | boolean>)
