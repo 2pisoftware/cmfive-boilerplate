@@ -154,7 +154,7 @@ test("Test that Cmfive Admin can create/run/rollback migrations", async ({ page 
     await page.waitForSelector("#cmfive-modal", { state: "visible" });
     const modal = page.locator("#cmfive-modal");
 
-    const migration = "Migration"+CmfiveHelper.randomID("").toUpperCase();
+    const migration = "Migration"+CmfiveHelper.randomID("")+"_TestMigration";
     await modal.locator("#name").fill(migration);
     await modal.getByRole("button", { name: "Save" }).click();
     await expect(page.getByText("Migration created")).toBeVisible();
