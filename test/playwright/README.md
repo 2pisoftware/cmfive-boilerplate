@@ -13,33 +13,41 @@
 
 # Use the feature/PlaywrightMigration branch as the cmfive-boilerplate repo
 
-- cd cmfive-boilerplate
-- git switch feature/PlaywrightMigration
+- `cd cmfive-boilerplate`
+- `git switch feature/PlaywrightMigration`
 
 # Use the feat/AdminBootstrap5 branch as the cmfive-core repo
 
-- cd ../cmfive-core
-- git switch feat/AdminBootstrap5
+- `cd ../cmfive-core`
+- `git switch feat/AdminBootstrap5`
 
 # Ensure styles are compiled
 
-- cd ../cmfive-core/system/templates/base
-- nvm install 14
-- nvm use 14
-- npm i
-- npm run dev
+- `cd ../cmfive-core/system/templates/base`
+- `nvm install 14`
+- `nvm use 14`
+- `npm i`
+- `npm run dev`
 
 # Setup Playwright
 
-- cd ../../../test/playwright
-- nvm install 18
-- nvm use 18
-- npm i
-- npx playwright install
-- npx playwright install-deps
+- `cd ../../../test/playwright`
+- `nvm install 18`
+- `nvm use 18`
+- `npm i`
+- `npx playwright install`
+- `npx playwright install-deps`
 
 # Run Playwright Tests
 
-- cwd should be cmfive-boilerplate/test/playwright/
-- npm run build
-- npx playwright test --project=chromium
+- cwd should be `cmfive-boilerplate/test/playwright/`
+- `npm run build`
+- `npx playwright test --project=chromium`
+
+# Setup a Playwright test for a module
+- cd into the module
+- `bash /workspaces/codespace_dev_box/cmfive-boilerplate/test/playwright/createPlaywrightTest.sh`
+- *.test.ts files contain tests
+- *.utils.ts files contain utility functions for a given module
+    - util files are imported like so: `import { Xyz } from '@utils/xyz'`, without `.utils.ts` file extension
+    - must run `npm run build` from `cmfive-boilerplate/test/playwright/` before changes to `xyz.utils.ts` are propagated to files importing `@utils/xyz`
