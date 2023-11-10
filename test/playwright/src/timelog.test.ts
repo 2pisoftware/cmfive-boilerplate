@@ -1,7 +1,7 @@
 import { test } from "@playwright/test";
-import { TimelogHelper } from "./timelog.helper";
-import { TaskHelper } from "./task.helper";
-import { GLOBAL_TIMEOUT, CmfiveHelper } from "./cmfive.helper";
+import { TimelogHelper } from "@utils/timelog";
+import { TaskHelper } from "@utils/task";
+import { GLOBAL_TIMEOUT, CmfiveHelper } from "@utils/cmfive";
 import { DateTime } from "luxon";
 
 test.describe.configure({mode: 'parallel'});

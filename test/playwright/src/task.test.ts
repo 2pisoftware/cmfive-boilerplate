@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
-import { HOST, GLOBAL_TIMEOUT, CmfiveHelper } from "./cmfive.helper";
-import { TaskHelper} from "./task.helper";
-import { AdminHelper } from "./admin.helper";
+import { HOST, GLOBAL_TIMEOUT, CmfiveHelper } from "@utils/cmfive";
+import { TaskHelper} from "@utils/task";
+import { AdminHelper } from "@utils/admin";
 
 test.describe.configure({mode: 'parallel'});
 

@@ -41,4 +41,5 @@
 # Run Playwright Tests
 
 - cwd should be cmfive-boilerplate/test/playwright/
+- npm run build
 - npx playwright test --project=chromium

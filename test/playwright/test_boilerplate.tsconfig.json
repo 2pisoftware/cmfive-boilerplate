@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "lib": ["es2015", "dom"],
+    "baseUrl": "",
+    "paths": {
+      "*": ["*", "node_modules/*"],
+      "@utils/*": ["src/utils/*"],
+      "@utils/cmfive": ["cmfive.utils.ts"]
+    }
+  }
+}
