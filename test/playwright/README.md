@@ -48,8 +48,9 @@
 # Setting up a new Playwright test for a module
 
 - cd into the top level of the module (for example, cwd could be `cmfive-core/system/modules/help`)
-- `bash /workspaces/codespace_dev_box/cmfive-boilerplate/test/playwright/createPlaywrightTest.sh`
-- *.test.ts files contain tests
-- *.utils.ts files contain utility functions for a given module
-    - util files are imported like so: `import { Xyz } from '@utils/xyz'`, without `.utils.ts` file extension
+- `bash /workspaces/codespace_dev_box/cmfive-boilerplate/test/playwright/mapToPlaywright.sh`
+- the above script should be run whenever the relative path between a module and the base playwright directory in `cmfive-boilerplate` changes
+- `*.test.ts` files contain the actual test code
+- `*.utils.ts` files contain utility functions for a given module
+    - util files are imported like so: `import { AdminHelper } from '@utils/admin'`, without `.utils.ts` file extension
     - you MUST run `npm run build` from `cmfive-boilerplate/test/playwright/` before changes to `xyz.utils.ts` are propagated to files importing `@utils/xyz`
