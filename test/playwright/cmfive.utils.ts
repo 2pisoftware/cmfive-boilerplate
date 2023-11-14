@@ -20,9 +20,9 @@ export class CmfiveHelper {
         await page.goto(HOST + "/auth/logout");
     }
 
-    static async isBootstrap5(page: Page): Promise<boolean>
+    static async isBootstrap5(page: Page)
     {
-        return await page.locator("html.theme").count() == 1;
+        return await page.locator('html[data-layout="bs5"]').count() > 0;
     }
 
     static getRowByText(page: Page, text: string)
