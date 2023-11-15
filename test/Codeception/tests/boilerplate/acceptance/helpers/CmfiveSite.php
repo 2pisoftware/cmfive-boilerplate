@@ -178,6 +178,12 @@ class CmfiveSite extends \Codeception\Module
             //$category, "section.top-bar-section ul.left"
             $I->waitForElement("//section[@class='top-bar-section']/ul[@class='left']/li/a[contains(text(),'{$category}')]", 2);
             $I->click("//section[@class='top-bar-section']/ul[@class='left']/li/a[contains(text(),'{$category}')]");
+            // New designs now emerging on whole module (not just specific actions)
+            // So we should check if first step navbar click flipped us into BootStrap:
+            if ($this->isUsingBootstrap5($I)) {
+                $I->clickCmfiveNavbar($I, $category, $link);
+                return;
+            }
             $I->moveMouseOver(['css' => '#topnav_' . strtolower($category)]);
             $I->waitForText($link);
             $I->click($link, '#topnav_' . strtolower($category));
