@@ -44,6 +44,10 @@
 - `npm run build`
 - `npm run test`
 - you MUST run `npm run build` for your latest changes to test/test utils files to be made available for import (see "Setting up a new Playwright test for a module"), as well as for those changes to be present when running `npm run test`
+- before running Playwright tests, you should set up your Cmfive instance with an "Empty TestRunner DB and Administrator":
+    - Attach shell to cmfive's nginx container
+    - `php cmfive.php`
+    - Enter command option `9`
 
 # Setting up a new Playwright test for a module
 
