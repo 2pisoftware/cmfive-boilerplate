@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
-import { GLOBAL_TIMEOUT, CmfiveHelper } from "./cmfive.helper";
-import { FormHelper } from "./form.helper";
+import { GLOBAL_TIMEOUT, CmfiveHelper } from "@utils/cmfive";
+import { FormHelper } from "@utils/form";
 import { DateTime } from "luxon";
 
 test.describe.configure({mode: 'parallel'});

@@ -51,6 +51,8 @@ venv/
 .build/environment/prod/stage/
 .build/environment/prod/Dockerfile
 
-# Node Files
+# Playwright Files
 test/playwright/node_modules/
 test/playwright/test-results/
+test/playwright/src/
+test/playwright/*.png

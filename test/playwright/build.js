@@ -2,7 +2,7 @@ const glob = require('glob');
 const fs = require('fs');
 const path = require('path');
 
-function copyFiles(sourceGlob, destDir) {
+function copyFiles(sourceGlob, destDir, rename = fileName => fileName) {
     // Find all files and directories that match the glob pattern
     glob(sourceGlob, { nodir: true }).then(files => {
         // Create the destination directory if it doesn't exist
@@ -12,8 +12,7 @@ function copyFiles(sourceGlob, destDir) {
 
         // Copy each file to the destination directory
         files.forEach(file => {
-            console.log("file", file)
-            const fileName = path.basename(file);
+            const fileName = rename(path.basename(file));
             const destFile = path.join(destDir, fileName);
             fs.copyFileSync(file, destFile);
         });
@@ -22,10 +21,14 @@ function copyFiles(sourceGlob, destDir) {
     })
 }
 
-// Copy the test files to the build directory
-// External module tests should have test and helper files copied into ./src
-copyFiles('../../system/modules/**/tests/playwright/*.test.ts', './src');
-copyFiles('../../system/modules/**/tests/playwright/*.helper.ts', './src');
+// pull all module test files into src directory
+copyFiles('../../system/modules/**/tests/acceptance/playwright/*.test.ts', './src')
+copyFiles('../../modules/**/tests/acceptance/playwright/*.test.ts', './src')
 
-copyFiles('../../modules/**/tests/playwright/*.test.ts', './src');
-copyFiles('../../modules/**/tests/playwright/*.helper.ts', './src');
+// pull all module test util files into one directory for scoping
+copyFiles('../../system/modules/**/tests/acceptance/playwright/*.utils.ts', './src/utils',
+    fileName => fileName.replace('.utils.ts', '.ts')
+);
+copyFiles('../../modules/**/tests/acceptance/playwright/*.utils.ts', './src/utils',
+    fileName => fileName.replace('.utils.ts', '.ts')
+);
