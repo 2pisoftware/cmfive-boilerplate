@@ -82,6 +82,10 @@ test("Test that Cmfive Admin handles lookups", async ({ page }) => {
     const lookup_2 = user + "_lookup_2";
     const lookup_3 = user + "_lookup_3";
 
+    try {
+        await AdminHelper.deleteLookup(page, "Title");
+    } catch (e) {
+    }
     await AdminHelper.createLookupType(page, "title", "Title", "Title");
     await AdminHelper.createLookup(page, "title", lookup_1, lookup_1);
     await AdminHelper.editUser(page, user, [["Title", lookup_1]]);
