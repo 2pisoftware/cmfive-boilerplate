@@ -22,7 +22,7 @@ export class CmfiveHelper {
 
     static async isBootstrap5(page: Page)
     {
-        return await page.locator('html[data-layout="bs5"]').count() > 0;
+        return await page.locator('html.theme').count() > 0;
     }
 
     static getRowByText(page: Page, text: string)
