@@ -5,16 +5,12 @@
   "main": "index.js",
   "scripts": {
     "build": "node build.js",
-    "test": "npx playwright test",
-    "test-admin": "npx playwright test --reporter list --grep 'admin'",
-    "test-channels": "npx playwright test --reporter list --grep 'channels'",
-    "test-tag": "npx playwright test --reporter list --grep 'tag'",
-    "test-task": "npx playwright test --reporter list --grep 'task'"
+    "test": "npx playwright test"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@playwright/test": "^1.32.1",
+    "@playwright/test": "^1.32.2",
     "glob": "^9.3.2",
     "glob-fs": "^0.1.7",
     "luxon": "^3.3.0"

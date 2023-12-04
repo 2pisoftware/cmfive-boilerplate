@@ -1,7 +1,7 @@
 # Get Cmfive Working
 
 - Use this codespace: https://github.com/2pisoftware/codespace_dev_box/tree/BoilerplateCore_Modules_Tests_Debug
-- Open in VS Code Desktop
+- Open Codespace using your local VS Code using Remote Explorer extension for VS Code
 - Wait for everything to be setup, then right click on the nginx webapp container and `Open In Browser`
 - If the webpage gives a MONOLOGGER error, run `bash ./.codespaces/scripts/02_postCreateScript.sh`
 - If not, Cmfive is ready for your Playwright tests
@@ -31,7 +31,7 @@
 
 # Setup Playwright
 
-- `cd ../../../test/playwright`
+- `cd ../../../../cmfive-boilerplate/test/playwright`
 - `nvm install 18`
 - `nvm use 18`
 - `npm i`
@@ -43,6 +43,15 @@
 - cwd should be `cmfive-boilerplate/test/playwright/`
 - `npm run build`
 - `npm run test`
+- to run tests for a specific platform: `npx playwright test --project=[insert browser]`
+    - Example: `npx playwright test --project=chromium`
+- to run a specific test file: `npx playwright test --grep "[insert test file name]"`
+    - Examples:
+        - `npx playwright test --grep "admin"`,
+        - `npx playwright test --grep "admin.test"`,
+        - `npx playwright test --grep "admin.test.ts"`,
+    - you can also run tests where the test's description name (if present) matches the regex of `--grep "[regex here]"`; see: https://playwright.dev/docs/test-cli
+    - to run run all tests EXCEPT those that match a given regex, use `--grep-invert` instead of `--grep`
 - you MUST run `npm run build` for your latest changes to test/test utils files to be made available for import (see "Setting up a new Playwright test for a module"), as well as for those changes to be present when running `npm run test`
 - before running Playwright tests, you should set up your Cmfive instance with an "Empty TestRunner DB and Administrator":
     - Attach shell to cmfive's nginx container
