@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BASE_DIR="/workspaces/codespace_dev_box/cmfive-core/system/modules"
+BASE_DIR="../../system/modules"
 
 matches=$(find "$BASE_DIR" -path "*/install/migrations/*_TestMigration.php")
 

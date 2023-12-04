@@ -5,7 +5,11 @@
   "main": "index.js",
   "scripts": {
     "build": "node build.js",
-    "test": "npx playwright test"
+    "test": "npx playwright test",
+    "test-admin": "npx playwright test --reporter list --grep 'admin'",
+    "test-channels": "npx playwright test --reporter list --grep 'channels'",
+    "test-tag": "npx playwright test --reporter list --grep 'tag'",
+    "test-task": "npx playwright test --reporter list --grep 'task'"
   },
   "author": "",
   "license": "ISC",
