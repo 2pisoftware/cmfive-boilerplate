@@ -5,12 +5,14 @@
   "main": "index.js",
   "scripts": {
     "build": "node build.js",
-    "test": "npx playwright test"
+    "setup": "npm run build && docker exec -i nginx-php8.1 bash -c \"php cmfive.php testDB setup\"",
+    "cleanup": "echo \"y\" | bash cleanupTestMigrations.sh && docker exec -i nginx-php8.1 bash -c \"php cmfive.php DB test\"",
+    "test": "bash -c 'npx playwright test --reporter=\"${npm_config_reporter:-list}\" --project=\"${npm_config_platform:-chromium}\"${npm_config_module:+ --grep=\"$npm_config_module\"}'"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@playwright/test": "^1.32.1",
+    "@playwright/test": "^1.32.2",
     "glob": "^9.3.2",
     "glob-fs": "^0.1.7",
     "luxon": "^3.3.0"
