@@ -29,7 +29,6 @@ services:
       - TZ=Australia/Sydney
     volumes:
       - ./:/var/www/html
-      - codecept:/var/www/html/test/Codeception
       - ./test/Codeception/tests/boilerplate:/var/www/html/test/Codeception/tests/boilerplate
       - ./test/Codeception/tests/_output:/var/www/html/test/Codeception/tests/_output
     ports:
@@ -41,45 +40,22 @@ services:
     links:
       - mysqldb
       - seleniumsrv
-  # ------------------------------------------------------------
-  # For IDE&Debug symlinks are best made on the HOST FS
-  # Otherwise, to customise mounts etc:
-  #  1) create a docker-compose.override.yml :
-  #  |-------------->
-  #  |  version: '3'
-  #  |
-  #  |  services:
-  #  |    webapp:
-  #  |-------------->
-  #  2) add your preferences, eg:
-  #  |-------------->
-  #  |      volumes:
-  #  |       - hostPathTo/myHostFolderFullOfStuff:/var/hostmounts
-  #  |-------------->
-  #  3) you can make symlinks in container shell under boilerplate, eg:
-  #  |-------------->
-  #  |  cd /var/www/html/modules
-  #  |  ln -s /var/hostmounts/myModules/cmfiveModule cmfiveModule
-  #  |-------------->
-  # ------------------------------------------------------------
 
   seleniumsrv:
-    # promoting:
-    # docker run --net=cmfive-boilerplate_default --network-alias=selenium314 -p 4444:4444 selenium/standalone-chrome:3.14.0
-    image: selenium/standalone-chrome:105.0
-    container_name: selenium314
-    hostname: selenium314
+    image: selenium/standalone-chrome:111.0
+    container_name: seleniumDrv
+    hostname: seleniumDrv
     ports:
       - "4444:4444"
     environment:
       - TZ=Australia/Sydney
+      - START_XVFB=false
+    shm_size: '4gb'
     networks:
       - default
 
 volumes:
   dbdata:
-    driver: local
-  codecept:
     driver: local
 
 networks:
