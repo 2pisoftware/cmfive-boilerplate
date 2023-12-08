@@ -23,7 +23,7 @@ export class CmfiveHelper {
     static async isBootstrap5(page: Page)
     {
         const htmlWithTheme = page.locator('html.theme');
-        return await htmlWithTheme.count()
+        return await htmlWithTheme.count() > 0;
     }
 
     static getRowByText(page: Page, text: string)
