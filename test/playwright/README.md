@@ -10,6 +10,8 @@
 
 - Grab the latest version of nvm from https://nvm.sh using the `curl` command
 - Close the current terminal after nvm is downloaded, and open a new terminal
+- `nvm install 18`
+- `nvm use 18`
 
 # Use the feature/PlaywrightMigration branch as the cmfive-boilerplate repo
 
@@ -24,39 +26,28 @@
 # Ensure styles are compiled
 
 - `cd ../cmfive-core/system/templates/base`
-- `nvm install 14`
-- `nvm use 14`
 - `npm i`
 - `npm run dev`
 
 # Setup Playwright
 
 - `cd ../../../../cmfive-boilerplate/test/playwright`
-- `nvm install 18`
-- `nvm use 18`
 - `npm i`
 - `npx playwright install`
 - `npx playwright install-deps`
+- `npm run setup`
 
 # Run Playwright Tests
 
 - cwd should be `cmfive-boilerplate/test/playwright/`
-- `npm run build`
+- `npm run cleanup` (important! do this every time before you run tests on a system after already having done so previously)
 - `npm run test`
-- to run tests for a specific platform: `npx playwright test --project=[insert browser]`
-    - Example: `npx playwright test --project=chromium`
-- to run a specific test file: `npx playwright test --grep "[insert test file name]"`
+- to run tests for a specific platform: `npm run test --platform="[insert browser]"`
+    - Example: `npm run test --project="chromium"`
+- to run a specific test file: `npm run test --module="[insert test file name]"`
     - Examples:
-        - `npx playwright test --grep "admin"`,
-        - `npx playwright test --grep "admin.test"`,
-        - `npx playwright test --grep "admin.test.ts"`,
-    - you can also run tests where the test's description name (if present) matches the regex of `--grep "[regex here]"`; see: https://playwright.dev/docs/test-cli
-    - to run run all tests EXCEPT those that match a given regex, use `--grep-invert` instead of `--grep`
-- you MUST run `npm run build` for your latest changes to test/test utils files to be made available for import (see "Setting up a new Playwright test for a module"), as well as for those changes to be present when running `npm run test`
-- before running Playwright tests, you should set up your Cmfive instance with an "Empty TestRunner DB and Administrator":
-    - Attach shell to cmfive's nginx container
-    - `php cmfive.php`
-    - Enter command option `9`
+        - `npm run test --module="admin"`,
+    - you can also run tests where the test's description name (if present) matches the regex of `--module="[regex here]"`; see: https://playwright.dev/docs/test-cli (look for `--grep` instead of `--module`)
 
 # Setting up a new Playwright test for a module
 
