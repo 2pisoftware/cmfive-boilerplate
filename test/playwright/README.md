@@ -18,10 +18,10 @@
 - `cd cmfive-boilerplate`
 - `git switch feature/PlaywrightMigration`
 
-# Use the feature/FormBS5Conversion branch as the cmfive-core repo
+# Use the feature/AdminBS5Conversion branch as the cmfive-core repo
 
 - `cd ../cmfive-core`
-- `git switch feature/FormBS5Conversion`
+- `git switch feature/AdminBS5Conversion`
 
 # Ensure styles are compiled
 
