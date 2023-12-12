@@ -36,6 +36,7 @@
 - `npx playwright install`
 - `npx playwright install-deps`
 - `npm run setup`
+- `npm run build` (run this every time you have changes to a test or utils file that you want to include in the next test run, and for utils files specifically those changes to be present when importing via `@utils/*`)
 
 # Run Playwright Tests
 
@@ -43,11 +44,11 @@
 - `npm run cleanup` (important! do this every time before you run tests on a system after already having done so previously)
 - `npm run test`
 - to run tests for a specific platform: `npm run test --platform="[insert browser]"`
-    - Example: `npm run test --project="chromium"`
+    - Example: `npm run test --project="firefox"`
 - to run a specific test file: `npm run test --module="[insert test file name]"`
     - Examples:
-        - `npm run test --module="admin"`,
-    - you can also run tests where the test's description name (if present) matches the regex of `--module="[regex here]"`; see: https://playwright.dev/docs/test-cli (look for `--grep` instead of `--module`)
+        - `npm run test --module="admin"`
+    - see: https://playwright.dev/docs/test-cli (look for `--grep` instead of `--module`)
 
 # Setting up a new Playwright test for a module
 
@@ -57,4 +58,3 @@
 - `*.test.ts` files contain the actual test code
 - `*.utils.ts` files contain utility functions for a given module
     - util files are imported like so: `import { AdminHelper } from '@utils/admin'`, without `.utils.ts` file extension
-    - you MUST run `npm run build` from `cmfive-boilerplate/test/playwright/` before changes to `xyz.utils.ts` are propagated to files importing `@utils/xyz`
