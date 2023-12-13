@@ -28,7 +28,7 @@ export class CmfiveHelper {
 
     static getRowByText(page: Page, text: string)
     {
-        return page.locator('tr:has-text("' + text + '")');
+        return page.locator("tr", { has: page.getByText(text, {exact: true}) }); // page.locator('tr:has-text("' + text + '")');
     }
 
     static async clickCmfiveNavbar(page: Page, category: string, option: string)
