@@ -22,13 +22,18 @@ export class CmfiveHelper {
 
     static async isBootstrap5(page: Page)
     {
+        try {
+            await page.locator('.body')
+        } catch (e) {
+            await page.waitForSelector('.body');
+        }
         const htmlWithTheme = page.locator('html.theme');
         return await htmlWithTheme.count() > 0;
     }
 
     static getRowByText(page: Page, text: string)
     {
-        return page.locator('tr:has-text("' + text + '")');
+        return page.locator("tr", { has: page.getByText(text, {exact: true}) }); // page.locator('tr:has-text("' + text + '")');
     }
 
     static async clickCmfiveNavbar(page: Page, category: string, option: string)
