@@ -22,7 +22,11 @@ export class CmfiveHelper {
 
     static async isBootstrap5(page: Page)
     {
-        await page.waitForSelector('.body');
+        try {
+            await page.locator('.body')
+        } catch (e) {
+            await page.waitForSelector('.body');
+        }
         const htmlWithTheme = page.locator('html.theme');
         return await htmlWithTheme.count() > 0;
     }
