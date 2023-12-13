@@ -44,11 +44,12 @@
 - `npm run cleanup` (important! do this every time before you run tests on a system after already having done so previously)
 - `npm run test`
 - to run tests for a specific platform: `npm run test --platform="[insert browser]"`
-    - Example: `npm run test --project="firefox"`
+    - Example: `npm run test --platform="firefox"`
 - to run a specific test file: `npm run test --module="[insert test file name]"`
-    - Examples:
-        - `npm run test --module="admin"`
+    - Example: `npm run test --module="admin"`
     - see: https://playwright.dev/docs/test-cli (look for `--grep` instead of `--module`)
+- if you want your tests to be attempted a certain number of times (for flaky tests) when they fail: `npm run test:with-retries`
+    - Example: `npm run test:with-retries --module="task|timelog" --attempts=2 --clean` (`--clean` runs `npm run cleanup` BEFORE your tests run if you have a possibly dirty setup, the script automatically handles the rest of the cleanups for retries)
 
 # Setting up a new Playwright test for a module
 
