@@ -24,10 +24,8 @@ export class CmfiveHelper {
     {
         try {
             await page.locator('.body')
-            console.log("Page loaded");
         } catch (e) {
             await page.waitForSelector('.body');
-            console.log("Page loaded after wait");
         }
         return await page.locator('html.theme').count() > 0
     }
