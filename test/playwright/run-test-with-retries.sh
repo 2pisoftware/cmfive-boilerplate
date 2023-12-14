@@ -29,9 +29,9 @@ function attempt-status-alert() {
 }
 
 if [ -z "$MODULE" ]; then
-    wrap-ansi 42 "Running tests $ATTEMPTS times using $BROWSER browser and $REPORTER reporter"
+    wrap-ansi 42 "Attempting tests at most $ATTEMPTS times using $BROWSER browser and $REPORTER reporter"
 else
-    wrap-ansi 42 "Running $MODULE tests $ATTEMPTS times using $BROWSER browser and $REPORTER reporter"
+    wrap-ansi 42 "Running $MODULE tests at most $ATTEMPTS times using $BROWSER browser and $REPORTER reporter"
 fi
 
 # attempts test ATTEMPTS times, running cleanup between test attempts
@@ -50,7 +50,7 @@ for ((i = 1; i <= $ATTEMPTS; i++)); do
             attempt-status-alert 41 $i $MODULE "tests failed"
         # else - run cleanup, trying again
         else
-            attempt-status-alert 43 $i $MODULE "running cleanup and trying again ..."
+            attempt-status-alert 43 $i $MODULE "tests failed - running cleanup and trying again ..."
             npm run cleanup
         fi
     fi
