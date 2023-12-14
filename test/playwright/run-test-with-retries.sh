@@ -25,13 +25,12 @@ for ((i = 1; i <= $ATTEMPTS; i++)); do
     # if tests returned 0 - success!
     if [ $? -eq 0 ]; then
         echo "$(attempt-status-alert 42 $i $MODULE "tests succeeded")"
-        exit 0
+        break
     # otherwise - tests failed
     else
         # if last attempt - give up
         if [ $i -eq $ATTEMPTS ]; then
             echo "$(attempt-status-alert 41 $i $MODULE "tests failed")"
-            exit 1
         # otherwise - run cleanup (takes half a minute)
         else
             echo "$(attempt-status-alert 43 $i $MODULE "running cleanup and trying again ...")"
