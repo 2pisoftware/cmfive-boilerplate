@@ -24,11 +24,12 @@ export class CmfiveHelper {
     {
         try {
             await page.locator('.body')
+            console.log("Page loaded");
         } catch (e) {
             await page.waitForSelector('.body');
+            console.log("Page loaded after wait");
         }
-        const htmlWithTheme = page.locator('html.theme');
-        return await htmlWithTheme.count() > 0;
+        return await page.locator('html.theme').count() > 0
     }
 
     static getRowByText(page: Page, text: string)
@@ -39,12 +40,12 @@ export class CmfiveHelper {
     static async clickCmfiveNavbar(page: Page, category: string, option: string)
     {
         const navbarCategory = page.locator("#topnav_" + category.toLowerCase().split(" ").join("_"));
-        
         const bootstrap5 = await this.isBootstrap5(page);
-        if(bootstrap5)
+        if (bootstrap5) {
             await navbarCategory.click();
-        else // Foundation
+        } else { // Foundation
             await navbarCategory.hover();
+        }
 
         await navbarCategory.getByText(option).click();
     }
