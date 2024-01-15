@@ -8,6 +8,8 @@
 /storage/session
 /log
 
+.phpunit.result.cache
+
 desktop.ini
 docker-compose.override.yml
 .env 

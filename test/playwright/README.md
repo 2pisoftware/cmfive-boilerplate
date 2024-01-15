@@ -1,7 +1,6 @@
 # Get Cmfive Working
 
-- Use this codespace: https://github.com/2pisoftware/codespace_dev_box/tree/BoilerplateCore_Modules_Tests_Debug
-- Open Codespace using your local VS Code using Remote Explorer extension for VS Code
+- Bring cmfive up using standard docker compose tools
 - Wait for everything to be setup, then right click on the nginx webapp container and `Open In Browser`
 - If the webpage gives a MONOLOGGER error, run `bash ./.codespaces/scripts/02_postCreateScript.sh`
 - If not, Cmfive is ready for your Playwright tests
@@ -13,19 +12,19 @@
 - `nvm install 18`
 - `nvm use 18`
 
-# Use the feature/PlaywrightMigration branch as the cmfive-boilerplate repo
+# Use the develop branch as the cmfive-boilerplate repo
 
 - `cd cmfive-boilerplate`
-- `git switch feature/PlaywrightMigration`
+- `git switch develop`
 
-# Use the feature/AdminBS5Conversion branch as the cmfive-core repo
+# Use the develop branch as the cmfive-core repo
 
 - `cd ../cmfive-core`
-- `git switch feature/AdminBS5Conversion`
+- `git switch develop`
 
 # Ensure styles are compiled
 
-- `cd ../cmfive-core/system/templates/base`
+- `cd ./composer/vendor/2pisoftware/cmfive-core/system/templates/base`
 - `npm i`
 - `npm run dev`
 
