@@ -1,0 +1,28 @@
+{
+    "compilerOptions": {
+        "outDir": "./dist/",
+        "sourceMap": true,
+        "noImplicitAny": true,
+        "module": "commonjs",
+        "target": "es5",
+        "lib": [
+            "es2015"
+        ],
+        "jsx": "react",
+        "allowJs": true,
+        "typeRoots": [
+            "./node_modules/@types"
+        ],
+        "baseUrl": "./",
+        "paths": {
+            "*": ["*", "node_modules/*"],
+            "@utils/*": ["src/utils/*"],
+            "@utils/cmfive": ["cmfive.utils.ts"]
+        }
+    },
+    "include": [
+        "./*.ts",
+        "./**/*.ts"
+    ],
+    "types": ["node"]
+}
