@@ -67,4 +67,7 @@ HEALTHCHECK --interval=10s --timeout=10s --start-period=5s --retries=15 \
   CMD curl -s -o /dev/null -w "%{http_code}" http://localhost:3000 | grep -q -E "^[1-3][0-9]{2}$" && \
       test -f ~/.cmfive-installed
 
+RUN cd /etc/nginx && \
+    openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout nginx.key -out nginx.crt -subj "/C=AU/ST=NSW/L=Bega/O=2pi/CN=localhost"
+
 CMD ["/bootstrap/start.sh"]
