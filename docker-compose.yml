@@ -12,21 +12,33 @@ services:
       - "3306:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=cmfive
+      - MYSQL_PASSWORD=cmfive
+      - MYSQL_DATABASE=cmfive
       - TZ=Australia/Sydney
     volumes:
       - dbdata:/var/lib/mysql:delegated
     # 'delegated' may be faster on mac or win?
     networks:
       - default
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
 
   webapp:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: nginx-php8.1
+    container_name: cmfive
     hostname: nginx-php8.1
     environment:
       - TZ=Australia/Sydney
+      - DB_HOST=mysqldb
+      - DB_DATABASE=cmfive
+      - DB_USERNAME=cmfive
+      - DB_PASSWORD=cmfive
     volumes:
       - ./:/var/www/html
       - ./test/Codeception/tests/boilerplate:/var/www/html/test/Codeception/tests/boilerplate
@@ -40,6 +52,22 @@ services:
     links:
       - mysqldb
       - seleniumsrv
+
+  compiler:
+    image: node:18-alpine
+    container_name: node-compiler
+    volumes:
+      - ./:/var/www/html
+    working_dir: /var/www/html/system/templates/base
+    command: "sh -c \"npm i && npm run watch\""
+    healthcheck:
+      test: ["CMD-SHELL", "ps aux | grep 'npm run watch' | grep -v grep"]
+      interval: 30s
+      timeout: 5m
+      retries: 5
+    depends_on:
+      webapp:
+        condition: service_healthy
 
   seleniumsrv:
     image: selenium/standalone-chrome:111.0
