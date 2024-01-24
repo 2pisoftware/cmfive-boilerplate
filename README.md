@@ -44,6 +44,6 @@ If you need to test on HTTPS it's available on [https://localhost:3443](https://
 When you work on the system directory you may need to change the branch. To do this you can run this command:
 
 ```sh
-# Replace develop with your desired branch
-docker exec -it cmfive ./cmfive.php install core develop
+# Replace <BRANCH NAME> with your desired branch
+docker exec -it cmfive ./cmfive.php install core <BRANCH NAME>
 ```
