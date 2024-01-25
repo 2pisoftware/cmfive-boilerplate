@@ -21,6 +21,7 @@ services:
     # 'delegated' may be faster on mac or win?
     networks:
       - default
+    restart: unless-stopped
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 30s
@@ -66,6 +67,7 @@ services:
       interval: 30s
       timeout: 5m
       retries: 5
+    restart: unless-stopped
     depends_on:
       webapp:
         condition: service_healthy
