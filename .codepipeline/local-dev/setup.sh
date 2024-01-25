@@ -4,6 +4,8 @@ set -e
 #if SKIP_CMFIVE_AUTOSETUP is defined, exit
 if [ "$SKIP_CMFIVE_AUTOSETUP" = true ]; then
     echo "Skipping setup"
+    #Let container know that everything is finished
+    touch ~/.cmfive-installed
     exit 0
 fi
 
