@@ -1,6 +1,12 @@
 #!/bin/bash
 set -e
 
+#if SKIP_CMFIVE_AUTOSETUP is defined, exit
+if [ "$SKIP_CMFIVE_AUTOSETUP" = true ]; then
+    echo "Skipping setup"
+    exit 0
+fi
+
 #If ~/.cmfive-installed exists close the script
 if [ -f ~/.cmfive-installed ]; then
     echo "Cmfive already installed"
