@@ -1,6 +1,11 @@
 #!/bin/bash
 set -e
 
+cd /var/www/html
+
+#Clear cache
+rm -f cache/config.cache
+
 #if SKIP_CMFIVE_AUTOSETUP is defined, exit
 if [ "$SKIP_CMFIVE_AUTOSETUP" = true ]; then
     echo "Skipping setup"
@@ -9,22 +14,12 @@ if [ "$SKIP_CMFIVE_AUTOSETUP" = true ]; then
     exit 0
 fi
 
-#If ~/.cmfive-installed exists close the script
-if [ -f ~/.cmfive-installed ]; then
-    echo "Cmfive already installed"
-    exit 0
-fi
 echo "Setting up cmfive"
-
-cd /var/www/html
-
-#Wait 15 seconds for things to start
-sleep 15
 
 #Copy the config template if config.php doens't exist
 if [ ! -f config.php ]; then
     echo "Installing config.php"
-    cp config.php.example config.php
+    cp .codepipeline/local-dev/local-dev-config.php config.php
 fi
 
 #Allow all permissions to the folders
