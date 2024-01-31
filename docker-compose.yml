@@ -60,7 +60,7 @@ services:
     container_name: node-compiler
     volumes:
       - ./:/var/www/html
-    working_dir: /var/www/html/system/templates/base
+    working_dir: /var/www/html/composer/vendor/2pisoftware/cmfive-core/system/templates/base
     command: "sh -c \"npm i && npm run watch\""
     healthcheck:
       test: ["CMD-SHELL", "ps aux | grep 'npm run watch' | grep -v grep"]
