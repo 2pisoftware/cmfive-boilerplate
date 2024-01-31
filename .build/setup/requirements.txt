@@ -2,6 +2,6 @@ click==7.1.2
 Jinja2==2.11.0
 pyyaml==5.4
 boto3==1.16.57
-requests==2.25.0
+requests==2.31.0
 jsonschema==3.2.0
 markupsafe==2.0.1
