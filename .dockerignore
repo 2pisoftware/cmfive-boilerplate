@@ -1,0 +1,29 @@
+# Ignore Git files and directories
+.git
+.gitignore
+
+# Ignore Node.js dependencies
+node_modules
+
+# Ignore Composer dependencies
+vendor
+composer.lock
+composer
+composer.json
+
+# Ignore other project directories
+.build
+.github
+system
+
+# Ignore uploads except .htaccess
+uploads/*
+!uploads/.htaccess
+
+# Ignore backups except .htaccess
+backups/*
+!backups/.htaccess
+
+#Ignore .codepipeline except docker
+.codepipeline/*
+!.codepipeline/docker

@@ -42,8 +42,8 @@ services:
       - ./test/Codeception/tests/boilerplate:/var/www/html/test/Codeception/tests/boilerplate
       - ./test/Codeception/tests/_output:/var/www/html/test/Codeception/tests/_output
     ports:
-      - "3000:3000"
-      - "3443:3443"
+      - "3000:80"
+      - "3443:443"
     networks:
       - default
     restart: unless-stopped
