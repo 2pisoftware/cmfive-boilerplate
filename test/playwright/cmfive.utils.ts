@@ -22,11 +22,8 @@ export class CmfiveHelper {
 
     static async isBootstrap5(page: Page)
     {
-        try {
-            await page.locator('.body')
-        } catch (e) {
-            await page.waitForSelector('.body');
-        }
+        await page.waitForSelector('#cmfive-body, body > .row-fluid');
+    
         return await page.locator('html.theme').count() > 0
     }
 
