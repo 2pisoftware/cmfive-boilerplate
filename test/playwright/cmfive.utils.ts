@@ -22,8 +22,9 @@ export class CmfiveHelper {
 
     static async isBootstrap5(page: Page)
     {
-        const result = await page.locator('html.theme').all()
-        return result.length > 0
+        await page.waitForSelector('#cmfive-body, body > .row-fluid');
+    
+        return await page.locator('html.theme').count() > 0
     }
 
     static getRowByText(page: Page, text: string)

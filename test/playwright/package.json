@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "node build.js",
-    "setup": "docker exec -i nginx-php8.1 bash -c \"php cmfive.php testDB setup\"",
-    "cleanup": "echo \"y\" | bash cleanupTestMigrations.sh && docker exec -i nginx-php8.1 bash -c \"php cmfive.php DB test\"",
+    "setup": "docker exec -i cmfive bash -c \"php cmfive.php testDB setup\"",
+    "cleanup": "echo \"y\" | bash cleanupTestMigrations.sh && docker exec -i cmfive bash -c \"php cmfive.php DB test\"",
     "test": "bash -c '${npm_config_clean:+npm run cleanup && }npx playwright test --reporter=\"${npm_config_reporter:-list}\" --project=\"${npm_config_platform:-chromium}\"${npm_config_module:+ --grep=\"$npm_config_module\"}'",
     "test:with-retries": "bash -c '${npm_config_clean:+npm run cleanup && }bash run-test-with-retries.sh \"${npm_config_module:-}\" \"${npm_config_platform:-chromium}\" \"${npm_config_reporter:-github}\" \"${npm_config_attempts:-3}\"'"
   },

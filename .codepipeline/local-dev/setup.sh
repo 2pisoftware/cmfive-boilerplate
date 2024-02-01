@@ -1,22 +1,25 @@
 #!/bin/bash
 set -e
 
-#If ~/.cmfive-installed exists close the script
-if [ -f ~/.cmfive-installed ]; then
-    echo "Cmfive already installed"
-    exit 0
-fi
-echo "Setting up cmfive"
-
 cd /var/www/html
 
-#Wait 15 seconds for things to start
-sleep 15
+#Clear cache
+rm -f cache/config.cache
+
+#if SKIP_CMFIVE_AUTOSETUP is defined, exit
+if [ "$SKIP_CMFIVE_AUTOSETUP" = true ]; then
+    echo "Skipping setup"
+    #Let container know that everything is finished
+    touch ~/.cmfive-installed
+    exit 0
+fi
+
+echo "Setting up cmfive"
 
 #Copy the config template if config.php doens't exist
 if [ ! -f config.php ]; then
     echo "Installing config.php"
-    cp config.php.example config.php
+    cp .codepipeline/local-dev/local-dev-config.php config.php
 fi
 
 #Allow all permissions to the folders

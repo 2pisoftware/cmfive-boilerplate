@@ -7,9 +7,6 @@ services:
     image: mysql:8
     container_name: mysql-8
     hostname: mysql-8
-    # command: --sql-mode=""
-    ports:
-      - "3306:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_USER=cmfive
@@ -21,6 +18,7 @@ services:
     # 'delegated' may be faster on mac or win?
     networks:
       - default
+    restart: unless-stopped
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 30s
@@ -45,6 +43,7 @@ services:
       - ./test/Codeception/tests/_output:/var/www/html/test/Codeception/tests/_output
     ports:
       - "3000:3000"
+      - "3443:3443"
     networks:
       - default
     restart: unless-stopped
@@ -52,19 +51,23 @@ services:
     links:
       - mysqldb
       - seleniumsrv
+    depends_on:
+      mysqldb:
+        condition: service_healthy
 
   compiler:
     image: node:18-alpine
     container_name: node-compiler
     volumes:
       - ./:/var/www/html
-    working_dir: /var/www/html/system/templates/base
+    working_dir: /var/www/html/composer/vendor/2pisoftware/cmfive-core/system/templates/base
     command: "sh -c \"npm i && npm run watch\""
     healthcheck:
       test: ["CMD-SHELL", "ps aux | grep 'npm run watch' | grep -v grep"]
       interval: 30s
       timeout: 5m
       retries: 5
+    restart: unless-stopped
     depends_on:
       webapp:
         condition: service_healthy
