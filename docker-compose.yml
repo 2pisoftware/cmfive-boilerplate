@@ -21,9 +21,9 @@ services:
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
+      interval: 10s
+      timeout: 5m
+      retries: 20
 
   webapp:
     build:
@@ -63,10 +63,13 @@ services:
     working_dir: /var/www/html/composer/vendor/2pisoftware/cmfive-core/system/templates/base
     command: "sh -c \"npm i && npm run watch\""
     healthcheck:
-      test: ["CMD-SHELL", "ps aux | grep 'npm run watch' | grep -v grep"]
-      interval: 30s
+      test: 
+        - "CMD-SHELL"
+        - "ps aux | grep 'npm run watch' | grep -v grep"
+        - "test -f composer/vendor/2pisoftware/cmfive-core/system/templates/base/dist/app.css"
+      interval: 10s
       timeout: 5m
-      retries: 5
+      retries: 20
     restart: unless-stopped
     depends_on:
       webapp:
