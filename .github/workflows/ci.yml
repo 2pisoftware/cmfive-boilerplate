@@ -11,6 +11,9 @@ jobs:
         steps:
             - uses: actions/checkout@v4
             - uses: overtrue/phplint@9.0.3
+              with:
+               path: .
+               options: --exclude=vendor
     php-codesniffer74:
         name: PHP CS 7.4
         runs-on: ubuntu-latest
