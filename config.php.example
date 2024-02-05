@@ -117,3 +117,6 @@ Config::set('system.rest_api_key', "abcdefghijklmnopqrstuvwxyz1234567890");
 Config::set('system.rest_include', [
     // "Contact"
 ]);
+
+// Development mode
+Config::set('system.environment', 'development');

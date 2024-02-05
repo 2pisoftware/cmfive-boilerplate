@@ -1,38 +1,49 @@
 # cmfive-boilerplate ![Build Status](https://travis-ci.org/adam-buckley/cmfive-boilerplate.svg?branch=master)
 A boilerplate project layout for Cmfive
 
-### Local hosting/deployment with docker-compose
-Requirements:
+## Deploying a development environment with docker-compose
+
+### Requirements
+
 - docker
-- mkcert
+- docker-compose
 
-Install the root CA on your machine so that the SSL certificate is trusted (you can skip this and opt to go through the warning pages that browsers will give you):
-run from the boilerplate directory
+### Setting up
+
+For development we recommend the Docker plugin by Microsoft for VS Code. Simply right click on the **docker-compose.yml** file and select **Compose Up**.
+
+Alternatively to run it on the CLI:
+
 ```bash
-cd .build/certs
-mkcert -install
+docker-compose up -d
 ```
 
-Once done you can start the containers. For development we recommend the Docker plugin by Microsoft for VS Code. To run it on the CLI:
+Give it a few minutes. You can check the status in VS Code on the Docker tab. Important containers will report "healthy". 
+
+
+Alternatively you can check on the CLI:
 ```bash
-docker-compose up
+docker ps
 ```
 
-Ensure you also have MySQL running, to set up one in a container:
-```bash
-docker run mysql:5.7 --net=host
-```
+NOTE: The compiler will always start after cmfive is running.
 
-Once everything is running alter the config.php to point at your mysql instance and run:
-```bash
-php cmfive.php install core
-php cmfive.php install migrations
-```
+## Logging in
 
-Then seed an admin user:
-```
-php cmfive.php
-[select option 3 and fill in the prompts]
-```
+From there, navigate to: [http://localhost:3000](http://localhost:3000) and log in with your admin account. For development it is:
 
-From there, navigate to: [https://localhost:9002](https://localhost:9002) and log in with your admin account.
+- Username: admin
+- Password: admin
+
+## HTTPS
+
+If you need to test on HTTPS it's available on [https://localhost:3443](https://localhost:3443). It's configured with a self-signed certificate, ignore the browser warning.
+  
+## Changing the cmfive-core branch
+
+When you work on the system directory you may need to change the branch. To do this you can run this command:
+
+```sh
+# Replace <BRANCH NAME> with your desired branch
+docker exec -it cmfive ./cmfive.php install core <BRANCH NAME>
+```
