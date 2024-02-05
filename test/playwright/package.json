@@ -15,7 +15,6 @@
   "dependencies": {
     "@playwright/test": "^1.32.2",
     "glob": "^9.3.2",
-    "glob-fs": "^0.1.7",
     "luxon": "^3.3.0"
   },
   "devDependencies": {
