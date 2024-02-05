@@ -10,7 +10,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
-            - uses: overtrue/phplint@9.0.4
+            - uses: overtrue/phplint@9.1.1
               with:
                path: .
                options: --exclude=vendor
