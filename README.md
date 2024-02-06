@@ -1,49 +1,50 @@
 # cmfive-boilerplate ![Build Status](https://travis-ci.org/adam-buckley/cmfive-boilerplate.svg?branch=master)
 A boilerplate project layout for Cmfive
+Main documentation is at:
+[cmfive.com](https://cmfive.com)
 
-## Deploying a development environment with docker-compose
+## Installation
+This guide assumes a working knowledge on how to set up nginx to serve a PHP application as well as having an empty MySQL database (with user and password) ready to go.
 
-### Requirements
+To install Cmfive, clone or download the Boilerplate repository and unpack (if necessary) into a directory of your choosing.
 
-- docker
-- docker-compose
+Copy the config.php.example file to config.php and update (at least) the database section to contain the credentials of your Cmfive database, e.g.:
 
-### Setting up
+Config::set("database", [
+    "hostname"  => "localhost",
+    "username"  => "cmfive",
+    "password"  => "cmfive",
+    "database"  => "cmfive",
+    "driver"    => "mysql"
+]);
 
-For development we recommend the Docker plugin by Microsoft for VS Code. Simply right click on the **docker-compose.yml** file and select **Compose Up**.
+Change any other configuration items as you see fit.
 
-Alternatively to run it on the CLI:
-
-```bash
-docker-compose up -d
+## Detailed Setup
+Boilerplate and core have many dependencies, including PHP, MYSQL and NodeJS.
+For a manageable approach, containerisation is a good option.
+To consciously customise a development or production deployment, become familiar with the resources and deployment strategies shown in:
+```
+.codepipeline/README.md
 ```
 
-Give it a few minutes. You can check the status in VS Code on the Docker tab. Important containers will report "healthy". 
+## Complete setup by running "php cmfive.php"
+Running through commands will get you set up and ready to go.  
+Here is an explanation of each command:
 
+## Install Core Libraries
+Will install any third party libraries Cmfive requires via Composer (the composer executable is bundled with the Boilerplate repo)
+## Install Database Migrations
+Will install all Cmfive migrations
+## Seed Admin User
+Will set up an administrator user, needed to log in to a new Cmfive install
+## Generate Encryption Keys
+Will generate encryption keys used by Cmfive, for secure Database fields
 
-Alternatively you can check on the CLI:
-```bash
-docker ps
+## Build core templates
+With core installed, use npm to formalise available template components and styling: 
 ```
-
-NOTE: The compiler will always start after cmfive is running.
-
-## Logging in
-
-From there, navigate to: [http://localhost:3000](http://localhost:3000) and log in with your admin account. For development it is:
-
-- Username: admin
-- Password: admin
-
-## HTTPS
-
-If you need to test on HTTPS it's available on [https://localhost:3443](https://localhost:3443). It's configured with a self-signed certificate, ignore the browser warning.
-  
-## Changing the cmfive-core branch
-
-When you work on the system directory you may need to change the branch. To do this you can run this command:
-
-```sh
-# Replace <BRANCH NAME> with your desired branch
-docker exec -it cmfive ./cmfive.php install core <BRANCH NAME>
+cd system/templates/base
+npm ci
+npm run prod
 ```
