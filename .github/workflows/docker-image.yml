@@ -24,7 +24,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Docker image
-        run: ./codepipline/docker/docker-build.sh
+        run: ./codepipeline/docker/docker-build.sh
         env:
           COMPILE_THEME: false
           FAIL_ON_NOTHEME: false
