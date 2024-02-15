@@ -22,6 +22,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+          permissions: write
 
       # - name: Build Docker image
       #   run: ./.codepipeline/docker/docker-build.sh
