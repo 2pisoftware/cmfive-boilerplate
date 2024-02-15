@@ -27,3 +27,6 @@ backups/*
 #Ignore .codepipeline except docker
 .codepipeline/*
 !.codepipeline/docker
+
+#Dont ignore theme
+!composer/vendor/2pisoftware/cmfive-core/system/templates/base

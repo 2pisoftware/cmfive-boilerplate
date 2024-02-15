@@ -26,9 +26,10 @@ services:
       retries: 20
 
   webapp:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: cmfive:latest
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
     container_name: cmfive
     hostname: nginx-php8.1
     environment:

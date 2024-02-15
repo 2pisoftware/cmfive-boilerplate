@@ -23,12 +23,17 @@ RUN apk --no-cache add \
     php81-intl \
     php81-gettext \
     php81-session \
+    php81-simplexml \
+    php81-fileinfo \
     nginx \
     supervisor \
     bash \
     openssl \
     memcached \
-    curl wget
+    curl \
+    wget \
+    unzip \
+    git
 
 # Link PHP cli
 RUN ln -s /usr/bin/php81 /usr/bin/php
@@ -59,11 +64,8 @@ COPY . /var/www/html
 # Set working directory
 WORKDIR /var/www/html
 
-# Install modules
+# Install core
 RUN php cmfive.php install core
-
-# Link system dir
-RUN rm -rf system && ln -s ./composer/vendor/2pisoftware/cmfive-core/system ./system
 
 # Healthcheck to ensure nginx is running and cmfive is installed
 HEALTHCHECK --interval=10s --timeout=10s --start-period=5s --retries=15 \
