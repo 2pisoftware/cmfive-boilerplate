@@ -15,7 +15,7 @@ jobs:
         name: PHP CS
         runs-on: ubuntu-22.04
         strategy:
-        matrix:
+          matrix:
             php_version: [7.4, 8.0, 8.1, 8.2, 8.3]
         steps:
         - name: Codesniffer
