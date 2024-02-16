@@ -48,7 +48,7 @@ jobs:
           context: .
           push: false
           tags: cmfive-boilerplate:latest
-          cache-to: type=local,dest=/tmp/.buildx-cache
+          load: true # Use the built image in the next step
 
       # Build the theme, copy it to boilerplate, tag and push
       - name: Build and push cmfive image
@@ -58,5 +58,5 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=local,src=/tmp/.buildx-cache
+
 
