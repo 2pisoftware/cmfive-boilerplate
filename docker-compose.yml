@@ -25,7 +25,7 @@ services:
       retries: 20
 
   webapp:
-    image: cmfive:latest
+    image: ghcr.io/2pisoftware/cmfive:feat-image-pipeline
     # build:
     #   context: .
     #   dockerfile: Dockerfile
@@ -38,7 +38,7 @@ services:
       - DB_USERNAME=cmfive
       - DB_PASSWORD=cmfive
     volumes:
-      - ./:/var/www/html
+      - ./:/var/www/html:rw
       - ./test/Codeception/tests/boilerplate:/var/www/html/test/Codeception/tests/boilerplate
       - ./test/Codeception/tests/_output:/var/www/html/test/Codeception/tests/_output
     ports:

@@ -39,3 +39,15 @@ storage/*
 
 # Ignore config.php, should be mapped in with a volume or the container will use the defaults
 config.php
+
+# Ignore docker files
+Dockerfile
+*.Dockerfile
+docker-compose.*
+
+#Root files
+README.md
+LICENSE
+test-cli.sh
+appspec.yml
+

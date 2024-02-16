@@ -1,4 +1,9 @@
 #!/bin/bash
+
+# ================================================================
+# Prepare and install cmfive
+# ================================================================
+
 set -e
 
 cd /var/www/html
@@ -29,6 +34,10 @@ chmod ugo=rwX -R cache/ storage/ uploads/
 #Setup Cmfive
 echo "Running cmfive.php actions"
 echo
+if [ ! -f /var/www/html/system/web.php ]; then
+    echo "System missing, installing core"
+    php cmfive.php install core
+fi
 php cmfive.php seed encryption
 php cmfive.php install migrations
 php cmfive.php seed admin Admin Admin dev@2pisoftware.com admin admin
