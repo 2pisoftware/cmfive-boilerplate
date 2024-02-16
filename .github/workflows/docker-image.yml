@@ -49,13 +49,16 @@ jobs:
           push: false
           tags: cmfive-boilerplate:latest
           load: true # Use the built image in the next step
-          driver: docker
+
+      - name: Debug
+        run: |
+          echo "Checking if cmfive-boilerplate:latest is available locally"
+          docker images
 
       # Build the theme, copy it to boilerplate, tag and push
       - name: Build and push cmfive image
         uses: docker/build-push-action@v5
         with:
-          driver: docker
           context: ./.codepipeline/docker
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
