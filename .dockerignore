@@ -15,6 +15,7 @@ composer.json
 .build
 .github
 system
+.vscode
 
 # Ignore uploads except .htaccess
 uploads/*
@@ -24,9 +25,17 @@ uploads/*
 backups/*
 !backups/.htaccess
 
-#Ignore .codepipeline except docker
+# Ignore .codepipeline except docker
 .codepipeline/*
 !.codepipeline/docker
 
-#Dont ignore theme
+# Ignore storage except .htaccess and country.sql
+storage/*
+!storage/.htaccess
+!storage/country.sql
+
+# Dont ignore theme
 !composer/vendor/2pisoftware/cmfive-core/system/templates/base
+
+# Ignore config.php, should be mapped in with a volume or the container will use the defaults
+config.php

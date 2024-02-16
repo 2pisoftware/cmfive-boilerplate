@@ -1,3 +1,10 @@
+# ==========================================================================
+# ## Cmfive Boilerplate image ##
+# ==========================================================================
+
+# This image provides a base environment to install cmfive upon.
+# NOTE: See the .dockerignore file to see what is excluded from the image.
+
 # Use the Alpine Linux base image
 FROM alpine:3.19
 
@@ -39,7 +46,7 @@ RUN apk --no-cache add \
 RUN ln -s /usr/bin/php81 /usr/bin/php
 
 # Create necessary directories
-RUN mkdir -p /var/www/html && \
+RUN mkdir -p /var/www && \
     mkdir -p /run/nginx
 
 # Generate dev/placeholder self-signed SSL certificate
@@ -54,23 +61,24 @@ COPY /.codepipeline/docker/configs/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY /.codepipeline/docker/configs/nginx/default.conf /etc/nginx/conf.d/default.conf
 COPY /.codepipeline/docker/configs/fpm/ /etc/php81/
 COPY /.codepipeline/docker/setup.sh /bootstrap/setup.sh
+COPY /.codepipeline/docker/config.default.php /bootstrap/config.default.php
 
 # Expose HTTP, HTTPS
 EXPOSE 80 443
 
 # Copy source
-COPY . /var/www/html
+COPY --chown=cmfive:cmfive . /var/www/html
 
 # Set working directory
 WORKDIR /var/www/html
 
-# Install core
-RUN php cmfive.php install core
+# Remove .codepipeline
+RUN rm -rf .codepipeline
 
 # Healthcheck to ensure nginx is running and cmfive is installed
 HEALTHCHECK --interval=10s --timeout=10s --start-period=5s --retries=15 \
   CMD curl -s -o /dev/null -w "%{http_code}" http://localhost | grep -q -E "^[1-3][0-9]{2}$" && \
-      test -f ~/.cmfive-installed
+      test -f /home/cmfive/.cmfive-installed
 
 # Start supervisord
 CMD ["supervisord", "--nodaemon", "--configuration", "/etc/supervisord.conf"]
