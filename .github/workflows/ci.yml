@@ -13,6 +13,7 @@ jobs:
             - uses: overtrue/phplint@9.1.1
     php-codesniffer:
         name: PHP CS
+        needs: [ phplint ]
         runs-on: ubuntu-22.04
         strategy:
           matrix:
