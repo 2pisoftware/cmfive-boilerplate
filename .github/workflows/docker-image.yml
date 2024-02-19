@@ -1,9 +1,9 @@
 name: Build and Publish Docker Image
 
 on:
-  push:
+  pull_request:
     branches:
-      - feat/image-pipeline #Should be set to main in future
+      - '*'
 
 jobs:
   build-and-publish:
