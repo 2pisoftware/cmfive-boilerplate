@@ -13,6 +13,7 @@ export class CmfiveHelper {
         await page.locator("#login").fill(user);
         await page.locator("#password").fill(password);
         await page.getByRole("button", {name: "Login"}).click();
+        await page.waitForURL(HOST + "/main/index")   
     }
 
     static async logout(page: Page)
@@ -42,7 +43,7 @@ export class CmfiveHelper {
             await navbarCategory.hover();
         }
 
-        await navbarCategory.getByText(option).click();
+        await navbarCategory.getByRole('link', {name: option}).click();
     }
 
     // Call exactly once per test before any dialogs pop up
@@ -66,5 +67,25 @@ export class CmfiveHelper {
         await page.locator('#acp_' + field).click();
         await page.keyboard.type(search);
         await page.locator('.ui-menu-item :text("' + value + '")').click();
+    }
+
+    static async installDatabaseSeeds(page: Page, module: string){
+        //installs databse seeds if not installed
+        await CmfiveHelper.clickCmfiveNavbar(page, "Admin", "Migrations");
+        await page.getByRole('link', {name: 'Database Seeds'}).click();
+        const moduleTab = await page.locator(`#${module}-tab-seed`);
+
+        //collect number of buttons
+        await moduleTab.click()
+        const installButtons = await page.getByRole('button', {name: 'Install'});
+        const installButtonsCount = await installButtons.count();
+
+        //loop for number of buttons aka how many seeds to install
+        for (let i = 0; i < installButtonsCount; i++) {
+            await moduleTab.click()
+            //each time you click the button it takes one locator result off the page
+            await installButtons.first().click(); //this always resolves the first button
+            await page.waitForSelector('div.alert-success', {state: 'visible'});
+        }
     }
 }
