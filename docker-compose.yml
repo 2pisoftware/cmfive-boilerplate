@@ -25,10 +25,10 @@ services:
       retries: 20
 
   webapp:
-    image: ghcr.io/2pisoftware/cmfive:feat-image-pipeline
-    # build:
-    #   context: .
-    #   dockerfile: Dockerfile
+    #image: ghcr.io/2pisoftware/cmfive:feat-image-pipeline
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: cmfive
     hostname: nginx-php8.1
     environment:
