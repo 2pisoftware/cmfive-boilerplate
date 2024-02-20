@@ -2,8 +2,11 @@
 .git
 .gitignore
 
+# .htaccess (apache only, container uses nginx)
+**/.htaccess
+
 # Ignore Node.js dependencies
-node_modules
+**/node_modules
 
 # Ignore Composer dependencies
 vendor

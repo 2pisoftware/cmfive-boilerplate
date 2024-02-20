@@ -1,9 +1,9 @@
 #!/bin/ash
 
 echo ""
-echo "========================="
-echo "  Cmfive theme compiler"
-echo "========================="
+echo "====================================="
+echo "  Cmfive theme development compiler"
+echo "====================================="
 echo ""
 
 echo "=== 🧱 Preparing ==="
