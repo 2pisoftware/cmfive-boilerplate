@@ -60,8 +60,8 @@ services:
     container_name: node-compiler
     volumes:
       - ./:/var/www/html
-    working_dir: /var/www/html/system/templates/base
-    command: "sh -c \"npm i && npm run watch\""
+      - ./.codepipeline/docker/compiler.sh:/compiler.sh
+    command: "ash -c /compiler.sh"
     healthcheck:
       test: 
         - "CMD-SHELL"
@@ -71,6 +71,7 @@ services:
       timeout: 5m
       retries: 20
     restart: unless-stopped
+    user: "1000:1000"
     depends_on:
       webapp:
         condition: service_healthy
