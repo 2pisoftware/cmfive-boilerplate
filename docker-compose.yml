@@ -29,7 +29,7 @@ services:
     # build:
     #   context: .
     #   dockerfile: Dockerfile
-    container_name: cmfive
+    # container_name: cmfive
     hostname: nginx-php8.1
     environment:
       - TZ=Australia/Sydney

@@ -20,22 +20,18 @@ composer.json
 system
 .vscode
 
-# Ignore uploads except .htaccess
+# Ignore uploads
 uploads/*
-!uploads/.htaccess
 
-# Ignore backups except .htaccess
+# Ignore backups
 backups/*
-!backups/.htaccess
 
 # Ignore .codepipeline except docker
 .codepipeline/*
 !.codepipeline/docker
 
-# Ignore storage except .htaccess and country.sql
+# Ignore storage
 storage/*
-!storage/.htaccess
-!storage/country.sql
 
 # Dont ignore theme
 !composer/vendor/2pisoftware/cmfive-core/system/templates/base
