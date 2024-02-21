@@ -26,10 +26,7 @@ services:
 
   webapp:
     image: ghcr.io/2pisoftware/cmfive:develop
-    # build:
-    #   context: .
-    #   dockerfile: Dockerfile
-    # container_name: cmfive
+    container_name: cmfive
     hostname: nginx-php8.1
     environment:
       - TZ=Australia/Sydney
