@@ -37,6 +37,10 @@ jobs:
             type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
+          labels: |
+            org.opencontainers.image.title=Cmfive
+            org.opencontainers.image.description=Cmfive in a docker image
+            org.opencontainers.image.vendor=2pisoftware
 
       # Login to GHCR
       - name: Login to GitHub Container Registry
