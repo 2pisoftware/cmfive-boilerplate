@@ -1,4 +1,8 @@
-# cmfive-boilerplate ![Build Status](https://travis-ci.org/adam-buckley/cmfive-boilerplate.svg?branch=master)
+# cmfive-boilerplate 
+[![Docker Image](https://github.com/2pisoftware/cmfive-boilerplate/actions/workflows/docker-image.yml/badge.svg)](https://github.com/2pisoftware/cmfive-boilerplate/actions/workflows/docker-image.yml)
+[![CI](https://github.com/2pisoftware/cmfive-boilerplate/actions/workflows/ci.yml/badge.svg)](https://github.com/2pisoftware/cmfive-boilerplate/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/2pisoftware/cmfive-boilerplate/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/2pisoftware/cmfive-boilerplate/actions/workflows/github-code-scanning/codeql)
+
 A boilerplate project layout for Cmfive
 Main documentation is at:
 [cmfive.com](https://cmfive.com)
