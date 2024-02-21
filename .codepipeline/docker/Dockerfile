@@ -40,7 +40,13 @@ COPY --chown=cmfive:cmfive \
 RUN ln -s composer/vendor/2pisoftware/cmfive-core/system/ system
 
 # Install core
-RUN su cmfive -c 'php cmfive.php install core'
+RUN su cmfive -c 'if [ ! -f /var/www/html/config.php ]; then \
+        touch /var/www/html/config.php; \
+        php cmfive.php install core; \
+        rm /var/www/html/config.php; \
+    else \
+        php cmfive.php install core; \
+    fi'
 
 # Copy theme
 COPY --chown=cmfive:cmfive \
