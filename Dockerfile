@@ -76,7 +76,7 @@ WORKDIR /var/www/html
 RUN rm -rf .codepipeline
 
 # Bake in the default config
-RUN cp /bootstrap/config.default.php /var/www/html/config.php
+#RUN cp /bootstrap/config.default.php /var/www/html/config.php
 
 # Healthcheck to ensure nginx is running and cmfive is installed
 HEALTHCHECK --interval=10s --timeout=10s --start-period=5s --retries=15 \
