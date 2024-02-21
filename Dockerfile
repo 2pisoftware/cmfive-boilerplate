@@ -32,6 +32,7 @@ RUN apk --no-cache add \
     php81-session \
     php81-simplexml \
     php81-fileinfo \
+    php81-xdebug \
     nginx \
     supervisor \
     bash \
@@ -74,6 +75,9 @@ WORKDIR /var/www/html
 
 # Remove .codepipeline
 RUN rm -rf .codepipeline
+
+# Bake in the default config
+RUN cp /bootstrap/config.default.php /var/www/html/config.php
 
 # Healthcheck to ensure nginx is running and cmfive is installed
 HEALTHCHECK --interval=10s --timeout=10s --start-period=5s --retries=15 \
