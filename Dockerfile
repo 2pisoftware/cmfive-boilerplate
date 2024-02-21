@@ -32,7 +32,6 @@ RUN apk --no-cache add \
     php81-session \
     php81-simplexml \
     php81-fileinfo \
-    php81-xdebug \
     nginx \
     supervisor \
     bash \
