@@ -24,6 +24,14 @@ jobs:
         uses: docker/setup-buildx-action@v3
         with:
           driver: docker
+      
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-  
 
       # Build all the tags for the image
       - name: Create tags
@@ -58,8 +66,8 @@ jobs:
           push: false
           tags: cmfive-boilerplate:latest
           load: true # Use the built image in the next step
-          cache-from: type=registry,ref=2pisoftware/cmfive-boilerplate:buildcache
-          cache-to: type=registry,ref=2pisoftware/cmfive-boilerplate:buildcache,mode=max
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
       # Build the theme, copy it to boilerplate, tag and push
       - name: Build and push cmfive image
@@ -69,6 +77,11 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=registry,ref=2pisoftware/cmfive:buildcache
-          cache-to: type=registry,ref=2pisoftware/cmfive:buildcache,mode=max
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache  
 
