@@ -66,8 +66,8 @@ services:
       test: 
         - "CMD-SHELL"
         - "ps aux | grep 'npm run watch' | grep -v grep"
-        - "test -f system/templates/base/dist/app.css"
-      interval: 10s
+        - "test -f /var/www/html/system/templates/base/dist/app.css"
+      interval: 15s
       timeout: 5m
       retries: 20
     restart: unless-stopped
