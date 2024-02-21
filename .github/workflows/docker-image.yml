@@ -58,8 +58,8 @@ jobs:
           push: false
           tags: cmfive-boilerplate:latest
           load: true # Use the built image in the next step
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=registry,ref=2pisoftware/cmfive-boilerplate:buildcache
+          cache-to: type=registry,ref=2pisoftware/cmfive-boilerplate:buildcache,mode=max
 
       # Build the theme, copy it to boilerplate, tag and push
       - name: Build and push cmfive image
@@ -69,7 +69,6 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
+          cache-from: type=registry,ref=2pisoftware/cmfive:buildcache
+          cache-to: type=registry,ref=2pisoftware/cmfive:buildcache,mode=max
 
