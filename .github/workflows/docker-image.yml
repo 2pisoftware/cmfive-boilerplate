@@ -38,8 +38,8 @@ jobs:
       - name: Load docker layers
         run: |
           mkdir -p /tmp/.buildx-cache
-          if [ -f /tmp/.buildx-cache/layers.tar.gz ]; then
-            gunzip -c /tmp/.buildx-cache/layers.tar.gz | docker load
+          if [ -f /tmp/.buildx-cache/cmfive_images.tar.gz ]; then
+            docker load < /tmp/.buildx-cache/cmfive_images.tar.gz
           fi
 
       # Build all the tags for the image
@@ -89,6 +89,10 @@ jobs:
       - name: Save docker layers
         run: |
           mkdir -p /tmp/.buildx-cache
-          docker save $(docker images -q) | gzip > /tmp/.buildx-cache/layers.tar.gz
+          docker save \
+            $(docker images --format '{{.Repository}}:{{.Tag}}' --filter "reference=cmfive*") \
+            $(docker images --format '{{.Repository}}:{{.Tag}}' --filter "reference=ghcr.io/2pisoftware/cmfive*") \
+            -o /tmp/.buildx-cache/cmfive_images.tar.gz
+
 
 
