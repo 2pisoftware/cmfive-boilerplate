@@ -25,7 +25,7 @@ services:
       retries: 20
 
   webapp:
-    image: ghcr.io/2pisoftware/cmfive:feat-image-pipeline
+    image: ghcr.io/2pisoftware/cmfive:develop
     # build:
     #   context: .
     #   dockerfile: Dockerfile
