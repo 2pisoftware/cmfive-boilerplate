@@ -25,6 +25,23 @@ jobs:
         with:
           driver: docker
 
+      # Set up action cache
+      - name: Set up cache
+        uses: actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ hashFiles('**/Dockerfile') }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      # Load docker layers from cache
+      - name: Load docker layers
+        run: |
+          mkdir -p /tmp/.buildx-cache
+          if [ -f /tmp/.buildx-cache/layers.tar.gz ]; then
+            gunzip -c /tmp/.buildx-cache/layers.tar.gz | docker load
+          fi
+
       # Build all the tags for the image
       - name: Create tags
         id: meta
@@ -58,8 +75,6 @@ jobs:
           push: false
           tags: cmfive-boilerplate:latest
           load: true # Use the built image in the next step
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
       # Build the theme, copy it to boilerplate, tag and push
       - name: Build and push cmfive image
@@ -69,11 +84,11 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
-      - name: Move cache
+      # Save docker layers to cache
+      - name: Save docker layers
         run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache  
+          mkdir -p /tmp/.buildx-cache
+          docker save $(docker images -q) | gzip > /tmp/.buildx-cache/layers.tar.gz
+
 
