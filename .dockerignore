@@ -1,3 +1,5 @@
+# This should represent what will be used in a production image of cmfive
+
 # Ignore Git files and directories
 .git
 .gitignore
@@ -32,6 +34,10 @@ backups/*
 
 # Ignore storage
 storage/*
+
+# Ignore test
+# Note: this can be mapped in with a volume if required
+test/*
 
 # Dont ignore theme
 !composer/vendor/2pisoftware/cmfive-core/system/templates/base
