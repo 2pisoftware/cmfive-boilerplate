@@ -1,4 +1,4 @@
-name: Build and Publish Docker Image
+name: Build and Publish
 
 on:
   pull_request:
@@ -58,6 +58,8 @@ jobs:
           push: false
           tags: cmfive-boilerplate:latest
           load: true # Use the built image in the next step
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       # Build the theme, copy it to boilerplate, tag and push
       - name: Build and push cmfive image
@@ -67,5 +69,7 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
 
