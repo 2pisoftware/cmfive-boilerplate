@@ -40,6 +40,7 @@ RUN apk --no-cache add \
     curl \
     wget \
     unzip \
+    icu-data-full \
     git
 
 # Link PHP cli
