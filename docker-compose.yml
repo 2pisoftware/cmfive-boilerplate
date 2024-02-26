@@ -37,6 +37,7 @@ services:
       - DB_DATABASE=cmfive
       - DB_USERNAME=cmfive
       - DB_PASSWORD=cmfive
+      - ENVIRONMENT=development
     volumes:
       - ./:/var/www/html:rw
       - ./test/Codeception/tests/boilerplate:/var/www/html/test/Codeception/tests/boilerplate

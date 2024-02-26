@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ================================================================
-# Prepare and install cmfive
+# Prepare and install Cmfive
 # ================================================================
 
 set -e
@@ -19,7 +19,7 @@ if [ "$SKIP_CMFIVE_AUTOSETUP" = true ]; then
     exit 0
 fi
 
-echo "Setting up cmfive"
+echo "🏗️  Setting up Cmfive"
 
 #Copy the config template if config.php doens't exist
 if [ ! -f config.php ]; then
@@ -27,21 +27,44 @@ if [ ! -f config.php ]; then
     cp /bootstrap/config.default.php config.php
 fi
 
-#Allow all permissions to the folders
+#Ensure necessary directories have the correct permissions
 echo "Setting permissions"
 chmod ugo=rwX -R cache/ storage/ uploads/
 
-#Setup Cmfive
+# ------------------------------------------------
+# Setup Cmfive
+# ------------------------------------------------
+
 echo "Running cmfive.php actions"
 echo
-if [ ! -f /var/www/html/system/web.php ]; then
-    echo "System missing, installing core"
-    php cmfive.php install core
+
+# If system dir exists but composer doesnt print a warning
+if [ -f "/var/www/html/system/web.php" ] && [ ! -f "/var/www/html/composer.json" ]; then
+    echo "⚠️  Warning: System dir exists but composer packages are missing"
 fi
+
+# System dir and composer packages must exist
+if [ ! -f "/var/www/html/system/web.php" ] || [ ! -f "/var/www/html/composer.json" ] || [ -n "$CMFIVE_CORE_BRANCH" ]; then
+    CMFIVE_CORE_BRANCH=${CMFIVE_CORE_BRANCH:-master} # Default to master if not set
+    echo "➕  Installing core from branch [ $CMFIVE_CORE_BRANCH ]"
+    php cmfive.php install core $CMFIVE_CORE_BRANCH
+    echo "✔️  Core installed"
+else
+    echo "✔️  Core already installed"
+fi
+
 php cmfive.php seed encryption
 php cmfive.php install migrations
-php cmfive.php seed admin Admin Admin dev@2pisoftware.com admin admin
+
+# if DEVELOPMENT
+if [ "$ENVIRONMENT" = "development" ]; then
+    echo "🧑‍💻  Development mode"
+    echo "Creating admin user"
+    php cmfive.php seed admin Admin Admin dev@2pisoftware.com admin admin
+fi
 
 #Let container know that everything is finished
-echo "Cmfive setup complete"
+echo "=========================="
+echo "✅  Cmfive setup complete"
+echo "=========================="
 touch /home/cmfive/.cmfive-installed
