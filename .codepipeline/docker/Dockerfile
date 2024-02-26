@@ -26,7 +26,7 @@ RUN cd /cmfive-core/system/templates/base && npm install && npm run production
 # == Final stage ==
 # --------------------------------------------------------------------------
 
-# This stage copies the core, installs cmfive packages and copies the theme. 
+# This stage copies the core, installs Cmfive packages and copies the theme. 
 # It is based on the cmfive-boilerplate image from the root directory.
 
 FROM cmfive-boilerplate:latest AS cmfive
