@@ -40,6 +40,7 @@ RUN apk --no-cache add \
     curl \
     wget \
     unzip \
+    icu-data-full \
     git
 
 # Link PHP cli
@@ -76,7 +77,7 @@ WORKDIR /var/www/html
 RUN rm -rf .codepipeline
 
 # Healthcheck to ensure nginx is running and cmfive is installed
-HEALTHCHECK --interval=10s --timeout=10s --start-period=5s --retries=15 \
+HEALTHCHECK --interval=15s --timeout=5m --start-period=5s --retries=15 \
   CMD curl -s -o /dev/null -w "%{http_code}" http://localhost | grep -q -E "^[1-3][0-9]{2}$" && \
       test -f /home/cmfive/.cmfive-installed
 
