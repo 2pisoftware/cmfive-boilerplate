@@ -73,7 +73,7 @@ jobs:
       - name: Docker Scout
         uses: docker/scout-action@v1
         with:
-          command: quickview,compare,recommendations
+          command: compare,cves
           image: ${{ steps.meta.outputs.tags }}
           to: ghcr.io/2pisoftware/cmfive:develop
           only-severities: critical,high,medium
