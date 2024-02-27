@@ -75,7 +75,7 @@ jobs:
         with:
           command: quickview,compare
           image: ${{ steps.meta.outputs.tags }}
-          to: develop
+          to: cmfive:develop
           ignore-unchanged: true
           only-severities: critical,high,medium
           write-comment: true
