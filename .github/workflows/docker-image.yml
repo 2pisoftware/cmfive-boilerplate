@@ -79,3 +79,5 @@ jobs:
           only-severities: critical,high,medium
           write-comment: true
           github-token: ${{ secrets.GITHUB_TOKEN }} # to be able to write the comment
+          dockerhub-user: ${{ secrets.DOCKER_USER }}
+          dockerhub-password: ${{ secrets.DOCKER_TOKEN }}
