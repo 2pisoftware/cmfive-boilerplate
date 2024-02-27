@@ -76,7 +76,6 @@ jobs:
           command: quickview,compare
           image: ${{ steps.meta.outputs.tags }}
           to: ghcr.io/2pisoftware/cmfive:develop
-          ignore-unchanged: true
           only-severities: critical,high,medium
           write-comment: true
           github-token: ${{ secrets.GITHUB_TOKEN }} # to be able to write the comment
