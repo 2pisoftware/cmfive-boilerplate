@@ -15,6 +15,7 @@ jobs:
     permissions:
       contents: read
       packages: write
+      pull-requests: write
       
     steps:
       - name: Checkout code
@@ -68,4 +69,15 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-
+      #  Scan the docker image and compare it with the latest image
+      - name: Docker Scout
+        uses: docker/scout-action@v1
+        with:
+          command: compare,cves
+          image: ${{ steps.meta.outputs.tags }}
+          to: ghcr.io/2pisoftware/cmfive:develop
+          only-severities: critical,high,medium
+          write-comment: true
+          github-token: ${{ secrets.GITHUB_TOKEN }} # to be able to write the comment
+          dockerhub-user: ${{ secrets.DOCKER_USER }}
+          dockerhub-password: ${{ secrets.DOCKER_TOKEN }}
