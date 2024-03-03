@@ -1,0 +1,58 @@
+# This should represent what will be used in a production image of cmfive
+
+# Ignore Git files and directories
+.git
+.gitignore
+
+# .htaccess (apache only, container uses nginx)
+**/.htaccess
+
+# Ignore Node.js dependencies
+**/node_modules
+
+# Ignore Composer dependencies
+vendor
+composer.lock
+composer
+composer.json
+
+# Ignore other project directories
+.build
+.github
+system
+.vscode
+
+# Ignore uploads
+uploads/*
+
+# Ignore backups
+backups/*
+
+# Ignore .codepipeline except docker
+.codepipeline/*
+!.codepipeline/docker
+
+# Ignore storage
+storage/*
+
+# Ignore test
+# Note: this can be mapped in with a volume if required
+test/*
+
+# Dont ignore theme
+!composer/vendor/2pisoftware/cmfive-core/system/templates/base
+
+# Ignore config.php, should be mapped in with a volume or the container will use the defaults
+config.php
+
+# Ignore docker files
+Dockerfile
+*.Dockerfile
+docker-compose.*
+
+#Root files
+README.md
+LICENSE
+test-cli.sh
+appspec.yml
+

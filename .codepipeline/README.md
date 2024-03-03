@@ -11,9 +11,9 @@ Assists AWS Codepipeline deployment, via appspec.yml in this repository.
 
 Assists on demand deployment into AWS, via containerisation.
 
-## Local Dev
+### Docker
 
-Assists containerised setup for local use, or other container friendly environments like Github Codespaces.
+Contains setup for a complete cmfive installation with a production build of the theme, via Dockerfile in this repository.
 
 ## Test Agent
 

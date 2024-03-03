@@ -9,29 +9,17 @@ jobs:
         name: PHP Lint
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v3
-            - uses: overtrue/phplint@5.3.0
-    php-codesniffer74:
-        name: PHP CS 7.4
-        runs-on: ubuntu-latest
+            - uses: actions/checkout@v4
+            - uses: overtrue/phplint@9.1.1
+    php-codesniffer:
+        name: PHP CS
+        needs: [ phplint ]
+        runs-on: ubuntu-22.04
+        strategy:
+          matrix:
+            php_version: [7.4, 8.0, 8.1, 8.3]
         steps:
-            - name: Codesniffer
-              uses: pipeline-components/php-codesniffer@v0.12.3
-              with:
-                  options: -s -p --colors --extensions=php --runtime-set testVersion 7.4
-    php-codesniffer80:
-        name: PHP CS 8.0
-        runs-on: ubuntu-latest
-        steps:
-            - name: Codesniffer
-              uses: pipeline-components/php-codesniffer@v0.12.3
-              with:
-                  options: -s -p --colors --extensions=php --runtime-set testVersion 8.0
-    php-codesniffer81:
-        name: PHP CS 8.1
-        runs-on: ubuntu-latest
-        steps:
-            - name: Codesniffer
-              uses: pipeline-components/php-codesniffer@v0.12.3
-              with:
-                  options: -s -p --colors --extensions=php --runtime-set testVersion 8.1
+        - name: Codesniffer
+          uses: pipeline-components/php-codesniffer@v0.31.0
+          with:
+            options: -s -p --colors --extensions=php --runtime-set testVersion ${{matrix.php_version}}

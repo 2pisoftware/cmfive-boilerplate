@@ -15,7 +15,6 @@ services:
       - TZ=Australia/Sydney
     volumes:
       - dbdata:/var/lib/mysql:delegated
-    # 'delegated' may be faster on mac or win?
     networks:
       - default
     restart: unless-stopped
@@ -26,9 +25,7 @@ services:
       retries: 20
 
   webapp:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ghcr.io/2pisoftware/cmfive:develop
     container_name: cmfive
     hostname: nginx-php8.1
     environment:
@@ -37,13 +34,14 @@ services:
       - DB_DATABASE=cmfive
       - DB_USERNAME=cmfive
       - DB_PASSWORD=cmfive
+      - ENVIRONMENT=development
     volumes:
-      - ./:/var/www/html
+      - ./:/var/www/html:rw
       - ./test/Codeception/tests/boilerplate:/var/www/html/test/Codeception/tests/boilerplate
       - ./test/Codeception/tests/_output:/var/www/html/test/Codeception/tests/_output
     ports:
-      - "3000:3000"
-      - "3443:3443"
+      - "3000:80"
+      - "3443:443"
     networks:
       - default
     restart: unless-stopped
@@ -60,17 +58,18 @@ services:
     container_name: node-compiler
     volumes:
       - ./:/var/www/html
-    working_dir: /var/www/html/composer/vendor/2pisoftware/cmfive-core/system/templates/base
-    command: "sh -c \"npm i && npm run watch\""
+      - ./.codepipeline/docker/compiler.sh:/compiler.sh
+    command: "ash -c /compiler.sh"
     healthcheck:
       test: 
         - "CMD-SHELL"
         - "ps aux | grep 'npm run watch' | grep -v grep"
-        - "test -f composer/vendor/2pisoftware/cmfive-core/system/templates/base/dist/app.css"
-      interval: 10s
+        - "test -f /var/www/html/system/templates/base/dist/app.css"
+      interval: 15s
       timeout: 5m
       retries: 20
     restart: unless-stopped
+    user: "1000:1000"
     depends_on:
       webapp:
         condition: service_healthy
