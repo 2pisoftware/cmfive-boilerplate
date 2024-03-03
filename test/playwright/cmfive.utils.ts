@@ -43,7 +43,7 @@ export class CmfiveHelper {
             await navbarCategory.hover();
         }
 
-        await navbarCategory.getByRole('link', {name: option}).click();
+        await navbarCategory.getByRole('link', {name: option, exact: true}).click();
     }
 
     // Call exactly once per test before any dialogs pop up
