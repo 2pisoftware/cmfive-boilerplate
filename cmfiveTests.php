@@ -690,8 +690,12 @@ function getTestsForModule($module)
                             $details['actor'] = rtrim($file, ".php");
                         }
                         if ($ext == UNIT_DIRECTORY) {
-                            $modFile = $module . "_" . $file;
+                            $modFile = $module . "/" . $file;
                             $details['unit'] = $modFile;
+                            //Create $module directory if it doesn't exist
+                            if (!is_dir(ROOT_PATH . DS . $dest_paths[$ext] . DS . $module)) {
+                                mkdir(ROOT_PATH . DS . $dest_paths[$ext] . DS . $module);
+                            }
                         }
                         if ($ext == $findActor) {
                             $details['actor'] = rtrim($file, ".php");
