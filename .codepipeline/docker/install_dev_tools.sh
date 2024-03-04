@@ -10,6 +10,7 @@
 #   SKIP_PLAYWRIGHT=true ./install_dev_tools.sh
 
 #Settings
+PHPVERSION=81
 PHPUNIT=10
 
 # If CONTAINER is not defined, default to the container name of the webapp service in docker compose
@@ -41,7 +42,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # Run cmfive_dev_tools
-docker exec $CONTAINER sh -c "PHPUNIT=${PHPUNIT} /home/cmfive/cmfive_dev_tools.sh"
+docker exec $CONTAINER sh -c "PHPUNIT=${PHPUNIT} PHPVERSION=${PHPVERSION} /home/cmfive/cmfive_dev_tools.sh"
 if [ $? -ne 0 ]; then
     echo "❌  Error: cmfive_dev_tools.sh failed"
     exit 1
