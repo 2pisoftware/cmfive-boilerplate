@@ -29,6 +29,35 @@ if ! docker inspect --type=container "$CONTAINER" >/dev/null 2>&1; then
     exit 1
 fi
 
+# Tell user if test dir already exists in container
+if docker exec $CONTAINER test -d /var/www/html/test/.install; then
+    echo "💭  Test directory exists in the container"
+else
+    # Find test dir
+    TEST_DIR=""
+    if test -d "./test"; then
+        TEST_DIR="./test"
+    elif test -d "../test"; then
+        TEST_DIR="../test"
+    elif test -d "../../test"; then
+        TEST_DIR="../../test"
+    fi
+    # If test dir is found and the container doesnt have an existing test dir, copy it
+    if [ -n "$TEST_DIR" ] ; then
+        echo "💭  Using test directory: $TEST_DIR"
+        echo "📦  Copying test directory to container"
+        docker cp "$TEST_DIR" "$CONTAINER:/var/www/html"
+        if [ $? -ne 0 ]; then
+            echo "❌  Error: Could not copy test directory to container"
+            exit 1
+        fi
+    else
+        # If test dir is not found, exit the script
+        echo "❌  Error: Could not find test directory"
+        exit 1
+    fi
+fi
+
 echo ""
 echo "👷  -- Installing dev tools to container: $CONTAINER --"
 echo ""
