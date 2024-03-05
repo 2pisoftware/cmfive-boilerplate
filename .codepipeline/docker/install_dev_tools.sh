@@ -29,8 +29,8 @@ if ! docker inspect --type=container "$CONTAINER" >/dev/null 2>&1; then
     exit 1
 fi
 
-# Tell user if test dir already exists in container
-if docker exec $CONTAINER test -d /var/www/html/test/.install; then
+# Tell user if test dir already exists in container (and has greater than 0 files)
+if docker exec $CONTAINER sh -c 'test -d "/var/www/html/test" && test "$(ls -A /var/www/html/test | wc -l)" -gt 0'; then
     echo "💭  Test directory exists in the container"
 else
     # Find test dir
