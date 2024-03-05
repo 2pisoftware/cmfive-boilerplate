@@ -46,7 +46,6 @@ services:
     working_dir: /var/www/html
     links:
       - mysqldb
-      - seleniumsrv
     depends_on:
       mysqldb:
         condition: service_healthy
