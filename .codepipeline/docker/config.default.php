@@ -59,50 +59,6 @@ Config::append('email', [
 Config::set("system.environment", "development");
 Config::set("core_template.foundation.reveal.animation", "none");
 Config::set("core_template.foundation.reveal.animation_speed", 0);
-//========== must be "ENABLED" to run ==========================
-//========== "config" will pass through to CmfiveSite helper ===
-Config::set('system.environment', "development");
-Config::set(
-    "tests",
-    [
-        "testrunner"  => "ENABLED",
-        "config" => '',
-        "yaml" =>
-        [
-            "- WebDriver:" =>
-            [
-                "url" => "http://webapp:3000",
-                "browser" => "chrome",
-                "wait" => "8",
-                "host" => "seleniumDrv",
-                "port" => "4444",
-                "capabilities" =>
-                [
-                    "acceptInsecureCerts" => true,
-                    "goog:chromeOptions" => [
-                        "w3c" => "false",
-                        "args" => '['
-                        .'"--headless=new","--disable-gpu",'
-                        .'"-proxy-bypass-list=*","--proxy-server=direct://","--dns-prefetch-disable",'
-                        .'"--disk-cache-size=0","–-media-cache-size=0",'
-                        .'"--window-size=1920,1200","--disable-remote-fonts",'
-                        .'"--ignore-certificate-errors","--disable-extensions","--no-sandbox",'
-                        // .'"--enable-logging=/var/customlog/ch.log","--v=1'
-                        .'"--disable-dev-shm-usage"'
-                        .']'
-                    ]
-                ]
-            ],
-            "- Db:" =>
-            [
-                "dsn" => "mysql:host=mysqldb:3306;dbname=cmfive",
-                "user" => "cmfive",
-                "password" => "cmfive",
-            ],
-            "- Asserts:" => "",
-        ]
-    ]
-);
 
 //========= Anonymous Access ================================
 // bypass authentication if sent from the following IP addresses
