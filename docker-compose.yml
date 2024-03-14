@@ -37,8 +37,6 @@ services:
       - ENVIRONMENT=development
     volumes:
       - ./:/var/www/html:rw
-      - ./test/Codeception/tests/boilerplate:/var/www/html/test/Codeception/tests/boilerplate
-      - ./test/Codeception/tests/_output:/var/www/html/test/Codeception/tests/_output
     ports:
       - "3000:80"
       - "3443:443"
@@ -48,7 +46,6 @@ services:
     working_dir: /var/www/html
     links:
       - mysqldb
-      - seleniumsrv
     depends_on:
       mysqldb:
         condition: service_healthy
@@ -73,19 +70,6 @@ services:
     depends_on:
       webapp:
         condition: service_healthy
-
-  seleniumsrv:
-    image: selenium/standalone-chrome:111.0
-    container_name: seleniumDrv
-    hostname: seleniumDrv
-    ports:
-      - "4444:4444"
-    environment:
-      - TZ=Australia/Sydney
-      - START_XVFB=false
-    shm_size: '4gb'
-    networks:
-      - default
 
 volumes:
   dbdata:
