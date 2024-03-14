@@ -1,8 +1,6 @@
 #!/bin/php
 <?php
 
-use Symfony\Component\Yaml\Yaml;
-
 if (!(isset($argc) && isset($argv))) {
     echo "No action is possible.";
     exit(1);
@@ -17,20 +15,13 @@ defined('SYSTEM_MODULE_DIRECTORY') || define('SYSTEM_MODULE_DIRECTORY', 'system'
 defined('WORKFLOWS_TEST_DIRECTORY') || define('WORKFLOWS_TEST_DIRECTORY', 'system' . DS . 'tests');
 defined('BOILERPLATE_TEST_DIRECTORY') || define('BOILERPLATE_TEST_DIRECTORY', TEST_DIRECTORY . DS . 'tests');
 
-defined('CEST_DIRECTORY') || define('CEST_DIRECTORY', DS . 'acceptance');
-defined('STEP_DIRECTORY') || define('STEP_DIRECTORY', DS . 'acceptance' . DS . 'steps');
-defined('HELP_DIRECTORY') || define('HELP_DIRECTORY', DS . 'acceptance' . DS . 'helpers');
 defined('UNIT_DIRECTORY') || define('UNIT_DIRECTORY', DS . 'unit');
 
-defined('CEST_DESTINATION') || define('CEST_DESTINATION', TEST_DIRECTORY . DS . 'tests' . DS . 'Acceptance');
-defined('STEP_DESTINATION') || define('STEP_DESTINATION', TEST_DIRECTORY . DS . 'tests' . DS . 'Support' . DS . 'Step' . DS . 'Acceptance');
-defined('HELP_DESTINATION') || define('HELP_DESTINATION', TEST_DIRECTORY . DS . 'tests' . DS . 'Support' . DS . 'Helper');
 defined('UNIT_DESTINATION') || define('UNIT_DESTINATION', 'test' . DS . 'unit');
 
 defined('SHARED_SOURCE') || define('SHARED_SOURCE', 'boilerplate');
 defined('SHARED_CORE') || define('SHARED_CORE', 'workflows');
 
-// special parameters to push into .yml, hence find in boilerplate helpers
 // 'shared' are explicitly declared
 $sharedParam = [
     'testAdminUsername' => 'admin',
@@ -45,18 +36,6 @@ $sharedParam = [
 
 $sharedParam['boilerplatePath'] = getcwd();
 
-// 'loaded' will come from cmfive config
-$loadedParam = [
-    'DB_Hostname' =>    "database.hostname",
-    'DB_Port'     =>    "database.port",
-    'DB_Username' =>    "database.username",
-    'DB_Password' =>    "database.password",
-    'DB_Database' =>    "database.database",
-    'DB_Driver' =>      "database.driver",
-    'UA_TestConfig' =>  "tests.config"
-];
-
-defined('DEBUG_RUN') || define('DEBUG_RUN', "run --steps --debug Acceptance");
 defined('PHPUNIT_RUN') || define('PHPUNIT_RUN', "");
 
 ini_set('display_errors', 1);
@@ -71,15 +50,6 @@ if (allowRunner()) {
         genericRunner($argc, $argv);
     } else {
         offerMenuTests();
-        $cmdMaker['test'][] =
-            [
-                'request' =>  "run", 'message' => "Launching TestRunner", 'function' => "genericRunner", 'args' => true
-            ];
-        $cmdMaker['tests'][] =
-            [
-                'request' =>  "run", 'message' => "Launching TestRunner", 'function' => "genericRunner", 'args' => true,
-                'hint' => "module_FileNameCest.php silent"
-            ];
         $cmdMaker['tests'][] =
             [
                 'request' =>  "unit", 'message' => "Launching UnitTest", 'function' => "genericRunner", 'args' => true,
@@ -88,7 +58,7 @@ if (allowRunner()) {
         $cmdMaker['tests'][] =
             [
                 'request' =>  "module", 'message' => "Launching Tests on Module", 'function' => "genericRunner", 'args' => true,
-                'hint' => "moduleName  silent"
+                'hint' => "moduleName"
             ];
         $cmdMaker['testDB'][] =
             [
@@ -114,10 +84,15 @@ function offerMenuTests()
         ];
 
     $found = chaseModules("all");
-    ksort($found["Tests"]);
+
+    // we cared a lot about this for ordered module names on accpetance tests
+    // but more generally, it seems an oblique insistence to sort only some test catagories?
+    // if(!empty($found['UnitTests'])) {
+    //     ksort($found["UnitTests"]);
+    // }
 
     foreach ($found as $capabilities => $capability) {
-        if ($capabilities == "Tests") {
+        if ($capabilities == "UnitTests") {
             foreach ($capability as $module => $resources) {
                 $menuMaker[] =
                     [
@@ -128,49 +103,13 @@ function offerMenuTests()
     }
     $menuMaker[] =
         [
-            'option' => "Run all acceptance tests", 'message' => "Launching TestRunner", 'function' => "testRunner", 'param' => null
-        ];
-    $menuMaker[] =
-        [
             'option' => "Run all unit tests", 'message' => "Launching UnitTests", 'function' => "unitTestRunner", 'param' => "all"
         ];
 }
 
-function moduleRunner($runModule, $silent = false)
+function moduleRunner($runModule)
 {
     unitRunner($runModule);
-    purgeTestCode();
-    registerConfig();
-    $found = chaseModules("all");
-    registerHelpers($found);
-
-    $module_found = false;
-
-    foreach ($found as $capabilities => $capability) {
-        if ($capabilities !== "Tests") {
-            continue;
-        }
-
-        foreach ($capability as $module => $resources) {
-            if ($module !== $runModule) {
-                continue;
-            }
-
-            $module_found = true;
-
-            foreach ($resources as $resource) {
-                $codeCeptCommand = DEBUG_RUN . "  " . $resource;
-                $packBar = "\nO" . str_repeat("-", strlen($codeCeptCommand) + 2) . "O\n";
-                echo $packBar . "| " . $codeCeptCommand . " |" . $packBar;
-                $silent = launchCodecept($codeCeptCommand, $silent);
-            }
-        }
-    }
-
-    if (!$module_found) {
-        echo "Error: Unable to find $runModule module\n";
-        exit(1);
-    }
 }
 
 
@@ -187,6 +126,8 @@ function unitRunner($run_module)
                 if ($module == $run_module || $run_module == "all") {
                     foreach ($resources as $resource) {
                         $file_name = PHPUNIT_RUN . "  " . UNIT_DESTINATION . DS . $resource . " ";
+                        $packBar = "\n*" . str_repeat("-", strlen($file_name) + 12) . "*\n";
+                        echo $packBar . "| " . "\e[31m" . $file_name . " \e[39m| \e[31mTESTING \e[39m|" . $packBar;
                         $output = [];
                         $status_code = 0;
 
@@ -195,9 +136,7 @@ function unitRunner($run_module)
 
                         // If we received a non-zero status code, the test failed. Print the output to console.
                         if ($status_code !== 0) {
-                            $file_name = PHPUNIT_RUN . "  " . UNIT_DESTINATION . DS . $resource . " ";
-                            $packBar = "\n*" . str_repeat("-", strlen($file_name) + 11) . "*\n";
-                            echo $packBar . "| " . "\e[31m" . $file_name . " \e[39m| \e[31mFAILED \e[39m|" . $packBar;
+                            echo $packBar . "| " . "\e[31m" . $file_name . " \e[39m| \e[31mFAILED! \e[39m|" . $packBar;
 
                             foreach ($output as $o) {
                                 echo "\e[31m$o\n\e[39m";
@@ -216,10 +155,7 @@ function infoRunner()
 {
     genericRunner(null, null);
 }
-function testRunner()
-{
-    genericRunner(2, ["", "run"]);
-}
+
 function unitTestRunner()
 {
     genericRunner(2, ["", "unit"]);
@@ -232,26 +168,14 @@ function DBRunner()
 function genericRunner($argc, $argv)
 {
     purgeTestCode();
-    registerConfig();
     $found = chaseModules("all");
-    registerHelpers($found);
     reportModules($found);
 
-    echo "\n --- To launch: --- \ncmfiveTests [run] [module_testfile.php] [silent]";
-    echo "\n --- Or: --- \ncmfiveTests [unit] [module]\n\n";
+    echo "\n --- To launch: --- \ncmfiveTests module [module]\n\n";
 
-    $codeCeptCommand = DEBUG_RUN;
 
     if ($argc > 1) {
-        $silent = in_array("silent", $argv);
         switch (strtolower($argv[1])) {
-            case "run":
-                if ($argc > 2) {
-                    $codeCeptCommand .= "  " . $argv[2];
-                }
-
-                launchCodecept($codeCeptCommand, $silent);
-                break;
             case "unit":
                 $unitModule = "";
                 if ($argc > 2) {
@@ -264,7 +188,7 @@ function genericRunner($argc, $argv)
                 if ($argc > 2) {
                     $module = $argv[2];
                 }
-                moduleRunner($module, $silent);
+                moduleRunner($module);
                 break;
             case "clean":
                 purgeTestCode();
@@ -309,15 +233,13 @@ function checkTestEnvironment()
 {
 
     if (
-        Config::get("tests.yaml.- WebDriver:")
-        && Config::get("tests.yaml.- Db:")
-        && Config::get("database.backups.commandPath")
+        Config::get("database.backups.commandPath")
         && Config::get("database.backups.backupCommand")
         && Config::get("database.backups.restoreCommand")
     ) {
-        echo "Found: Codeception configuration\n";
+        echo "Found: TestDB configuration\n";
     } else {
-        echo "Useful Codeception configuration not found in config.php\n";
+        echo "Useful TestRunner configuration not found in config.php\n";
         return false;
     }
 
@@ -364,41 +286,6 @@ function batchTestSetup()
 }
 
 
-function launchCodecept($param, $silent = false)
-{
-    $OK = "NO";
-
-    if (!$silent) {
-        echo "\nWARNING - Running tests will invalidate your current database.\n";
-        echo "(You can silence this warning for subsequent tests.)\n";
-        $OK = getUserInput('Enter "OK" or "SILENCE" to continue: ');
-    }
-
-    if ($OK == 'SILENCE') {
-        $silent = true;
-    }
-    if ($silent) {
-        $OK = "OK";
-    }
-
-    if ($OK == "OK") {
-        try {
-            $runner = "cd " . TEST_DIRECTORY . " && vendor" . DS . "bin" . DS . "codecept " . $param;
-            $output = [];
-            $return_code = 0;
-            exec($runner, $output, $return_code);
-            echo implode("\n", $output) . "\n";
-            if ($return_code > 0) {
-                exit($return_code);
-            }
-        } catch (Exception $e) {
-            echo $e->getMessage();
-            exit(1);
-        }
-    }
-
-    return $silent;
-}
 
 /**
  * Calls exec on the $file_name parameter, and passes the $output and $status_code
@@ -421,16 +308,8 @@ function executeUnitTest(string $file_name, ?array &$output, string &$status_cod
 function purgeTestCode()
 {
     if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-        exec('del ' . CEST_DESTINATION . DS . '*Cest.php');
-        exec('del ' . STEP_DESTINATION . DS . '*.php');
-        exec('del ' . HELP_DESTINATION . DS . '*.php');
-        // exec('del ' . HELP_DESTINATION . DS . '..' . DS . '*.php');
         exec('del ' . UNIT_DESTINATION . DS . '*.php');
     } else {
-        exec('rm -f ' . CEST_DESTINATION . DS . '*Cest.php');
-        exec('rm -f ' . STEP_DESTINATION . DS . '*.php');
-        exec('rm -f ' . HELP_DESTINATION . DS . '*.php');
-        // exec('rm -f ' . HELP_DESTINATION . DS . '..' . DS . '*.php');
         exec('rm -f ' . UNIT_DESTINATION . DS . '*.php');
     }
 }
@@ -471,114 +350,6 @@ function reportModules($moduleCapabilities)
     echo "\n";
 }
 
-
-function registerConfig()
-{
-    $destPath = BOILERPLATE_TEST_DIRECTORY . DS . "Acceptance.suite.dist.yml";
-    $ConfigYML = fopen($destPath, "w");
-
-    if (!$ConfigYML) {
-        return;
-    }
-
-    $codeceptionConfig = ["modules" => ["enabled" => Config::get("tests.yaml")]];
-    if (!$codeceptionConfig) {
-        return;
-    }
-    $hdr = "# Codeception Test Suite Configuration\n#\n" .
-        "# Suite for acceptance tests.\n" .
-        "# Perform tests in browser using the WebDriver or PhpBrowser.\n" .
-        "# If you need both WebDriver and PHPBrowser tests - create a separate suite.\n\n" .
-        "class_name: CmfiveUI\n\n";
-
-    fwrite($ConfigYML, $hdr);
-
-
-    $setup = Yaml::dump($codeceptionConfig, 99);
-    $setup = str_replace("'[", "[", $setup);
-    $setup = str_replace("]'", "]", $setup);
-    $setup = str_replace("'-", "-", $setup);
-    $setup = str_replace(":':", ":", $setup);
-    fwrite($ConfigYML, $setup);
-    // echo "Configured as:\n".$setup."\n";
-    fclose($ConfigYML);
-}
-
-
-function registerHelpers($moduleCapabilities)
-{
-    // Helpers can know where module path is,
-    // hence could feed test data (CSV,SQL etc)
-    // $sharedParam & registerBoilerplateParametersmake it work
-
-    $destPath = BOILERPLATE_TEST_DIRECTORY . DS . "Acceptance.suite.yml";
-    $HelperYML = fopen($destPath, "w");
-
-    if (!$HelperYML) {
-        return;
-    }
-
-    $hdr = "actor: CmfiveUI\n"
-        . "gherkin:\n"
-        . "    contexts:\n"
-        . "        default:\n"
-        . "            - \Tests\Support\AcceptanceTester\n"
-        . "            - \Tests\Support\CmfiveUI\n"
-        . "modules:\n"
-        . "            enabled:\n";
-
-    fwrite($HelperYML, $hdr);
-
-    foreach ($moduleCapabilities as $capabilities => $capability) {
-        if ($capabilities == "Helpers") {
-            foreach ($capability as $handler => $resources) {
-                foreach ($resources as $resource) {
-                    fwrite($HelperYML, "                        -  Tests\\Support\\Helper\\" . $resource . ":\n");
-                    // per notes above, can insert required values here...
-                    $from = $moduleCapabilities['Paths'][$handler][0];
-                    $from = substr($from, 0, strpos($from, "acceptance")) . "acceptance" . DS;
-                    fwrite($HelperYML, "                                    "
-                        . "basePath: {$from}\n");
-                    if ($handler == SHARED_SOURCE) {
-                        registerBoilerplateParameters($HelperYML);
-                    }
-                    fwrite($HelperYML, "\n");
-                }
-            }
-        }
-    };
-
-    fclose($HelperYML);
-}
-
-
-function registerBoilerplateParameters($spoolTo)
-{
-    global $sharedParam;
-    global $loadedParam;
-
-    foreach ($sharedParam as $key => $value) {
-        fwrite($spoolTo, "                                    "
-            . "{$key}: '{$value}'\n");
-    }
-    foreach ($loadedParam as $key => $conf) {
-        //should be isarray vs string on 'config' then encode as req'd
-        $configTyped = Config::get($conf);
-        if (is_array($configTyped)) {
-            $configTyped = json_encode($configTyped);
-        }
-        if (is_string($configTyped)) {
-            fwrite($spoolTo, "                                    "
-                . "{$key}: '" . $configTyped . "'\n");
-        }
-        if (!isset($configTyped)) {
-            fwrite($spoolTo, "                                    "
-                . "{$key}: ''\n");
-        }
-    }
-}
-
-
 function chaseModules($module_name)
 {
     global $sharedParam;
@@ -608,21 +379,10 @@ function chaseModules($module_name)
                     try {
                         copy($file['source'], $file['dest']);
 
-                        if (isset($file['helper'])) {
-                            $moduleCapabilities['Helpers'][$module][] =  $file['helper'];
-                        }
-
-                        // these should be individually runnable (returned as list from here!)
-                        if (isset($file['cest'])) {
-                            $moduleCapabilities['Tests'][$module][] =  $file['cest'];
-                        }
                         if (isset($file['unit'])) {
                             $moduleCapabilities['UnitTests'][$module][] =  $file['unit'];
                         }
 
-                        if (isset($file['actor'])) {
-                            $moduleCapabilities['Actors'][$module][] =  $file['actor'];
-                        }
                         $moduleCapabilities['Paths'][$module][] = $from;
                     } catch (Exception $e) {
                         echo $e->getMessage();
@@ -646,20 +406,10 @@ function getTestsForModule($module)
     $workflow_path = WORKFLOWS_TEST_DIRECTORY . DS . $module;
     $test_paths = [$module_path, $system_module_path, $boiler_path, $workflow_path];
 
-    $extended_paths = [CEST_DIRECTORY, STEP_DIRECTORY, HELP_DIRECTORY, UNIT_DIRECTORY];
+    $extended_paths = [UNIT_DIRECTORY];
     $dest_paths = [
-        CEST_DIRECTORY => CEST_DESTINATION,
-        STEP_DIRECTORY => STEP_DESTINATION,
-        HELP_DIRECTORY => HELP_DESTINATION,
         UNIT_DIRECTORY => UNIT_DESTINATION
     ];
-
-    $findActor = "";
-    if ($module == SHARED_SOURCE) {
-        $findActor = CEST_DIRECTORY . DS . "..";
-        $extended_paths[] = $findActor;
-        $dest_paths[$findActor] =  HELP_DESTINATION . DS . "..";
-    }
 
     if (empty($availableTests[$module])) {
         $availableTests[$module] = [];
@@ -678,17 +428,6 @@ function getTestsForModule($module)
                         $modFile = $file;
                         $details = [];
 
-                        if ($ext == HELP_DIRECTORY) {
-                            $details['helper'] = rtrim($file, ".php");
-                        }
-                        if ($ext == CEST_DIRECTORY) {
-                            $modFile = $module . "_" . $file;
-                            $details['cest'] = $modFile;
-                        }
-                        if ($ext == STEP_DIRECTORY) {
-                            $modFile = $module . "_" . $file;
-                            $details['actor'] = rtrim($file, ".php");
-                        }
                         if ($ext == UNIT_DIRECTORY) {
                             $modFile = $module . "/" . $file;
                             $details['unit'] = $modFile;
@@ -697,9 +436,7 @@ function getTestsForModule($module)
                                 mkdir(ROOT_PATH . DS . $dest_paths[$ext] . DS . $module);
                             }
                         }
-                        if ($ext == $findActor) {
-                            $details['actor'] = rtrim($file, ".php");
-                        }
+
                         $details['source'] = $full_path . DS . $file;
                         $details['dest'] = ROOT_PATH . DS . $dest_paths[$ext] . DS . $modFile;
 
@@ -712,15 +449,16 @@ function getTestsForModule($module)
     return $availableTests;
 }
 
-function getUserInput($prompt = "Command: ")
-{
-    $command = '';
-    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-        echo $prompt;
-        $command = stream_get_line(STDIN, 1024, PHP_EOL);
-    } else {
-        $command = readline($prompt);
-    }
+// // unused now, no silent option!
+// function getUserInput($prompt = "Command: ")
+// {
+//     $command = '';
+//     if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+//         echo $prompt;
+//         $command = stream_get_line(STDIN, 1024, PHP_EOL);
+//     } else {
+//         $command = readline($prompt);
+//     }
 
-    return $command;
-}
+//     return $command;
+// }
