@@ -23,6 +23,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         with:
@@ -64,6 +67,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=registry,ref=ghcr.io/2pisoftware/cmfive:buildcache
           cache-to: type=registry,ref=ghcr.io/2pisoftware/cmfive:buildcache,mode=max
+          platforms: linux/amd64,linux/arm64
 
       # Scan the docker image and compare it with the latest image
       - name: Docker Scout
