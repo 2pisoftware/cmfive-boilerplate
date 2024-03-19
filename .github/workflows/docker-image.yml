@@ -24,7 +24,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         with:
-          driver: docker
+          driver: docker-container
 
       # Build all the tags for the image
       - name: Create tags
@@ -51,25 +51,16 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Build the boilerplate image, the final image requires this
-      - name: Build boilerplate image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: false
-          tags: cmfive-boilerplate:latest
-          load: true # Use the built image in the next step
-
-      # Build the theme, copy it to boilerplate, tag and push
+      # Build and push the image
       - name: Build and push cmfive image
         uses: docker/build-push-action@v5
         with:
-          context: ./.codepipeline/docker
+          context: .
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      #  Scan the docker image and compare it with the latest image
+      # Scan the docker image and compare it with the latest image
       - name: Docker Scout
         uses: docker/scout-action@v1
         with:
