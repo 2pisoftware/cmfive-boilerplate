@@ -1,8 +1,13 @@
 # ==========================================================================
-# ## Cmfive Boilerplate image ##
+# ## Cmfive docker image ##
 # ==========================================================================
 
-# This image provides a base environment to install cmfive upon.
+# This image provides a fully working cmfive instance
+
+# It provides two build arguments:
+# - CORE_BRANCH: The branch to clone from the cmfive-core repository
+# - PHP_VERSION: The version of PHP to use
+
 # NOTE: See the .dockerignore file to see what is excluded from the image.
 
 # --------------------------------------------------------------------------
@@ -34,30 +39,34 @@ RUN cd /cmfive-core/system/templates/base && npm install && npm run production
 # Use the Alpine Linux base image
 FROM alpine:3.19
 
+# PHP version
+# note: see Alpine packages for available versions
+ARG PHP_VERSION=81
+
 # Create cmfive user and group on ID 1000
 RUN addgroup -g 1000 cmfive && \
     adduser -u 1000 -G cmfive -s /bin/bash -D cmfive
 
 # Install required packages for PHP, Nginx etc
 RUN apk --no-cache add \
-    php81 \
-    php81-fpm \
-    php81-cli \
-    php81-curl \
-    php81-gd \
-    php81-json \
-    php81-mbstring \
-    php81-mysqli \
-    php81-xml \
-    php81-zip \
-    php81-pdo \
-    php81-pdo_mysql \
-    php81-phar \
-    php81-intl \
-    php81-gettext \
-    php81-session \
-    php81-simplexml \
-    php81-fileinfo \
+    php$PHP_VERSION \
+    php$PHP_VERSION-fpm \
+    php$PHP_VERSION-cli \
+    php$PHP_VERSION-curl \
+    php$PHP_VERSION-gd \
+    php$PHP_VERSION-json \
+    php$PHP_VERSION-mbstring \
+    php$PHP_VERSION-mysqli \
+    php$PHP_VERSION-xml \
+    php$PHP_VERSION-zip \
+    php$PHP_VERSION-pdo \
+    php$PHP_VERSION-pdo_mysql \
+    php$PHP_VERSION-phar \
+    php$PHP_VERSION-intl \
+    php$PHP_VERSION-gettext \
+    php$PHP_VERSION-session \
+    php$PHP_VERSION-simplexml \
+    php$PHP_VERSION-fileinfo \
     nginx \
     supervisor \
     bash \
@@ -90,9 +99,6 @@ COPY /.codepipeline/docker/configs/fpm/ /etc/php81/
 COPY /.codepipeline/docker/setup.sh /bootstrap/setup.sh
 COPY /.codepipeline/docker/config.default.php /bootstrap/config.default.php
 
-# Expose HTTP, HTTPS
-EXPOSE 80 443
-
 # Copy source
 COPY --chown=cmfive:cmfive . /var/www/html
 
@@ -101,6 +107,30 @@ WORKDIR /var/www/html
 
 # Remove .codepipeline
 RUN rm -rf .codepipeline
+
+# Copy the core
+COPY --chown=cmfive:cmfive \
+    --from=core \
+    /cmfive-core/system/ \
+    composer/vendor/2pisoftware/cmfive-core/system/
+
+# Link system
+RUN ln -s composer/vendor/2pisoftware/cmfive-core/system/ system
+
+# Install core
+RUN su cmfive -c 'INSTALL_ENV=docker php cmfive.php install core'
+
+# Copy theme
+COPY --chown=cmfive:cmfive \
+    --from=core \
+    /cmfive-core/system/templates/base/dist \
+    system/templates/base/dist
+
+# Fix permissions
+RUN chmod -R ugo=rwX cache/ storage/ uploads/
+
+# Expose HTTP, HTTPS
+EXPOSE 80 443
 
 # Healthcheck to ensure nginx is running and cmfive is installed
 HEALTHCHECK --interval=15s --timeout=5m --start-period=5s --retries=15 \

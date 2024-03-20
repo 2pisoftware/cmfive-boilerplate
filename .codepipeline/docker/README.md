@@ -1,33 +1,24 @@
 # Pipeline for building a Cmfive docker image
 
-This directory builds an image that contins a complete Cmfive installation with a production build of the theme.
+This directory contains a collection of tools and resources for building and managing the Docker image for Cmfive.
 
-## Manual steps for building a docker image locally:
+## Dev tools
 
-```sh
-# Change to the boilerplate repo
-cd /path/to/cmfive-boilerplate
+In this directory you'll find the dev tools script. This provides testing tools that are used across CI, local development and codespaces.
 
-# Build the boilerplate image (required)
-docker build -t cmfive-boilerplate:latest .
-
-# Build the cmfive image
-docker build -t cmfive:latest .codepipeline/docker
-```
-
-You will now to have a docker image called `cmfive:latest` that you can run. Eg:
+To install the dev tools for a local environment, run the following command:
 
 ```sh
-docker run -p 3000:80 cmfive:latest
+cd /path/to/cmfive-boilerplate/.codepipeline/docker
+./install_dev_tools.sh
 ```
-
 ## Testing out changes for the docker image
 
 You can test out how your changes would look by building a new image with the same tag as what is defined in the docker-compose.yml file. Eg:
 
 ```sh
-docker build -t cmfive-boilerplate:latest .
-docker build -t ghcr.io/2pisoftware/cmfive:develop ./.codepipeline/docker
+cd /path/to/cmfive-boilerplate
+docker build -t ghcr.io/2pisoftware/cmfive:develop .
 ```
 
 Then once you do a `docker compose up` it will use the image you just built.
@@ -41,5 +32,4 @@ Note that this image is only stored locally and the final image can only be buil
 3. The workflow builds the docker image as above and pushes it to the GitHub Container Registry
 4. The image is now available at `ghcr.io/2pisoftware/cmfive:pr-<pr-number>`
 5. Once the PR is merged, the image is built again and pushed to `ghcr.io/2pisoftware/cmfive:develop` or `ghcr.io/2pisoftware/cmfive:latest` depending on the branch that was merged to.
-
 
