@@ -5,6 +5,32 @@
 # This image provides a base environment to install cmfive upon.
 # NOTE: See the .dockerignore file to see what is excluded from the image.
 
+# --------------------------------------------------------------------------
+# == Core stage ==
+# --------------------------------------------------------------------------
+
+# This stage clones the cmfive-core repository and compiles the theme
+
+# Use the Node.js base image
+FROM node:20-alpine AS core
+
+# Install git
+RUN apk --no-cache add \
+    git
+
+# Clone github.com/2pisoftware/cmfive-core
+ARG CORE_BRANCH=master
+RUN git clone --depth 1 https://github.com/2pisoftware/cmfive-core.git -b $CORE_BRANCH
+
+# Compile the theme
+RUN cd /cmfive-core/system/templates/base && npm install && npm run production
+
+# --------------------------------------------------------------------------
+# == Cmfive stage ==
+# --------------------------------------------------------------------------
+
+# This stage builds the final cmfive image
+
 # Use the Alpine Linux base image
 FROM alpine:3.19
 

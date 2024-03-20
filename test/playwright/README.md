@@ -9,8 +9,8 @@
 
 - Grab the latest version of nvm from https://nvm.sh using the `curl` command
 - Close the current terminal after nvm is downloaded, and open a new terminal
-- `nvm install 18`
-- `nvm use 18`
+- `nvm install 20`
+- `nvm use 20`
 
 # Use the develop branch as the cmfive-boilerplate repo
 
