@@ -133,6 +133,48 @@ A docker image for cmfive is available on [GitHub Container Registry](https://gi
 
 You will need to run a mysql or compatible container and link it to the cmfive container. See more information about the mysql container on the [Docker Hub page](https://hub.docker.com/_/mysql).
 
+Here is an example of how to run a cmfive container with docker:
+
+```sh
+# Define the configuration details
+export DB_DATABASE=cmfive
+export DB_USERNAME=cmfive
+export DB_PASSWORD=cmfive
+export DB_ROOT_PW=root
+export CMFIVE_IMAGE=ghcr.io/2pisoftware/cmfive:latest
+
+# Create a network
+docker network create cmfive
+
+# Run the mysql container
+docker run --name mysql-8 -d -p 3306:3306 \
+    -e MYSQL_ROOT_PASSWORD=$DB_ROOT_PW \
+    -e MYSQL_DATABASE=$DB_DATABASE \
+    -e MYSQL_USER=$DB_USERNAME \
+    -e MYSQL_PASSWORD=$DB_PASSWORD \
+    --network=cmfive \
+    mysql:8
+
+# Run the cmfive container
+docker run --name cmfive -d -p 3000:80 \
+    -v ./storage:/var/www/html/storage \
+    -v ./uploads:/var/www/html/uploads \
+    -v ./backups:/var/www/html/backups \
+    -e DB_HOST=mysql-8 \
+    -e DB_USERNAME=$DB_USERNAME \
+    -e DB_PASSWORD=$DB_PASSWORD \
+    -e DB_DATABASE=$DB_DATABASE \
+    -e ENVIRONMENT=production \
+    --network=cmfive \
+    $CMFIVE_IMAGE
+```
+
+You can then proceed to set up an admin user with:
+
+```sh
+docker exec -it -u cmfive cmfive php cmfive.php
+```
+
 The following options can be used with the Docker image. You may choose to use for example vanilla docker, docker-compose or Kubernetes. Please consult the documentation for these tools for more information on how to use the options below.
 
 #### Environment variables
