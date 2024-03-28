@@ -78,6 +78,12 @@ When the development environment has started the cmfive-core git repository is c
 cd composer/vendor/2pisoftware/cmfive-core
 ```
 
+If you're using Visual Studio Code you can open a terminal then use this command to open the core in a new window:
+
+```sh
+code composer/vendor/2pisoftware/cmfive-core
+```
+
 For more information about developing on the core repository please refer to the [cmfive-core repository](https://github.com/2pisoftware/cmfive-core).
 
 ### Theme development
