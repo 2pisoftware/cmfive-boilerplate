@@ -7,6 +7,10 @@ Welcome! Cmfive is a framework designed for fast ERP and CRM business software s
 
 The full documentation is located at [cmfive.com](https://cmfive.com).
 
+## Installing
+
+See [Deploying](#deploying).
+
 ## Development
 
 ### Quick Start
