@@ -41,3 +41,4 @@ Navigate to the Boilerplate or Core issue tracker and create a new issue. Please
 10. Your changes will be merged into the develop branch
 11. Upon release, the develop branch will be merged into the main branch
 
+Please keep issues that are related to your PR updated.
