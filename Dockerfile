@@ -37,11 +37,11 @@ RUN cd /cmfive-core/system/templates/base && npm install && npm run production
 # This stage builds the final cmfive image
 
 # Use the Alpine Linux base image
-FROM alpine:3.19
+FROM alpine:3.20
 
 # PHP version
 # note: see Alpine packages for available versions
-ARG PHP_VERSION=81
+ARG PHP_VERSION=82
 
 # Create cmfive user and group on ID 1000
 RUN addgroup -g 1000 cmfive && \
@@ -79,7 +79,7 @@ RUN apk --no-cache add \
     git
 
 # Link PHP cli
-RUN ln -s /usr/bin/php81 /usr/bin/php
+RUN ln -s /usr/bin/php$PHP_VERSION /usr/bin/php
 
 # Create necessary directories
 RUN mkdir -p /var/www && \
