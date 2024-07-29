@@ -79,7 +79,8 @@ RUN apk --no-cache add \
     git
 
 # Link PHP cli
-RUN ln -s /usr/bin/php$PHP_VERSION /usr/bin/php
+RUN ln -s /usr/bin/php$PHP_VERSION /usr/bin/php &&\
+    ln -s /usr/sbin/php-fpm$PHP_VERSION /usr/sbin/php-fpm
 
 # Create necessary directories
 RUN mkdir -p /var/www && \
