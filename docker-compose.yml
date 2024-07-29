@@ -1,8 +1,4 @@
-# Cmfive v3.x requires PHP7.2 and MySQL 5.7
-version: '3'
-
 services:
-
   mysqldb:
     image: mysql:8
     container_name: mysql-8
