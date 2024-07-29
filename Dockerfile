@@ -96,7 +96,7 @@ RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
 COPY /.codepipeline/docker/configs/supervisord/supervisord.conf /etc/supervisord.conf
 COPY /.codepipeline/docker/configs/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY /.codepipeline/docker/configs/nginx/default.conf /etc/nginx/conf.d/default.conf
-COPY /.codepipeline/docker/configs/fpm/ /etc/php81/
+COPY /.codepipeline/docker/configs/fpm/ /etc/php$PHP_VERSION/
 COPY /.codepipeline/docker/setup.sh /bootstrap/setup.sh
 COPY /.codepipeline/docker/config.default.php /bootstrap/config.default.php
 
