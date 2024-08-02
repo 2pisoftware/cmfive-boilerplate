@@ -7,52 +7,69 @@ services:
     image: mysql:8
     container_name: mysql-8
     hostname: mysql-8
-    # command: --sql-mode=""
-    ports:
-      - "3306:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=cmfive
+      - MYSQL_PASSWORD=cmfive
+      - MYSQL_DATABASE=cmfive
       - TZ=Australia/Sydney
     volumes:
       - dbdata:/var/lib/mysql:delegated
-    # 'delegated' may be faster on mac or win?
     networks:
       - default
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5m
+      retries: 20
 
   webapp:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: nginx-php8.1
+    image: ghcr.io/2pisoftware/cmfive:develop
+    container_name: cmfive
     hostname: nginx-php8.1
     environment:
       - TZ=Australia/Sydney
+      - DB_HOST=mysqldb
+      - DB_DATABASE=cmfive
+      - DB_USERNAME=cmfive
+      - DB_PASSWORD=cmfive
+      - ENVIRONMENT=development
     volumes:
-      - ./:/var/www/html
-      - ./test/Codeception/tests/boilerplate:/var/www/html/test/Codeception/tests/boilerplate
-      - ./test/Codeception/tests/_output:/var/www/html/test/Codeception/tests/_output
+      - ./:/var/www/html:rw
     ports:
-      - "3000:3000"
+      - "3000:80"
+      - "3443:443"
     networks:
       - default
     restart: unless-stopped
     working_dir: /var/www/html
     links:
       - mysqldb
-      - seleniumsrv
+    depends_on:
+      mysqldb:
+        condition: service_healthy
 
-  seleniumsrv:
-    image: selenium/standalone-chrome:111.0
-    container_name: seleniumDrv
-    hostname: seleniumDrv
-    ports:
-      - "4444:4444"
-    environment:
-      - TZ=Australia/Sydney
-      - START_XVFB=false
-    shm_size: '4gb'
-    networks:
-      - default
+  compiler:
+    image: node:20-alpine
+    container_name: node-compiler
+    volumes:
+      - ./:/var/www/html
+      - ./.codepipeline/docker/compiler.sh:/compiler.sh
+    command: "ash -c /compiler.sh"
+    healthcheck:
+      test: 
+        - "CMD-SHELL"
+        - "ps aux | grep 'npm run watch' | grep -v grep"
+        - "test -f /var/www/html/system/templates/base/dist/app.css"
+      interval: 15s
+      timeout: 5m
+      retries: 20
+    restart: unless-stopped
+    user: "1000:1000"
+    depends_on:
+      webapp:
+        condition: service_healthy
 
 volumes:
   dbdata:
