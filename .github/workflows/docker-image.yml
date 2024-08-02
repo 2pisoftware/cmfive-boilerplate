@@ -1,0 +1,76 @@
+name: Build and Publish Docker Image
+
+on:
+  pull_request:
+    branches:
+      - develop
+  push:
+    branches:
+      - develop
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+      pull-requests: write
+      
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver: docker-container
+
+      # Build all the tags for the image
+      - name: Create tags
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ghcr.io/2pisoftware/cmfive
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+          labels: |
+            org.opencontainers.image.title=Cmfive
+            org.opencontainers.image.description=Cmfive in a docker image
+            org.opencontainers.image.vendor=2pisoftware
+
+      # Login to GHCR
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Build and push the image
+      - name: Build and push cmfive image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=registry,ref=ghcr.io/2pisoftware/cmfive:buildcache
+          cache-to: type=registry,ref=ghcr.io/2pisoftware/cmfive:buildcache,mode=max
+
+      # Scan the docker image and compare it with the latest image
+      - name: Docker Scout
+        uses: docker/scout-action@v1
+        with:
+          command: compare,cves
+          image: ${{ steps.meta.outputs.tags }}
+          to: ghcr.io/2pisoftware/cmfive:develop
+          only-severities: critical,high,medium
+          write-comment: true
+          github-token: ${{ secrets.GITHUB_TOKEN }} # to be able to write the comment
+          dockerhub-user: ${{ secrets.DOCKER_USER }}
+          dockerhub-password: ${{ secrets.DOCKER_TOKEN }}

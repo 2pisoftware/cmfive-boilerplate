@@ -13,6 +13,7 @@ export class CmfiveHelper {
         await page.locator("#login").fill(user);
         await page.locator("#password").fill(password);
         await page.getByRole("button", {name: "Login"}).click();
+        await page.waitForURL(HOST + "/main/index")   
     }
 
     static async logout(page: Page)
@@ -22,11 +23,8 @@ export class CmfiveHelper {
 
     static async isBootstrap5(page: Page)
     {
-        try {
-            await page.locator('.body')
-        } catch (e) {
-            await page.waitForSelector('.body');
-        }
+        await page.waitForSelector('#cmfive-body, body > .row-fluid');
+    
         return await page.locator('html.theme').count() > 0
     }
 
@@ -45,7 +43,7 @@ export class CmfiveHelper {
             await navbarCategory.hover();
         }
 
-        await navbarCategory.getByText(option).click();
+        await navbarCategory.getByRole('link', {name: option, exact: true}).click();
     }
 
     // Call exactly once per test before any dialogs pop up
@@ -70,4 +68,5 @@ export class CmfiveHelper {
         await page.keyboard.type(search);
         await page.locator('.ui-menu-item :text("' + value + '")').click();
     }
+
 }
