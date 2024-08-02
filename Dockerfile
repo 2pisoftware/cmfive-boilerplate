@@ -127,7 +127,8 @@ COPY --chown=cmfive:cmfive \
     system/templates/base/dist
 
 # Fix permissions
-RUN chmod -R ugo=rwX cache/ storage/ uploads/
+RUN chmod -R ugo=rwX cache/ storage/ uploads/ && \
+    chown -R cmfive:cmfive /var/lib/nginx /var/log/nginx
 
 # Expose HTTP, HTTPS
 EXPOSE 80 443
