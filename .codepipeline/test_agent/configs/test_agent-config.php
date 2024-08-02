@@ -60,43 +60,6 @@ Config::append('email', [
 Config::set("system.environment", "development");
 Config::set("core_template.foundation.reveal.animation", "none");
 Config::set("core_template.foundation.reveal.animation_speed", 0);
-//========== must be "ENABLED" to run ==========================
-Config::set(
-    "tests",
-    [
-        "testrunner"  => "",
-        "config" => '',
-        "yaml" =>
-        [
-            "- WebDriver:" =>
-            [
-                "url" => "http://webapp:3000",
-                "browser" => "chrome",
-                "wait" => "60",
-                "host" => "seleniumDrv",
-                "port" => "4444",
-                "capabilities" =>
-                [
-                    "acceptInsecureCerts" => true,
-                    "goog:chromeOptions" => [
-                        "w3c" => "false",
-                        "args" => '["--headless","--disable-gpu","--window-size=1920,1200","--ignore-certificate-errors","--disable-extensions","--no-sandbox","--disable-dev-shm-usage"]'
-                    ]
-                ]
-            ],
-            "- Db:" =>
-            [
-                "dsn" => (getenv('DB') ?: 'mysql')
-                    . ":host=" . (getenv('DB_HOST') ?: 'localhost')
-                    . ":" . (getenv('DB_PORT') ?: '')
-                    . ";dbname=" . (getenv('DB_DATABASE') ?: '<database>'),
-                "user" => (getenv('DB_USERNAME') ?: '<username>'),
-                "password" => (getenv('DB_PASSWORD') ?: '<password>'),
-            ],
-            "- Asserts:" => "",
-        ]
-    ]
-);
 
 //========= Anonymous Access ================================
 // bypass authentication if sent from the following IP addresses

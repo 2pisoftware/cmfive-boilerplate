@@ -4,7 +4,7 @@
 Config::set('main.application_name', 'Cmfive');
 Config::set('main.company_name', '2pi Software');
 Config::set('main.company_url', 'https://2pisoftware.com');
-Config::set('main.company_support_email', '');
+Config::set('main.company_support_email', getenv('SMTP_SENDER') ?: '');
 
 //=============== Timezone ===================================
 date_default_timezone_set('Australia/Sydney');
@@ -12,11 +12,11 @@ Config::set("system.timezone", "Australia/Sydney");
 
 //========== Database Configuration ==========================
 Config::set("database", [
-    "hostname"  => getenv('DB_HOST') ?: "localhost",
+    "hostname"  => getenv('DB_HOST') ?: "mysqldb",
     "port"  => getenv('DB_PORT') ?: "",
-    "username"  => getenv('DB_USERNAME') ?: "<username>",
-    "password"  => getenv('DB_PASSWORD') ?: "<password>",
-    "database"  => getenv('DB_DATABASE') ?: "<database>",
+    "username"  => getenv('DB_USERNAME') ?: "cmfive",
+    "password"  => getenv('DB_PASSWORD') ?: "cmfive",
+    "database"  => getenv('DB_DATABASE') ?: "cmfive",
     "driver"    => getenv('DB') ?: "mysql",
     "backups" =>
     [
@@ -36,52 +36,29 @@ Config::set("database", [
     ]
 ]);
 
+Config::set("report.database", [
+    "hostname"  => getenv('DB_HOST') ?: "mysqldb",
+    "username"  => getenv('DB_USERNAME') ?: "cmfive",
+    "password"  => getenv('DB_PASSWORD') ?: "cmfive",
+    "database"  => getenv('DB_DATABASE') ?: "cmfive",
+    "driver"    => getenv('DB') ?: "mysql",
+]);
+
 //=========== Email Layer Configuration =====================
 Config::append('email', [
     "layer"    => "smtp",   // smtp or sendmail or aws
     "command" => "",        // used for sendmail layer only
-    "host"    => "smtp.gmail.com",
+    "host"    => "email-smtp.ap-southeast-2.amazonaws.com",
     "port"    => 465,
     "auth"    => true,
-    "username"    => '<email>',
-    "password"    => '<password>',
+    "username"    => getenv('SMTP_USERNAME') ?: '<email>',
+    "password"    => getenv('SMTP_PASSWORD') ?: '<password>',
 ]);
 
-//========== TestRunner Configuration ==========================
-//========== must be "ENABLED" to run ==========================
-Config::set(
-    "tests",
-    [
-        "testrunner"  => "",
-        "config" => '',
-        "yaml" =>
-        [
-            "- WebDriver:" =>
-            [
-                "url" => "http://webapp:3000",
-                "browser" => "chrome",
-                "wait" => "60",
-                "host" => "selenium314",
-                "port" => "4444",
-                "capabilities" =>
-                [
-                    "acceptInsecureCerts" => true,
-                    "goog:chromeOptions" => "w3c: false"
-                ]
-            ],
-            "- Db:" =>
-            [
-                "dsn" => (getenv('DB') ?: 'mysql')
-                .":host=".(getenv('DB_HOST') ?: 'localhost')
-                .":".(getenv('DB_PORT') ?: '')
-                .";dbname=".(getenv('DB_DATABASE') ?: '<database>'),
-                "user" => (getenv('DB_USERNAME') ?: '<username>'),
-                "password" => (getenv('DB_PASSWORD') ?: '<password>'),
-            ],
-            "- Asserts:" => "",
-        ]
-    ]
-);
+//========== TestRunner Configuration ========================== 
+Config::set("system.environment", "development");
+Config::set("core_template.foundation.reveal.animation", "none");
+Config::set("core_template.foundation.reveal.animation_speed", 0);
 
 //========= Anonymous Access ================================
 // bypass authentication if sent from the following IP addresses
@@ -117,6 +94,3 @@ Config::set('system.rest_api_key', "abcdefghijklmnopqrstuvwxyz1234567890");
 Config::set('system.rest_include', [
     // "Contact"
 ]);
-
-// Development mode
-Config::set('system.environment', 'development');
