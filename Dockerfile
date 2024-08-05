@@ -37,7 +37,7 @@ RUN cd /cmfive-core/system/templates/base && npm install && npm run production
 # This stage builds the final cmfive image
 
 # Use the Alpine Linux base image
-FROM alpine:3.19
+FROM alpine:3.20
 
 # PHP version
 # note: see Alpine packages for available versions
