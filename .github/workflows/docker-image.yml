@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - develop
+      - master
   push:
     branches:
       - develop
@@ -67,6 +68,8 @@ jobs:
       # Scan the docker image and compare it with the latest image
       - name: Docker Scout
         uses: docker/scout-action@v1
+        # only on pull requests
+        if: github.event_name == 'pull_request'
         with:
           command: compare,cves
           image: ${{ steps.meta.outputs.tags }}
