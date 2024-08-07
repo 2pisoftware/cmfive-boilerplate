@@ -69,4 +69,33 @@ export class CmfiveHelper {
         await page.locator('.ui-menu-item :text("' + value + '")').click();
     }
 
+    // Finds substring in string with given position
+    static findString(target: string, searchText: string, searchPosition?: 'start' | 'end'): boolean {
+        if (searchPosition === 'start') {
+            return target.startsWith(searchText);
+        } else if (searchPosition === 'end') {
+            return target.endsWith(searchText);
+        } else {
+            return target.includes(searchText);
+        }
+        }
+    
+    // Finds a cell in a table by an item in its row and the column header
+    static async getColumnByText(page: Page, rowText: string, columnText: string,  searchPosition?: 'start' | 'end'){
+        const headers = page.locator('table thead tr th');
+        let columnIndex: number | undefined;
+
+        // iterate through the columns until a header contains, begins or starts with columnText
+        for (let i = 0; i < (await headers.count()); i++) {
+            const headerText = await headers.nth(i).textContent();
+            if (CmfiveHelper.findString(headerText?.trim(),columnText, searchPosition)) {
+            columnIndex = i; // index for nth-child selector
+            break;
+            }
+        }
+        const row = CmfiveHelper.getRowByText(page, rowText); 
+        return row.getByRole("cell").nth(columnIndex);
+    }
+    
+
 }
