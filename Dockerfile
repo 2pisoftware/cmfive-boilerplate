@@ -37,11 +37,11 @@ RUN cd /cmfive-core/system/templates/base && npm install && npm run production
 # This stage builds the final cmfive image
 
 # Use the Alpine Linux base image
-FROM alpine:3.19
+FROM alpine:3.20
 
 # PHP version
 # note: see Alpine packages for available versions
-ARG PHP_VERSION=81
+ARG PHP_VERSION=82
 
 # Create cmfive user and group on ID 1000
 RUN addgroup -g 1000 cmfive && \
@@ -79,7 +79,8 @@ RUN apk --no-cache add \
     git
 
 # Link PHP cli
-RUN ln -s /usr/bin/php81 /usr/bin/php
+RUN ln -s /usr/bin/php$PHP_VERSION /usr/bin/php &&\
+    ln -s /usr/sbin/php-fpm$PHP_VERSION /usr/sbin/php-fpm
 
 # Create necessary directories
 RUN mkdir -p /var/www && \
@@ -95,7 +96,7 @@ RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
 COPY /.codepipeline/docker/configs/supervisord/supervisord.conf /etc/supervisord.conf
 COPY /.codepipeline/docker/configs/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY /.codepipeline/docker/configs/nginx/default.conf /etc/nginx/conf.d/default.conf
-COPY /.codepipeline/docker/configs/fpm/ /etc/php81/
+COPY /.codepipeline/docker/configs/fpm/ /etc/php$PHP_VERSION/
 COPY /.codepipeline/docker/setup.sh /bootstrap/setup.sh
 COPY /.codepipeline/docker/config.default.php /bootstrap/config.default.php
 
