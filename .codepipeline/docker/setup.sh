@@ -92,7 +92,7 @@ php cmfive.php install migrations
 if [ "$ENVIRONMENT" = "development" ]; then
     echo "🧑‍💻  Development mode"
     echo "Creating admin user"
-    php cmfive.php seed admin Admin Admin dev@2pisoftware.com admin admin
+    php cmfive.php seed admin admin admin dev@2pisoftware.com admin admin
 fi
 
 #Let container know that everything is finished
