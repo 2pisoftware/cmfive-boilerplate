@@ -6,13 +6,15 @@ on:
       - develop
       - master
   push:
+    tags:
+      - 'v*'
     branches:
       - develop
       - master
 
 jobs:
   build-and-publish:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     permissions:
       contents: read
@@ -59,7 +61,7 @@ jobs:
 
       # Build and push the image
       - name: Build and push cmfive image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           push: true
