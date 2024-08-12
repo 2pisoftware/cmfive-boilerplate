@@ -6,6 +6,8 @@ on:
       - develop
       - master
   push:
+    tags:
+      - 'v*'
     branches:
       - develop
       - master
@@ -22,6 +24,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -54,9 +59,10 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Build and push the image
-      - name: Build and push cmfive image
-        uses: docker/build-push-action@v5
+      # Build combined ARM/x86-64 image on master and develop branches
+      - name: Build and push cmfive ARM/x86-64 image
+        uses: docker/build-push-action@v6
+        if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop'
         with:
           context: .
           push: true
@@ -64,6 +70,22 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=registry,ref=ghcr.io/2pisoftware/cmfive:buildcache
           cache-to: type=registry,ref=ghcr.io/2pisoftware/cmfive:buildcache,mode=max
+          # x86-64 and ARM64
+          platforms: linux/amd64,linux/arm64
+
+      # Build x86-64 image on other branches
+      - name: Build and push cmfive x86-64 image
+        uses: docker/build-push-action@v6
+        if: github.ref != 'refs/heads/master' && github.ref != 'refs/heads/develop'
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=registry,ref=ghcr.io/2pisoftware/cmfive:buildcache
+          cache-to: type=registry,ref=ghcr.io/2pisoftware/cmfive:buildcache,mode=max
+          # x86-64
+          platforms: linux/amd64
 
       # Scan the docker image and compare it with the latest image
       - name: Docker Scout
