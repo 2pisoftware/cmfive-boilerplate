@@ -28,7 +28,9 @@ ARG CORE_BRANCH=master
 RUN git clone --depth 1 https://github.com/2pisoftware/cmfive-core.git -b $CORE_BRANCH
 
 # Compile the theme
-RUN cd /cmfive-core/system/templates/base && npm install && npm run production
+RUN cd /cmfive-core/system/templates/base && \
+    npm ci && \
+    npm run production
 
 # --------------------------------------------------------------------------
 # == Cmfive stage ==
@@ -125,6 +127,12 @@ COPY --chown=cmfive:cmfive \
     --from=core \
     /cmfive-core/system/templates/base/dist \
     system/templates/base/dist
+    
+# Copy theme node modules
+COPY --chown=cmfive:cmfive \
+    --from=core \
+    /cmfive-core/system/templates/base/node_modules \
+    system/templates/base/node_modules
 
 # Fix permissions
 RUN chmod -R ugo=rwX cache/ storage/ uploads/ && \
