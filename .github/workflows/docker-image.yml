@@ -62,7 +62,7 @@ jobs:
       # Build combined ARM/x86-64 image on master and develop branches
       - name: Build and push cmfive ARM/x86-64 image
         uses: docker/build-push-action@v6
-        if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop'
+        if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/tags/v')
         with:
           context: .
           push: true
@@ -76,7 +76,7 @@ jobs:
       # Build x86-64 image on other branches
       - name: Build and push cmfive x86-64 image
         uses: docker/build-push-action@v6
-        if: github.ref != 'refs/heads/master' && github.ref != 'refs/heads/develop'
+        if: github.ref != 'refs/heads/master' && github.ref != 'refs/heads/develop' && !startsWith(github.ref, 'refs/tags/v')
         with:
           context: .
           push: true
