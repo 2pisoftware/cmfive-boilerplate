@@ -24,7 +24,7 @@ RUN apk --no-cache add \
     git
 
 # Clone github.com/2pisoftware/cmfive-core
-ARG CORE_BRANCH=master
+ARG CORE_BRANCH=main
 RUN git clone --depth 1 https://github.com/2pisoftware/cmfive-core.git -b $CORE_BRANCH
 
 # Compile the theme
