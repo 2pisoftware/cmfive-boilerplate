@@ -200,7 +200,7 @@ The following options can be used with the Docker image. You may choose to use f
 
 The following build args can be used to customise the Docker image if you are building a custom one:
 
-- **CORE_BRANCH:** The branch of the cmfive-core repository to bake in at build-time. Defaults to `master`.
+- **CORE_BRANCH:** The branch of the cmfive-core repository to bake in at build-time. Defaults to `main`.
 - **PHP_VERSION:** The version of PHP to use. See alpine linux packages for available versions. Defaults to the version in the Dockerfile (eg 81).
 
 #### Volumes
