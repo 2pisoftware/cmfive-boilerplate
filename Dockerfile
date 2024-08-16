@@ -67,6 +67,7 @@ RUN apk --no-cache add \
     php$PHP_VERSION-session \
     php$PHP_VERSION-simplexml \
     php$PHP_VERSION-fileinfo \
+    php$PHP_VERSION-xdebug \
     nginx \
     supervisor \
     bash \
@@ -134,9 +135,9 @@ RUN chmod -R ugo=rwX cache/ storage/ uploads/ && \
 EXPOSE 80 443
 
 # Healthcheck to ensure nginx is running and cmfive is installed
-HEALTHCHECK --interval=15s --timeout=5m --start-period=5s --retries=15 \
-  CMD curl -s -o /dev/null -w "%{http_code}" http://localhost | grep -q -E "^[1-3][0-9]{2}$" && \
-      test -f /home/cmfive/.cmfive-installed
+# HEALTHCHECK --interval=15s --timeout=5m --start-period=5s --retries=15 \
+#   CMD curl -s -o /dev/null -w "%{http_code}" http://localhost | grep -q -E "^[1-3][0-9]{2}$" && \
+#       test -f /home/cmfive/.cmfive-installed
 
 # Start supervisord
 CMD ["supervisord", "--nodaemon", "--configuration", "/etc/supervisord.conf"]

@@ -37,6 +37,7 @@ services:
       - ENVIRONMENT=development
     volumes:
       - ./:/var/www/html:rw
+      - ./.codepipeline/local-dev/50_xdebug.ini:/etc/php81/conf.d/50_xdebug.ini
     ports:
       - "3000:80"
       - "3443:443"
@@ -67,9 +68,9 @@ services:
       retries: 20
     restart: unless-stopped
     user: "1000:1000"
-    depends_on:
-      webapp:
-        condition: service_healthy
+    # depends_on:
+    #   webapp:
+    #     condition: service_healthy
 
 volumes:
   dbdata:

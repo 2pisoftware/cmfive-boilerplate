@@ -12,7 +12,8 @@
 
 desktop.ini
 docker-compose.override.yml
-.env 
+.env
+.codeql
 
 # IDE Fluff
 .settings
