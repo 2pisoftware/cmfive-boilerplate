@@ -42,6 +42,7 @@ FROM alpine:3.19
 # PHP version
 # note: see Alpine packages for available versions
 ARG PHP_VERSION=81
+ENV PHP_VERSION=$PHP_VERSION
 
 # Create cmfive user and group on ID 1000
 RUN addgroup -g 1000 cmfive && \
@@ -67,7 +68,6 @@ RUN apk --no-cache add \
     php$PHP_VERSION-session \
     php$PHP_VERSION-simplexml \
     php$PHP_VERSION-fileinfo \
-    php$PHP_VERSION-xdebug \
     nginx \
     supervisor \
     bash \
@@ -134,10 +134,11 @@ RUN chmod -R ugo=rwX cache/ storage/ uploads/ && \
 # Expose HTTP, HTTPS
 EXPOSE 80 443
 
-# Healthcheck to ensure nginx is running and cmfive is installed
-# HEALTHCHECK --interval=15s --timeout=5m --start-period=5s --retries=15 \
-#   CMD curl -s -o /dev/null -w "%{http_code}" http://localhost | grep -q -E "^[1-3][0-9]{2}$" && \
-#       test -f /home/cmfive/.cmfive-installed
+# Healthcheck to ensure nginx and php-fpm is running and cmfive is installed
+HEALTHCHECK --interval=15s --timeout=5m --start-period=5s --retries=15 \
+  CMD supervisorctl status nginx | grep -q "RUNNING" && \
+      supervisorctl status php-fpm | grep -q "RUNNING" && \
+      test -f /home/cmfive/.cmfive-installed
 
 # Start supervisord
 CMD ["supervisord", "--nodaemon", "--configuration", "/etc/supervisord.conf"]
