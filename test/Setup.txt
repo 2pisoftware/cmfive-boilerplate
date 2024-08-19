@@ -1,7 +1,7 @@
 
 1) Clone/pull/download: https://github.com/2pisoftware/cmfive-boilerplate
  - Position it nicely for WebServer to find
- - Match it to a CORE install (cmfive.php step[1] will clone MASTER from scratch)
+ - Match it to a CORE install (cmfive.php step[1] will clone main from scratch)
  - Make symlinks etc as required
  - Apply any other usual cmfive setup steps!
  - Enable TestRunner in cmfive-boilerplate\config.php:

@@ -74,7 +74,7 @@ fi
 
 # System dir and composer packages must exist
 if [ ! -f "/var/www/html/system/web.php" ] || [ ! -f "/var/www/html/composer.json" ] || [ -n "$CMFIVE_CORE_BRANCH" ]; then
-    CMFIVE_CORE_BRANCH=${CMFIVE_CORE_BRANCH:-master} # Default to master if not set
+    CMFIVE_CORE_BRANCH=${CMFIVE_CORE_BRANCH:-main} # Default to main if not set
     rm -rf /var/www/html/system # Remove system dir to ensure correct core is installed
     echo "➕  Installing core from branch [ $CMFIVE_CORE_BRANCH ]"
     php cmfive.php install core $CMFIVE_CORE_BRANCH
@@ -92,7 +92,7 @@ php cmfive.php install migrations
 if [ "$ENVIRONMENT" = "development" ]; then
     echo "🧑‍💻  Development mode"
     echo "Creating admin user"
-    php cmfive.php seed admin Admin Admin dev@2pisoftware.com admin admin
+    php cmfive.php seed admin admin admin dev@2pisoftware.com admin admin
 fi
 
 #Let container know that everything is finished
