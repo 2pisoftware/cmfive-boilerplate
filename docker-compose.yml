@@ -49,6 +49,8 @@ services:
     depends_on:
       mysqldb:
         condition: service_healthy
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   compiler:
     image: node:20-alpine
