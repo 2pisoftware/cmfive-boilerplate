@@ -22,7 +22,7 @@ cat <<EOF > /etc/php$PHP_VERSION/conf.d/50_xdebug.ini
 zend_extension=xdebug.so
 xdebug.mode=debug
 xdebug.start_with_request=yes
-xdebug.discover_client_host=true
+xdebug.client_host=host.docker.internal
 EOF
 
 # Tell supervisord to restart php-fpm
