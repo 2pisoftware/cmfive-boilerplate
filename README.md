@@ -115,13 +115,17 @@ docker compose exec -it -u cmfive webapp sh
 docker compose exec -it -u root webapp sh
 ```
 
-### Running tests
+### Debugging and testing
 
 Ensure you have installed the dev tools first. You can do this by running the following command:
 
 ```sh
 ./.codepipeline/docker/install_dev_tools.sh
 ```
+
+#### Xdebug
+
+Once you have the dev tools installed you can start debugging in VS Code by running the `Listen for Xdebug` configuration. This will start the debugger and you can set breakpoints in your code.
 
 #### Playwright
 
