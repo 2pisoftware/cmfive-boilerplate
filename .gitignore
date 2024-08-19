@@ -22,7 +22,6 @@ docker-compose.override.yml
 .metadata
 .phpintel
 nbproject/
-.vscode/
 .vs/
 
 # Composer
