@@ -25,7 +25,9 @@ services:
       retries: 20
 
   webapp:
-    image: ghcr.io/2pisoftware/cmfive:develop
+    build:
+      context: .
+      dockerfile: dev.dockerfile
     container_name: cmfive
     hostname: nginx-php8.1
     environment:

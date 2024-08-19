@@ -27,6 +27,10 @@ EOF
 
 # Tell supervisord to restart php-fpm
 echo "🔄  Restarting php-fpm"
-supervisorctl restart php-fpm
+if supervisorctl status | grep -q "RUNNING"; then
+    supervisorctl restart php-fpm
+else
+    echo "Supervisord is not running. Cannot restart php-fpm."
+fi
 
 # NOTE: Playwright is not recommended to be installed here
