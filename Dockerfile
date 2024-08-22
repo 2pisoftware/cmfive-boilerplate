@@ -102,7 +102,8 @@ COPY /.codepipeline/docker/setup.sh /bootstrap/setup.sh
 COPY /.codepipeline/docker/config.default.php /bootstrap/config.default.php
 
 # Link PHP Config
-RUN ln -s /etc/php /etc/php$PHP_VERSION
+RUN rm -rf /etc/php$PHP_VERSION && \
+    ln -s /etc/php /etc/php$PHP_VERSION
 
 # Link PHP cli
 RUN ln -s /usr/bin/php$PHP_VERSION /usr/bin/php
