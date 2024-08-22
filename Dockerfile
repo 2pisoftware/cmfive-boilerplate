@@ -4,9 +4,11 @@
 
 # This image provides a fully working cmfive instance
 
-# It provides two build arguments:
+# It provides the following build arguments:
 # - CORE_BRANCH: The branch to clone from the cmfive-core repository
 # - PHP_VERSION: The version of PHP to use
+# - UID: The user ID of the cmfive user
+# - GID: The group ID of the cmfive group
 
 # NOTE: See the .dockerignore file to see what is excluded from the image.
 
@@ -87,7 +89,7 @@ RUN apk --no-cache add \
     icu-data-full \
     git
 
-    # Link PHP cli
+# Link PHP cli
 RUN ln -s /usr/bin/php${PHP_VERSION} /usr/bin/php
 
 # Create necessary directories
