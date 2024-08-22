@@ -232,6 +232,18 @@ If you have custom modules you can mount them to the following directory:
 
 - **/var/www/html/modules/name-of-module**
 
+**PHP Configuration**
+
+If you need to customise the PHP configuration you can mount a file to the path `/etc/php/conf.d/` for example:
+
+- **/etc/php/conf.d/99-custom.ini**
+
+**Nginx Configuration**
+
+If you need to customise the Nginx configuration you can mount a file to the path `/etc/nginx/conf.d/` for example:
+
+- **/etc/nginx/conf.d/99-custom.conf**
+
 #### Ports
 
 The following ports are exposed by the container, you can map them to different ports on the host:
