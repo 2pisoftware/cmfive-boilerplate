@@ -45,10 +45,12 @@ FROM alpine:3.19
 # note: see Alpine packages for available versions
 ARG PHP_VERSION=81
 ENV PHP_VERSION=$PHP_VERSION
+ARG UID=1000
+ARG GID=1000
 
 # Create cmfive user and group on ID 1000
-RUN addgroup -g 1000 cmfive && \
-    adduser -u 1000 -G cmfive -s /bin/bash -D cmfive
+RUN addgroup -g ${GID} cmfive && \
+    adduser -u ${UID} -G cmfive -s /bin/bash -D cmfive
 
 # Install required packages for PHP, Nginx etc
 RUN apk --no-cache add \
@@ -81,9 +83,6 @@ RUN apk --no-cache add \
     icu-data-full \
     git
 
-# Link PHP cli
-RUN ln -s /usr/bin/php81 /usr/bin/php
-
 # Create necessary directories
 RUN mkdir -p /var/www && \
     mkdir -p /run/nginx
@@ -98,9 +97,15 @@ RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
 COPY /.codepipeline/docker/configs/supervisord/supervisord.conf /etc/supervisord.conf
 COPY /.codepipeline/docker/configs/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY /.codepipeline/docker/configs/nginx/default.conf /etc/nginx/conf.d/default.conf
-COPY /.codepipeline/docker/configs/fpm/ /etc/php81/
+COPY /.codepipeline/docker/configs/fpm/ /etc/php/
 COPY /.codepipeline/docker/setup.sh /bootstrap/setup.sh
 COPY /.codepipeline/docker/config.default.php /bootstrap/config.default.php
+
+# Link PHP Config
+RUN ln -s /etc/php /etc/php$PHP_VERSION
+
+# Link PHP cli
+RUN ln -s /usr/bin/php$PHP_VERSION /usr/bin/php
 
 # Copy source
 COPY --chown=cmfive:cmfive . /var/www/html
