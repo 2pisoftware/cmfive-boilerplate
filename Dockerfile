@@ -52,6 +52,10 @@ ARG GID=1000
 RUN addgroup -g ${GID} cmfive && \
     adduser -u ${UID} -G cmfive -s /bin/bash -D cmfive
 
+# Link PHP Config
+RUN mkdir -p /etc/php && \
+    ln -s /etc/php /etc/php$PHP_VERSION
+
 # Install required packages for PHP, Nginx etc
 RUN apk --no-cache add \
     php$PHP_VERSION \
@@ -100,10 +104,6 @@ COPY /.codepipeline/docker/configs/nginx/default.conf /etc/nginx/conf.d/default.
 COPY /.codepipeline/docker/configs/fpm/ /etc/php/
 COPY /.codepipeline/docker/setup.sh /bootstrap/setup.sh
 COPY /.codepipeline/docker/config.default.php /bootstrap/config.default.php
-
-# Link PHP Config
-RUN rm -rf /etc/php$PHP_VERSION && \
-    ln -s /etc/php /etc/php$PHP_VERSION
 
 # Link PHP cli
 RUN ln -s /usr/bin/php$PHP_VERSION /usr/bin/php
