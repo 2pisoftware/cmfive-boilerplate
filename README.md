@@ -206,6 +206,8 @@ The following build args can be used to customise the Docker image if you are bu
 
 - **CORE_BRANCH:** The branch of the cmfive-core repository to bake in at build-time. Defaults to `main`.
 - **PHP_VERSION:** The version of PHP to use. See alpine linux packages for available versions. Defaults to the version in the Dockerfile (eg 81).
+- **UID:** The user ID to use for the cmfive user. Defaults to 1000.
+- **GID:** The group ID to use for the cmfive user. Defaults to 1000.
 
 #### Volumes
 

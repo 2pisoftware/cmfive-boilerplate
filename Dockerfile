@@ -48,7 +48,7 @@ ENV PHP_VERSION=$PHP_VERSION
 ARG UID=1000
 ARG GID=1000
 
-# Create cmfive user and group on ID 1000
+# Create cmfive user and group
 RUN addgroup -g ${GID} cmfive && \
     adduser -u ${UID} -G cmfive -s /bin/bash -D cmfive
 
@@ -87,6 +87,9 @@ RUN apk --no-cache add \
     icu-data-full \
     git
 
+    # Link PHP cli
+RUN ln -s /usr/bin/php${PHP_VERSION} /usr/bin/php
+
 # Create necessary directories
 RUN mkdir -p /var/www && \
     mkdir -p /run/nginx
@@ -104,9 +107,6 @@ COPY /.codepipeline/docker/configs/nginx/default.conf /etc/nginx/conf.d/default.
 COPY /.codepipeline/docker/configs/fpm/ /etc/php/
 COPY /.codepipeline/docker/setup.sh /bootstrap/setup.sh
 COPY /.codepipeline/docker/config.default.php /bootstrap/config.default.php
-
-# Link PHP cli
-RUN ln -s /usr/bin/php$PHP_VERSION /usr/bin/php
 
 # Copy source
 COPY --chown=cmfive:cmfive . /var/www/html
