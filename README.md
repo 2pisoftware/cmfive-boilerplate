@@ -238,11 +238,21 @@ If you need to customise the PHP configuration you can mount a file to the path 
 
 - **/etc/php/conf.d/99-custom.ini**
 
+If you want to configure PHP-FPM entirely, you can override:
+
+- **/etc/php/php-fpm.conf**, and/or
+- **/etc/php/php-fpm.d/www.conf**
+
 **Nginx Configuration**
 
 If you need to customise the Nginx configuration you can mount a file to the path `/etc/nginx/conf.d/` for example:
 
 - **/etc/nginx/conf.d/99-custom.conf**
+
+If you want to customise Nginx entirely, you can override:
+
+- **/etc/nginx/nginx.conf**, and/or
+- **/etc/nginx/conf.f/default.conf**
 
 #### Ports
 
