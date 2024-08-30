@@ -206,6 +206,8 @@ The following build args can be used to customise the Docker image if you are bu
 
 - **CORE_BRANCH:** The branch of the cmfive-core repository to bake in at build-time. Defaults to `main`.
 - **PHP_VERSION:** The version of PHP to use. See alpine linux packages for available versions. Defaults to the version in the Dockerfile (eg 81).
+- **UID:** The user ID to use for the cmfive user. Defaults to 1000.
+- **GID:** The group ID to use for the cmfive user. Defaults to 1000.
 
 #### Volumes
 
@@ -229,6 +231,28 @@ A self-signed SSL/TLS certificate is included in the image. If you require a cer
 If you have custom modules you can mount them to the following directory:
 
 - **/var/www/html/modules/name-of-module**
+
+**PHP Configuration**
+
+If you need to customise the PHP configuration you can mount a file to the path `/etc/php/conf.d/` for example:
+
+- **/etc/php/conf.d/99-custom.ini**
+
+If you want to configure PHP-FPM entirely, you can override:
+
+- **/etc/php/php-fpm.conf**, and/or
+- **/etc/php/php-fpm.d/www.conf**
+
+**Nginx Configuration**
+
+If you need to customise the Nginx configuration you can mount a file to the path `/etc/nginx/conf.d/` for example:
+
+- **/etc/nginx/conf.d/99-custom.conf**
+
+If you want to customise Nginx entirely, you can override:
+
+- **/etc/nginx/nginx.conf**, and/or
+- **/etc/nginx/conf.f/default.conf**
 
 #### Ports
 
