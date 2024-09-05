@@ -1,5 +1,9 @@
 #/bin/bash
 
+if [ "$COSINE_DEPLOYMENT_TYPE" == "docker" ]; then
+    exit 0
+fi
+
 echo "Running Application Stop"
 
 # Stop Nginx and PHP FPM.
