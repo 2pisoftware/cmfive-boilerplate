@@ -7,6 +7,8 @@ else
 fi
 
 if [ "$COSINE_DEPLOYMENT_TYPE" == "docker" ]; then
+    systemctl stop cosine
+
     exit 0
 fi
 
