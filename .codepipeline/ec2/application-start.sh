@@ -12,7 +12,7 @@ if [ "$COSINE_DEPLOYMENT_TYPE" == "docker" ]; then
     # Read cosine config
     source /etc/cosine/cosine.conf
 
-    if [ "$CORE_BRANCH" != "master" ]; then
+    if [ "$CORE_BRANCH" != "main" ]; then
         # Theme will need compiling
         
         # # Copy theme from container to host
