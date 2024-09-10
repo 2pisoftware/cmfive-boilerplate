@@ -198,13 +198,13 @@ The following options can be used with the Docker image. You may choose to use f
 - **DB_USERNAME:** The username to connect to the database
 - **DB_PASSWORD:** The password to connect to the database
 - **ENVIRONMENT:** (optional) The environment to run in (development, production). Defaults to production.
-- **CMFIVE_CORE_BRANCH:** (optional) The branch of the cmfive-core repository to switch to while the container is starting. If not specified it will use the baked-in core.
+- **INSTALL_CORE_BRANCH:** (optional) The branch of the cmfive-core repository to switch to while the container is starting. If not specified it will use the built-in core. Note: If this method is used, the theme will not be compiled automatically for the specified branch.
 
 #### Build args
 
-The following build args can be used to customise the Docker image if you are building a custom one:
+The following build args are optional and can be used to customise the Docker image if you are building a custom one:
 
-- **CORE_BRANCH:** The branch of the cmfive-core repository to bake in at build-time. Defaults to `main`.
+- **BUILT_IN_CORE_BRANCH:** The branch of the cmfive-core repository to bake in at build-time. The theme will also be compiled for this branch. Defaults to `main`.
 - **PHP_VERSION:** The version of PHP to use. See alpine linux packages for available versions. Defaults to the version in the Dockerfile (eg 81).
 - **UID:** The user ID to use for the cmfive user. Defaults to 1000.
 - **GID:** The group ID to use for the cmfive user. Defaults to 1000.
