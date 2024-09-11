@@ -7,13 +7,13 @@ jobs:
     # WORKS for: StephaneBour/actions-php-lint@8.1 = simply "php -l"
     phplint:
         name: PHP Lint
-        runs-on: ubuntu-latest
+        runs-on: linux-arm
         steps:
             - uses: actions/checkout@v4
             - uses: overtrue/phplint@9.1.2
     php-codesniffer74:
         name: PHP CS 7.4
-        runs-on: ubuntu-latest
+        runs-on: linux-arm
         steps:
             - name: Codesniffer
               uses: pipeline-components/php-codesniffer@v0.32.1
@@ -21,7 +21,7 @@ jobs:
                   options: -s -p --colors --extensions=php --runtime-set testVersion 7.4
     php-codesniffer80:
         name: PHP CS 8.0
-        runs-on: ubuntu-latest
+        runs-on: linux-arm
         steps:
             - name: Codesniffer
               uses: pipeline-components/php-codesniffer@v0.32.1
@@ -29,7 +29,7 @@ jobs:
                   options: -s -p --colors --extensions=php --runtime-set testVersion 8.0
     php-codesniffer81:
         name: PHP CS 8.1
-        runs-on: ubuntu-latest
+        runs-on: linux-arm
         steps:
             - name: Codesniffer
               uses: pipeline-components/php-codesniffer@v0.32.1
