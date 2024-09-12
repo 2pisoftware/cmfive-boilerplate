@@ -87,6 +87,7 @@ RUN apk --no-cache add \
     wget \
     unzip \
     icu-data-full \
+    tzdata \
     git
 
 # Link PHP cli
