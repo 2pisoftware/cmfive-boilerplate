@@ -148,6 +148,10 @@ COPY --chown=cmfive:cmfive \
 RUN chmod -R ugo=rwX cache/ storage/ uploads/ && \
     chown -R cmfive:cmfive /var/lib/nginx /var/log/nginx
 
+# Set default timezone
+ENV TZ=Australia/Sydney
+RUN ln -s /usr/share/zoneinfo/Australia/Sydney /etc/localtime
+
 # Expose HTTP, HTTPS
 EXPOSE 80 443
 
