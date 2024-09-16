@@ -103,4 +103,5 @@ jobs:
           dockerhub-password: ${{ secrets.DOCKER_TOKEN }}
 
   playwright:
+    needs: build-and-publish
     uses: ./.github/workflows/playwright.yml
