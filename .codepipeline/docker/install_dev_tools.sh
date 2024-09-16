@@ -10,7 +10,6 @@
 #   SKIP_PLAYWRIGHT=true ./install_dev_tools.sh
 
 #Settings
-PHPVERSION=81
 PHPUNIT=10
 
 # If CONTAINER is not defined, default to the container name of the webapp service in docker compose
@@ -71,7 +70,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # Run cmfive_dev_tools
-docker exec $CONTAINER sh -c "PHPUNIT=${PHPUNIT} PHPVERSION=${PHPVERSION} /home/cmfive/cmfive_dev_tools.sh"
+docker exec $CONTAINER sh -c "PHPUNIT=${PHPUNIT} /home/cmfive/cmfive_dev_tools.sh"
 if [ $? -ne 0 ]; then
     echo "❌  Error: cmfive_dev_tools.sh failed"
     exit 1
@@ -93,13 +92,22 @@ echo "🔨  Installing Playwright dependencies"
 # If not Debian or Ubuntu exit the script
 if ! command -v apt-get &> /dev/null; then
     echo "⚠️  WARNING: Playwright dependencies are only supported on Debian and Ubuntu"
+    echo
+    echo "There is a containerised version you can run instead"
+    echo "    test/playwright/docker_run.sh"
+    echo "Or to run a fresh container"
+    echo "    test/playwright/docker_run.sh --fresh"
+    echo ""
+    echo "Alternatively you can use the Visual Studio Code extension"
+    echo ""
     echo "✔️  Dev tools installed successfully"
     exit 0
 fi
 
 # Check if npm is installed on host machine
 if ! command -v npm &> /dev/null; then
-    echo "⚠️  WARNING: npm is not installed on this machine. Please install npm and run 'npm install' in the test directory"
+    echo "⚠️  WARNING: npm is not installed on this machine."
+    echo "Please install npm then install Playwright dependencies"
     echo "✔️  Dev tools installed successfully"
     exit 0
 fi

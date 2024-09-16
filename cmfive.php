@@ -1,4 +1,4 @@
-#!/bin/php
+#!/usr/bin/php
 <?php
 
 if (!(isset($argc) && isset($argv))) {
@@ -44,7 +44,7 @@ To add options:
 
 $menuMaker = [
     [
-        'option' => "Install core libraries", 'message' => "Installing core libraries", 'function' => "installCoreLibraries", 'param' => "master"
+        'option' => "Install core libraries", 'message' => "Installing core libraries", 'function' => "installCoreLibraries", 'param' => "main"
     ],
     [
         'option' => "Install database migrations", 'message' => "Installing migrations", 'function' => "installMigrations", 'param' => null
@@ -61,7 +61,7 @@ $cmdMaker = [
     'install' => [
         [
             'request' => "core", 'message' => "Installing core libraries", 'function' => "cmdinstallCoreLibraries", 'args' => true,
-            'hint' => "cmfive-core reference (default is 'master')", "default" => ['branch' => "master"]
+            'hint' => "cmfive-core reference (default is 'main')", "default" => ['branch' => "main"]
         ],
         [
             'request' => "migration", 'message' => "Installing migrations", 'function' => "installMigrations", 'args' => false
@@ -270,7 +270,7 @@ function installCoreLibraries($branch = null, $phpVersion = null)
     // name     : 2pisoftware/cmfive-core
     // descrip. :
     // keywords :
-    // versions : * master
+    // versions : * main
     // type     : library
     // source   : [git] https://github.com/2pisoftware/cmfive-core develop
     // dist     : []
@@ -321,7 +321,7 @@ function sketchComposerForCore($reference, $phpVersion)
     // name     : 2pisoftware/cmfive-core
     // descrip. :
     // keywords :
-    // versions : * master
+    // versions : * main
     // type     : library
     // source   : [git] https://github.com/2pisoftware/cmfive-core develop
     // dist     : []
@@ -337,7 +337,7 @@ function sketchComposerForCore($reference, $phpVersion)
             $phpVersion = "7.4";
         }
         if (is_null($reference) || is_null($phpVersion)) {
-            $reference = is_null($reference) ? "master" : $reference;
+            $reference = is_null($reference) ? "main" : $reference;
             $phpVersion = is_null($phpVersion) ? (PHP_MAJOR_VERSION .".". PHP_MINOR_VERSION) : $phpVersion;
         }
     }

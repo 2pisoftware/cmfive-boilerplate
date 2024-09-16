@@ -12,7 +12,8 @@
 
 desktop.ini
 docker-compose.override.yml
-.env 
+.env
+.codeql
 
 # IDE Fluff
 .settings
@@ -21,7 +22,6 @@ docker-compose.override.yml
 .metadata
 .phpintel
 nbproject/
-.vscode/
 .vs/
 
 # Composer

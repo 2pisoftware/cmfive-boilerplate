@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ================================================================
-# Prepare and install Cmfive
+# Prepare and install Cosine
 # ================================================================
 
 set -e
@@ -19,7 +19,7 @@ if [ "$SKIP_CMFIVE_AUTOSETUP" = true ]; then
     exit 0
 fi
 
-echo "🏗️  Setting up Cmfive"
+echo "🏗️  Setting up Cosine"
 
 #Copy the config template if config.php doens't exist
 if [ ! -f config.php ]; then
@@ -32,7 +32,7 @@ echo "Setting permissions"
 chmod ugo=rwX -R cache/ storage/ uploads/
 
 # ------------------------------------------------
-# Setup Cmfive
+# Setup Cosine
 # ------------------------------------------------
 
 echo "Running cmfive.php actions"
@@ -69,15 +69,21 @@ fi
 
 # If CMFIVE_CORE_BRANCH is set print to logs
 if [ -n "$CMFIVE_CORE_BRANCH" ]; then
-    echo "Using CMFIVE_CORE_BRANCH [ $CMFIVE_CORE_BRANCH ]"
+    echo "⚠️  CMFIVE_CORE_BRANCH is deprecated, please use INSTALL_CORE_BRANCH"
+    INSTALL_CORE_BRANCH=$CMFIVE_CORE_BRANCH
+fi
+
+# If INSTALL_CORE_BRANCH is set print to logs
+if [ -n "$INSTALL_CORE_BRANCH" ]; then
+    echo "🌿 Overriding built in core with branch \"$INSTALL_CORE_BRANCH\""
 fi
 
 # System dir and composer packages must exist
-if [ ! -f "/var/www/html/system/web.php" ] || [ ! -f "/var/www/html/composer.json" ] || [ -n "$CMFIVE_CORE_BRANCH" ]; then
-    CMFIVE_CORE_BRANCH=${CMFIVE_CORE_BRANCH:-master} # Default to master if not set
+if [ ! -f "/var/www/html/system/web.php" ] || [ ! -f "/var/www/html/composer.json" ] || [ -n "$INSTALL_CORE_BRANCH" ]; then
+    INSTALL_CORE_BRANCH=${INSTALL_CORE_BRANCH:-main} # Default to main if not set
     rm -rf /var/www/html/system # Remove system dir to ensure correct core is installed
-    echo "➕  Installing core from branch [ $CMFIVE_CORE_BRANCH ]"
-    php cmfive.php install core $CMFIVE_CORE_BRANCH
+    echo "➕  Installing core from branch [ $INSTALL_CORE_BRANCH ]"
+    php cmfive.php install core $INSTALL_CORE_BRANCH
     checkSymlink
     echo "✔️  New core installed"
 else
@@ -92,11 +98,11 @@ php cmfive.php install migrations
 if [ "$ENVIRONMENT" = "development" ]; then
     echo "🧑‍💻  Development mode"
     echo "Creating admin user"
-    php cmfive.php seed admin Admin Admin dev@2pisoftware.com admin admin
+    php cmfive.php seed admin admin admin dev@2pisoftware.com admin admin
 fi
 
 #Let container know that everything is finished
 echo "=========================="
-echo "✅  Cmfive setup complete"
+echo "✅  Cosine setup complete"
 echo "=========================="
 touch /home/cmfive/.cmfive-installed

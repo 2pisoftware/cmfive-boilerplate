@@ -4,9 +4,11 @@
 
 # This image provides a fully working cmfive instance
 
-# It provides two build arguments:
+# It provides the following build arguments:
 # - CORE_BRANCH: The branch to clone from the cmfive-core repository
 # - PHP_VERSION: The version of PHP to use
+# - UID: The user ID of the cmfive user
+# - GID: The group ID of the cmfive group
 
 # NOTE: See the .dockerignore file to see what is excluded from the image.
 
@@ -24,8 +26,8 @@ RUN apk --no-cache add \
     git
 
 # Clone github.com/2pisoftware/cmfive-core
-ARG CORE_BRANCH=master
-RUN git clone --depth 1 https://github.com/2pisoftware/cmfive-core.git -b $CORE_BRANCH
+ARG BUILT_IN_CORE_BRANCH=main
+RUN git clone --depth 1 https://github.com/2pisoftware/cmfive-core.git -b $BUILT_IN_CORE_BRANCH
 
 # Compile the theme
 RUN cd /cmfive-core/system/templates/base && \
@@ -44,10 +46,17 @@ FROM alpine:3.19
 # PHP version
 # note: see Alpine packages for available versions
 ARG PHP_VERSION=81
+ENV PHP_VERSION=$PHP_VERSION
+ARG UID=1000
+ARG GID=1000
 
-# Create cmfive user and group on ID 1000
-RUN addgroup -g 1000 cmfive && \
-    adduser -u 1000 -G cmfive -s /bin/bash -D cmfive
+# Create cmfive user and group
+RUN addgroup -g ${GID} cmfive && \
+    adduser -u ${UID} -G cmfive -s /bin/bash -D cmfive
+
+# Link PHP Config
+RUN mkdir -p /etc/php && \
+    ln -s /etc/php /etc/php$PHP_VERSION
 
 # Install required packages for PHP, Nginx etc
 RUN apk --no-cache add \
@@ -81,7 +90,7 @@ RUN apk --no-cache add \
     git
 
 # Link PHP cli
-RUN ln -s /usr/bin/php81 /usr/bin/php
+RUN ln -s /usr/bin/php${PHP_VERSION} /usr/bin/php
 
 # Create necessary directories
 RUN mkdir -p /var/www && \
@@ -97,7 +106,7 @@ RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
 COPY /.codepipeline/docker/configs/supervisord/supervisord.conf /etc/supervisord.conf
 COPY /.codepipeline/docker/configs/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY /.codepipeline/docker/configs/nginx/default.conf /etc/nginx/conf.d/default.conf
-COPY /.codepipeline/docker/configs/fpm/ /etc/php81/
+COPY /.codepipeline/docker/configs/fpm/ /etc/php/
 COPY /.codepipeline/docker/setup.sh /bootstrap/setup.sh
 COPY /.codepipeline/docker/config.default.php /bootstrap/config.default.php
 
@@ -141,9 +150,10 @@ RUN chmod -R ugo=rwX cache/ storage/ uploads/ && \
 # Expose HTTP, HTTPS
 EXPOSE 80 443
 
-# Healthcheck to ensure nginx is running and cmfive is installed
+# Healthcheck to ensure nginx and php-fpm is running and cmfive is installed
 HEALTHCHECK --interval=15s --timeout=5m --start-period=5s --retries=15 \
-  CMD curl -s -o /dev/null -w "%{http_code}" http://localhost | grep -q -E "^[1-3][0-9]{2}$" && \
+  CMD supervisorctl status nginx | grep -q "RUNNING" && \
+      supervisorctl status php-fpm | grep -q "RUNNING" && \
       test -f /home/cmfive/.cmfive-installed
 
 # Start supervisord
