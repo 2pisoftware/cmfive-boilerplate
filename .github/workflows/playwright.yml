@@ -1,10 +1,7 @@
 name: Playwright
 on:
   workflow_dispatch:
-  workflow_run:
-    workflows: ["Build and Publish Docker Image"]
-    types:
-      - completed
+  workflow_call:
 
 env:
   DB_HOST: mysql-8
