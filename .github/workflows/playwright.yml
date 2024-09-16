@@ -41,8 +41,11 @@ jobs:
 
       # Checkout core
       - name: Checkout core
-        run: |
-          git clone --branch ${{ env.CORE_BRANCH }}
+        uses: actions/checkout@v4
+        with:
+          repository: '2pisoftware/cmfive-core'
+          ref: ${{ env.CORE_BRANCH }}
+          path: core
 
       # Pull the boilerplate image and MySQL 8
       - name: Pull Docker images
