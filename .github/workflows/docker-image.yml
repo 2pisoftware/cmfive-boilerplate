@@ -50,6 +50,8 @@ jobs:
             org.opencontainers.image.title=Cmfive
             org.opencontainers.image.description=Cmfive in a docker image
             org.opencontainers.image.vendor=2pisoftware
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.version=${{ github.ref }}
 
       # Login to GHCR
       - name: Login to GitHub Container Registry
