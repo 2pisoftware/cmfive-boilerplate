@@ -1,8 +1,8 @@
 # ==========================================================================
-# ## Cmfive docker image ##
+# ## Cosine docker image ##
 # ==========================================================================
 
-# This image provides a fully working cmfive instance
+# This image provides a fully working Cosine instance
 
 # It provides the following build arguments:
 # - CORE_BRANCH: The branch to clone from the cmfive-core repository
@@ -29,16 +29,20 @@ RUN apk --no-cache add \
 ARG BUILT_IN_CORE_BRANCH=main
 RUN git clone --depth 1 https://github.com/2pisoftware/cmfive-core.git -b $BUILT_IN_CORE_BRANCH
 
+# Get the repo metadata
+RUN cd /cmfive-core && \
+    git log -1 --pretty=format:"CORE_HASH=\"%H\"%nCORE_COMMIT_MSG=\"%s\"%nCORE_REF=\"%D\"" > /.core-metadata
+
 # Compile the theme
 RUN cd /cmfive-core/system/templates/base && \
     npm ci && \
     npm run production
 
 # --------------------------------------------------------------------------
-# == Cmfive stage ==
+# == Cosine stage ==
 # --------------------------------------------------------------------------
 
-# This stage builds the final cmfive image
+# This stage builds the final Cosine image
 
 # Use the Alpine Linux base image
 FROM alpine:3.19
@@ -124,6 +128,12 @@ COPY --chown=cmfive:cmfive \
     --from=core \
     /cmfive-core/system/ \
     composer/vendor/2pisoftware/cmfive-core/system/
+
+# Metadata for core
+COPY --chown=cmfive:cmfive \
+    --from=core \
+    /.core-metadata \
+    /.core-metadata
 
 # Link system
 RUN ln -s composer/vendor/2pisoftware/cmfive-core/system/ system
