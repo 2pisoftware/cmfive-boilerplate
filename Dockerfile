@@ -25,8 +25,11 @@ FROM node:20-alpine AS core
 RUN apk --no-cache add \
     git
 
-# Clone github.com/2pisoftware/cmfive-core
+# Set the default branch to clone
 ARG BUILT_IN_CORE_BRANCH=main
+# Invalidate the cache if the branch has changed
+ADD https://api.github.com/repos/2pisoftware/cmfive-core/git/refs/heads/$BUILT_IN_CORE_BRANCH /version.json
+# Clone github.com/2pisoftware/cmfive-core
 RUN git clone --depth 1 https://github.com/2pisoftware/cmfive-core.git -b $BUILT_IN_CORE_BRANCH
 
 # Compile the theme
@@ -41,7 +44,7 @@ RUN cd /cmfive-core/system/templates/base && \
 # This stage builds the final cmfive image
 
 # Use the Alpine Linux base image
-FROM alpine:3.19
+FROM alpine:3.19.4
 
 # PHP version
 # note: see Alpine packages for available versions
