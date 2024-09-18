@@ -120,3 +120,6 @@ jobs:
   playwright:
     needs: build-and-publish
     uses: ./.github/workflows/playwright.yml
+    # Only run on pull requests
+    if: github.event_name == 'pull_request'
+    
