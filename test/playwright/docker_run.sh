@@ -7,6 +7,10 @@
 
 # Bootstrap this script in the Playwright container
 if [ -z "$IS_PLAYWRIGHT_CONTAINER" ]; then
+    # Explicitly prep DB for testing:
+    echo "Backup and snaphsot DB with migrations"
+    docker exec -t cmfive bash -c "php cmfive.php testDB setup"
+
     # Get the directory of the script
     TESTDIR=$(dirname -- "$( readlink -f -- "$0"; )";)
     
@@ -29,10 +33,16 @@ if [ -z "$IS_PLAYWRIGHT_CONTAINER" ]; then
          -v ms-playwright-data-cmfive:/ms-playwright \
          --ipc=host \
          --network=host \
-         --user $(id -u):$(id -g) \
          --cap-add=SYS_ADMIN \
          mcr.microsoft.com/playwright:v1.45.1-jammy \
-         /cmfive-boilerplate/test/playwright/docker_run.sh
+         "/cmfive-boilerplate/test/playwright/docker_run.sh"
+
+    # OK, now we are done with the Playwright container
+    # Consider cleanup:
+    # We can hold the DB as-is, for further manual testing.
+    # But should clean up migration artefacts, to avoid git diff.
+    bash cleanupTestMigrations.sh 
+    # but no: npm run cleanup
     
     # Open ./test-results in the default file manager
     if [ -d $TESTDIR/test-results ]; then
@@ -67,18 +77,38 @@ wait_for_response() {
     echo "$url responded"
 }   
 
+
+# Australianise things:
+apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y locales
+locale-gen en_AU.UTF-8
+update-locale en_AU.UTF-8
+LANG=en_AU.UTF-8
+LC_ALL=en_AU.UTF-8
+locale
+
+apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -yq tzdata && \
+    ln -fs /usr/share/zoneinfo/Australia/Sydney /etc/localtime && \
+    dpkg-reconfigure -f noninteractive tzdata
+date
+
+# Shift into test environment
 cd /cmfive-boilerplate/test/playwright
 
 npm i
 npx playwright install
-npm run setup
 npm run build
-npm run cleanup
+# we don't need setup, as we intitiated it already from host CLI scope, before test container re-entry.
+# so, no: npm run setup
 
 wait_for_response "http://localhost:3000" 30
 
-export WORKERS=3
-export RETRIES=2
+export WORKERS=1
+
+# unless we restore our 'empty' target DB, we cannot achieve useful retries!
+# this is the purpose of "npm_config_clean=true"
+# but node (from in here) will make a mess of the Playwright package.json Docker assumptions.
+export RETRIES=0
 
 npm run test
 
