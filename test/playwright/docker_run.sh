@@ -40,6 +40,8 @@ if [ -z "$IS_PLAYWRIGHT_CONTAINER" ]; then
 
     docker run -it --rm \
         -e IS_PLAYWRIGHT_CONTAINER=1 \
+        -e LANG=en_AU.UTF-8 \
+        -e LC_ALL=en_AU.UTF-8 \
         -v ms-playwright-data-cmfive:/ms-playwright \
         -v $PROJECTDIR:/cmfive-boilerplate \
         --ipc=host \
@@ -99,6 +101,9 @@ wait_for_response() {
 }
 
 wait_for_response "http://localhost:3000" 60
+
+locale
+date
 
 cd /cmfive-boilerplate/test/playwright
 npm i
