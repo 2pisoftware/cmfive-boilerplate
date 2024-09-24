@@ -21,7 +21,7 @@ fi
 
 echo "🏗️  Setting up Cosine"
 
-#Copy the config template if config.php doens't exist
+#Copy the config template if config.php doesn't exist
 if [ ! -f config.php ]; then
     echo "Installing config.php"
     cp /bootstrap/config.default.php config.php
