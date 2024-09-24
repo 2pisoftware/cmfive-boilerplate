@@ -27,6 +27,15 @@ if [ ! -f config.php ]; then
     cp /bootstrap/config.default.php config.php
 fi
 
+# Add custom config
+if [ -n "$CUSTOM_CONFIG" ]; then
+    echo "➕  Adding custom config"
+    # Remove existing custom config between markers
+    sed -i '/# BEGIN CUSTOM CONFIG/,/# END CUSTOM CONFIG/d' config.php
+    # Add new custom config
+    echo -e "\n# BEGIN CUSTOM CONFIG\n${CUSTOM_CONFIG}\n# END CUSTOM CONFIG" >> config.php
+fi
+
 #Ensure necessary directories have the correct permissions
 echo "Setting permissions"
 chmod ugo=rwX -R cache/ storage/ uploads/

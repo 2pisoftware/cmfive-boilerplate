@@ -5,11 +5,11 @@ services:
     container_name: mysql-8
     hostname: mysql-8
     environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_USER=cmfive
-      - MYSQL_PASSWORD=cmfive
-      - MYSQL_DATABASE=cmfive
-      - TZ=Australia/Sydney
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: cmfive
+      MYSQL_PASSWORD: cmfive
+      MYSQL_DATABASE: cmfive
+      TZ: Australia/Sydney
     volumes:
       - dbdata:/var/lib/mysql:delegated
     networks:
@@ -28,12 +28,15 @@ services:
     container_name: cmfive
     hostname: nginx-php8.1
     environment:
-      - TZ=Australia/Sydney
-      - DB_HOST=mysqldb
-      - DB_DATABASE=cmfive
-      - DB_USERNAME=cmfive
-      - DB_PASSWORD=cmfive
-      - ENVIRONMENT=development
+      TZ: Australia/Sydney
+      DB_HOST: mysqldb
+      DB_DATABASE: cmfive
+      DB_USERNAME: cmfive
+      DB_PASSWORD: cmfive
+      DB_PORT: 3306
+      ENVIRONMENT: development
+      CUSTOM_CONFIG: |
+        Config::set('tests', ['testrunner' => 'ENABLED']);
     volumes:
       - ./:/var/www/html:rw
     ports:
