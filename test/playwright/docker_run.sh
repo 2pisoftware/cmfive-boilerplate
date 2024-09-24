@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Exit on error
+set -e
+
 # This script is used to run the Playwright tests in a container
 # usage: ./docker_run.sh
 # Or to refresh the Cmfive Docker containers before running the tests
@@ -9,7 +12,11 @@
 if [ -z "$IS_PLAYWRIGHT_CONTAINER" ]; then
     # Explicitly prep DB for testing:
     echo "Backup and snaphsot DB with migrations"
-    docker exec -t cmfive bash -c "php cmfive.php testDB setup"
+    if docker exec -t cmfive bash -c "php cmfive.php testDB setup"; then
+        echo "Success: Setup test DB"
+    else
+        echo "Warning: Failed to setup test DB"
+    fi
 
     # Get the directory of the script
     TESTDIR=$(dirname -- "$( readlink -f -- "$0"; )";)
@@ -27,15 +34,23 @@ if [ -z "$IS_PLAYWRIGHT_CONTAINER" ]; then
         docker compose up -d --wait
     fi
 
+    docker build -t playwright-cosine -f $TESTDIR/playwright.Dockerfile $PROJECTDIR
+
+    set +e
+
     docker run -it --rm \
-         -e IS_PLAYWRIGHT_CONTAINER=1 \
-         -v $PROJECTDIR:/cmfive-boilerplate \
-         -v ms-playwright-data-cmfive:/ms-playwright \
-         --ipc=host \
-         --network=host \
-         --cap-add=SYS_ADMIN \
-         mcr.microsoft.com/playwright:v1.45.1-jammy \
-         "/cmfive-boilerplate/test/playwright/docker_run.sh"
+        -e IS_PLAYWRIGHT_CONTAINER=1 \
+        -v ms-playwright-data-cmfive:/ms-playwright \
+        -v $PROJECTDIR:/cmfive-boilerplate \
+        --ipc=host \
+        --network=host \
+        --cap-add=SYS_ADMIN \
+        playwright-cosine \
+        "/cmfive-boilerplate/test/playwright/docker_run.sh"
+        
+    DOCKER_EXIT_CODE=$?
+
+    set -e
 
     # OK, now we are done with the Playwright container
     # Consider cleanup:
@@ -52,7 +67,13 @@ if [ -z "$IS_PLAYWRIGHT_CONTAINER" ]; then
             open $TESTDIR/test-results
         fi
     fi
-    
+
+    if [ $DOCKER_EXIT_CODE -ne 0 ]; then
+        echo "Playwright container exited with code $DOCKER_EXIT_CODE"
+        exit $DOCKER_EXIT_CODE
+    fi
+
+    echo "Success: Playwright tests completed"
     exit
 fi
 
@@ -75,39 +96,18 @@ wait_for_response() {
     fi
     echo ""
     echo "$url responded"
-}   
+}
 
+wait_for_response "http://localhost:3000" 60
 
-# Australianise things:
-apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y locales
-locale-gen en_AU.UTF-8
-update-locale en_AU.UTF-8
-LANG=en_AU.UTF-8
-LC_ALL=en_AU.UTF-8
-locale
-
-apt-get update && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -yq tzdata && \
-    ln -fs /usr/share/zoneinfo/Australia/Sydney /etc/localtime && \
-    dpkg-reconfigure -f noninteractive tzdata
-date
-
-# Shift into test environment
 cd /cmfive-boilerplate/test/playwright
-
 npm i
-npx playwright install
 npm run build
-# we don't need setup, as we intitiated it already from host CLI scope, before test container re-entry.
-# so, no: npm run setup
 
-wait_for_response "http://localhost:3000" 30
-
+# Run the tests, recommended 1 worker for Playwright for memory usage
 export WORKERS=1
 
-# unless we restore our 'empty' target DB, we cannot achieve useful retries!
-# this is the purpose of "npm_config_clean=true"
-# but node (from in here) will make a mess of the Playwright package.json Docker assumptions.
+# Retry failed tests, recommended 0 retries because of data consistency
 export RETRIES=0
 
 npm run test
