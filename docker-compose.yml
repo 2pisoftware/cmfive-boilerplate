@@ -33,6 +33,7 @@ services:
       DB_DATABASE: cmfive
       DB_USERNAME: cmfive
       DB_PASSWORD: cmfive
+      DB_PORT: 3306
       ENVIRONMENT: development
       CUSTOM_CONFIG: |
         Config::set('tests', ['testrunner' => 'ENABLED']);
