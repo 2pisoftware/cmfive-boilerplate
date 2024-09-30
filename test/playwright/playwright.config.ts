@@ -1,6 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
+    workers: process.env.WORKERS ? parseInt(process.env.WORKERS, 10) : undefined,
+    retries: process.env.RETRIES ? parseInt(process.env.RETRIES, 10) : undefined,
     use: {
         trace: 'retain-on-failure',
         screenshot: 'only-on-failure',
@@ -24,10 +26,10 @@ export default defineConfig({
 
         // Mobile doesn't work
         /* Test against mobile viewports. */
-        // {
-        //     name: 'Mobile Chrome',
-        //     use: { ...devices['Pixel 5'] },
-        // },
+        {
+            name: 'Mobile Chrome',
+            use: { ...devices['Pixel 5'] },
+        },
         // {
         //     name: 'Mobile Safari',
         //     use: { ...devices['iPhone 12'] },

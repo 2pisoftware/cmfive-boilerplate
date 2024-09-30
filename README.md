@@ -115,13 +115,17 @@ docker compose exec -it -u cmfive webapp sh
 docker compose exec -it -u root webapp sh
 ```
 
-### Running tests
+### Debugging and testing
 
 Ensure you have installed the dev tools first. You can do this by running the following command:
 
 ```sh
 ./.codepipeline/docker/install_dev_tools.sh
 ```
+
+#### Xdebug
+
+Once you have the dev tools installed you can start debugging in VS Code by running the `Listen for Xdebug` configuration. This will start the debugger and you can set breakpoints in your code.
 
 #### Playwright
 
@@ -193,15 +197,18 @@ The following options can be used with the Docker image. You may choose to use f
 - **DB_DATABASE:** The name of the database
 - **DB_USERNAME:** The username to connect to the database
 - **DB_PASSWORD:** The password to connect to the database
+- **CUSTOM_COFIG:** (optional) Custom configuration to add to the config.php file.
 - **ENVIRONMENT:** (optional) The environment to run in (development, production). Defaults to production.
-- **CMFIVE_CORE_BRANCH:** (optional) The branch of the cmfive-core repository to switch to while the container is starting. If not specified it will use the baked-in core.
+- **INSTALL_CORE_BRANCH:** (optional) The branch of the cmfive-core repository to switch to while the container is starting. If not specified it will use the built-in core. Note: If this method is used, the theme will not be compiled automatically for the specified branch.
 
 #### Build args
 
-The following build args can be used to customise the Docker image if you are building a custom one:
+The following build args are optional and can be used to customise the Docker image if you are building a custom one:
 
-- **CORE_BRANCH:** The branch of the cmfive-core repository to bake in at build-time. Defaults to `master`.
+- **BUILT_IN_CORE_BRANCH:** The branch of the cmfive-core repository to bake in at build-time. The theme will also be compiled for this branch. Defaults to `main`.
 - **PHP_VERSION:** The version of PHP to use. See alpine linux packages for available versions. Defaults to the version in the Dockerfile (eg 81).
+- **UID:** The user ID to use for the cmfive user. Defaults to 1000.
+- **GID:** The group ID to use for the cmfive user. Defaults to 1000.
 
 #### Volumes
 
@@ -225,6 +232,28 @@ A self-signed SSL/TLS certificate is included in the image. If you require a cer
 If you have custom modules you can mount them to the following directory:
 
 - **/var/www/html/modules/name-of-module**
+
+**PHP Configuration**
+
+If you need to customise the PHP configuration you can mount a file to the path `/etc/php/conf.d/` for example:
+
+- **/etc/php/conf.d/99-custom.ini**
+
+If you want to configure PHP-FPM entirely, you can override:
+
+- **/etc/php/php-fpm.conf**, and/or
+- **/etc/php/php-fpm.d/www.conf**
+
+**Nginx Configuration**
+
+If you need to customise the Nginx configuration you can mount a file to the path `/etc/nginx/conf.d/` for example:
+
+- **/etc/nginx/conf.d/99-custom.conf**
+
+If you want to customise Nginx entirely, you can override:
+
+- **/etc/nginx/nginx.conf**, and/or
+- **/etc/nginx/conf.f/default.conf**
 
 #### Ports
 

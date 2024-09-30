@@ -30,20 +30,34 @@ export class CmfiveHelper {
 
     static getRowByText(page: Page, text: string)
     {
-        return page.locator("tr", { has: page.getByText(text, {exact: true}) }); // page.locator('tr:has-text("' + text + '")');
+        return page.locator("tr", { has: page.getByText(text, {exact: true}) });
     }
 
-    static async clickCmfiveNavbar(page: Page, category: string, option: string)
+    static async clickCmfiveNavbar(page: Page, isMobile: boolean, category: string, option: string)
     {
-        const navbarCategory = page.locator("#topnav_" + category.toLowerCase().split(" ").join("_"));
         const bootstrap5 = await this.isBootstrap5(page);
-        if (bootstrap5) {
+
+        if (isMobile)
+            if (bootstrap5)
+                await page.locator(".bi-list").first().click();
+            else
+                await page.getByRole("link", {name: "Menu"}).click();
+
+        const navbarCategory = isMobile && bootstrap5
+            ? page.locator("#accordion_menu_" + category.toLowerCase().split(" ").join("_") + "_heading")
+            : page.locator("#topnav_" + category.toLowerCase().split(" ").join("_"));
+
+        if (bootstrap5 || isMobile) {
             await navbarCategory.click();
         } else { // Foundation
             await navbarCategory.hover();
         }
 
-        await navbarCategory.getByRole('link', {name: option, exact: true}).click();
+        if (bootstrap5 && isMobile)
+            await page.locator("#accordion_menu_" + category.toLowerCase().split(" ").join("_"))
+                .getByRole('link', {name: option, exact: true}).click();
+        else
+            await navbarCategory.getByRole('link', {name: option, exact: true}).click();
     }
 
     // Call exactly once per test before any dialogs pop up
@@ -68,5 +82,34 @@ export class CmfiveHelper {
         await page.keyboard.type(search);
         await page.locator('.ui-menu-item :text("' + value + '")').click();
     }
+
+    // Finds substring in string with given position
+    static findString(target: string, searchText: string, searchPosition?: 'start' | 'end'): boolean {
+        if (searchPosition === 'start') {
+            return target.startsWith(searchText);
+        } else if (searchPosition === 'end') {
+            return target.endsWith(searchText);
+        } else {
+            return target.includes(searchText);
+        }
+        }
+    
+    // Finds a cell in a table by an item in its row and the column header
+    static async getColumnByText(page: Page, rowText: string, columnText: string,  searchPosition?: 'start' | 'end'){
+        const headers = page.locator('table thead tr th');
+        let columnIndex: number | undefined;
+
+        // iterate through the columns until a header contains, begins or starts with columnText
+        for (let i = 0; i < (await headers.count()); i++) {
+            const headerText = await headers.nth(i).textContent();
+            if (CmfiveHelper.findString(headerText?.trim(),columnText, searchPosition)) {
+            columnIndex = i; // index for nth-child selector
+            break;
+            }
+        }
+        const row = CmfiveHelper.getRowByText(page, rowText); 
+        return row.getByRole("cell").nth(columnIndex);
+    }
+    
 
 }
