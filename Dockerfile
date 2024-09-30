@@ -52,7 +52,7 @@ FROM alpine:3.20.3
 
 # PHP version
 # note: see Alpine packages for available versions
-ARG PHP_VERSION=81
+ARG PHP_VERSION=83
 ENV PHP_VERSION=$PHP_VERSION
 ARG UID=1000
 ARG GID=1000
@@ -97,8 +97,7 @@ RUN apk --no-cache add \
     git
 
 # Link PHP cli
-RUN ln -s /usr/bin/php$PHP_VERSION /usr/bin/php && \
-    ln -s /usr/sbin/php-fpm$PHP_VERSION /usr/sbin/php-fpm
+RUN ln -s /usr/sbin/php-fpm$PHP_VERSION /usr/sbin/php-fpm
 
 # Create necessary directories
 RUN mkdir -p /var/www && \
