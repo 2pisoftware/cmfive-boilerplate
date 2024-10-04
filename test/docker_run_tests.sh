@@ -174,6 +174,7 @@ fi
 cd /cmfive-boilerplate/test/playwright
 
 ls -lah
+ls ../Databases -lah
 npm i
 npm run build
 ls src -lah
