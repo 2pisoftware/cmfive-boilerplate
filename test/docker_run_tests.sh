@@ -172,8 +172,11 @@ if [ ! -z $TEST_NODE_VERSION ]; then
 fi
 
 cd /cmfive-boilerplate/test/playwright
+
+ls -lah
 npm i
 npm run build
+ls src -lah
 
 # Run the tests, recommended 1 worker for Playwright for memory usage
 export WORKERS=1
