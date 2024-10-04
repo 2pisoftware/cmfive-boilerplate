@@ -9,9 +9,11 @@ set +e
 # Node version can be specified, WARNING Playwright&Cosine will not be expected to support all node versions!
 # usage: ./docker_run.sh --fresh
 # usage: ./docker_run.sh --node_ver 18
+# usage: ./docker_run.sh --cosine_container [default is 'cmfive']
 
 freshen_all=""
 test_node_version=""
+cosine_container="cmfive"
 
 while test $# != 0
 do
@@ -20,21 +22,16 @@ do
     --node_ver)
         shift; test_node_version=$1 ;;
     --) shift; break;;
+    --cosine_container)
+        shift; cosine_container=$1 ;;
+    --) shift; break;;
     esac
     shift
 done
 
 # Bootstrap this script in the Playwright container
 if [ -z "$IS_PLAYWRIGHT_CONTAINER" ]; then
-    # Explicitly prep DB for testing:
-    echo "Backup and snaphsot DB with migrations"
-    docker exec -t cmfive bash -c "DB_HOST=mysql-8 DB_USERNAME=$DB_USERNAME DB_PASSWORD=$DB_PASSWORD DB_DATABASE=$DB_DATABASE DB_PORT=3306 php cmfive.php testDB setup"
-    DB_SETUP_EXIT_CODE=$?
-    if [ $DB_SETUP_EXIT_CODE -ne 0 ]; then
-        echo "Warning: Failed to setup test DB"
-        exit $DB_SETUP_EXIT_CODE
-    fi
-    echo "Success: Setup test DB"
+
 
     # Get the directory of the script
     TESTDIR=$(dirname -- "$( readlink -f -- "$0"; )";)
@@ -45,7 +42,7 @@ if [ -z "$IS_PLAYWRIGHT_CONTAINER" ]; then
         PROJECTDIR="$(dirname "$PROJECTDIR")"
         echo "PROJECTDIR: $PROJECTDIR"
         echo "TESTDIR: $TESTDIR"
-        if [ "$PROJECTDIR" == "/" ]; then
+        if [ "$PROJECTDIR" = "/" ]; then
             echo "Panic: docker-compose.yml not found, be sure to run this script from the test directory"
             exit 2
         fi
@@ -58,8 +55,36 @@ if [ -z "$IS_PLAYWRIGHT_CONTAINER" ]; then
         docker compose up -d --wait
     fi
     
+    system_is_at=$(readlink -f $PROJECTDIR/system)
+    echo ">> CONTAINER LABELS (BOILERPLATE) <<"
+    echo "===================================="
+    docker inspect --format='{{range $key, $value := .Config.Labels}}{{$key}}={{$value}}{{println}}{{end}}' cmfive
+    echo ">> CONTAINER LABELS (CORE COMMIT) <<"
+    echo "===================================="
+    echo "VENDOR DIRECTORY:"
+    docker exec -u root $cosine_container sh -c "cd composer/vendor/2pisoftware/cmfive-core && git log -1 --pretty=format:"CORE_HASH=\"%H\"%nCORE_COMMIT_MSG=\"%s\"%nCORE_REF=\"%D\"""
+    echo ""
+    if cd $system_is_at/.. ; then
+        echo ""
+        echo ">> TESTS ON BRANCH (CORE COMMIT) <<"
+        echo "===================================="
+        echo "MOUNTED CORE from $system_is_at: (this is mounted to /system)"
+        git log -1 --pretty=format:"CORE_HASH=\"%H\"%nCORE_COMMIT_MSG=\"%s\"%nCORE_REF=\"%D\""
+        echo ""
+    fi
+
+    # Explicitly prep DB for testing:
+    echo "Backup and snaphsot DB with migrations"
+    docker exec -u cmfive $cosine_container sh -c "DB_HOST=mysql-8 DB_USERNAME=$DB_USERNAME DB_PASSWORD=$DB_PASSWORD DB_DATABASE=$DB_DATABASE DB_PORT=3306 php cmfive.php testDB setup"
+    DB_SETUP_EXIT_CODE=$?
+    if [ $DB_SETUP_EXIT_CODE -ne 0 ]; then
+        echo "Warning: Failed to setup test DB"
+        exit $DB_SETUP_EXIT_CODE
+    fi
+    echo "Success: Setup test DB"
+
     # First, Run Unit Tests
-    docker exec -u cmfive cmfive sh -c "DB_HOST=mysql-8 DB_USERNAME=$DB_USERNAME DB_PASSWORD=$DB_PASSWORD DB_DATABASE=$DB_DATABASE DB_PORT=3306 php cmfive.php tests unit all; exit \$?"
+    docker exec -u cmfive $cosine_container sh -c "DB_HOST=mysql-8 DB_USERNAME=$DB_USERNAME DB_PASSWORD=$DB_PASSWORD DB_DATABASE=$DB_DATABASE DB_PORT=3306 php cmfive.php tests unit all; exit \$?"
     UNIT_TESTS_EXIT_CODE=$?
     if [ $UNIT_TESTS_EXIT_CODE -ne 0 ]; then
         echo "Unit tests failed: $UNIT_TESTS_EXIT_CODE"
@@ -126,11 +151,12 @@ wait_for_response() {
 
 wait_for_response "http://localhost:3000" 60
 
-chmod -R 755 .
+# Tests will assume playwright code is executable
+# we should rely on deployment methods already to have provisioned:
+# chmod -R 755 .
 whoami
 locale
 date
-
 
 # if TEST_NODE_VERSION is set, adopt version
 

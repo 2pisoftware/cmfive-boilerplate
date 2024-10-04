@@ -117,9 +117,12 @@ jobs:
           done
           
       # Pre-requisites Prepare Cmfive Environment
-      - name: Setup cmfive Test Environment
-        run: |
-          docker exec -t cmfive sh -c "chmod -R ugo=rwX /var/www/html*"
+
+      # Tests will assume playwright code is executable
+      # we should rely on deployment methods already to have provisioned:
+      # - name: Setup cmfive Test Environment
+      #   run: |
+      #     docker exec -t cmfive sh -c "chmod -R ugo=rwX /var/www/html*"
 
       - name: Inject configs into cmfive Test Environment
         run: |
@@ -145,7 +148,7 @@ jobs:
 
       - name: Run Unit and Playwright tests
         run: |
-          test/docker_run_tests.sh
+          sh test/docker_run_tests.sh --cosine_container cmfive
             
       - name: Get container logs
         if: ${{ failure() }} || ${{ success() }}
@@ -166,7 +169,7 @@ jobs:
         if: ${{ failure() }} || ${{ success() }}
         uses: actions/upload-artifact@v4
         with:
-          name: test-output-${{matrix.node_version}}
+          name: test-output
           path: |
             boilerplate/storage/log/
             boilerplate/test/playwright/test-results/
