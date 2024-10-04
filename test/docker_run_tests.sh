@@ -94,7 +94,7 @@ if [ -z "$IS_PLAYWRIGHT_CONTAINER" ]; then
 
     docker build -t playwright-cosine -f $TESTDIR/test_service.Dockerfile $PROJECTDIR
 
-    docker run -it --rm \
+    docker run -t --rm \
         -e IS_PLAYWRIGHT_CONTAINER=1 \
         -e LANG=en_AU.UTF-8 \
         -e LC_ALL=en_AU.UTF-8 \
