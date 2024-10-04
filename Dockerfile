@@ -94,6 +94,7 @@ RUN apk --no-cache add \
     wget \
     unzip \
     icu-data-full \
+    tzdata \
     git
 
 # Link PHP cli
@@ -159,6 +160,10 @@ COPY --chown=cmfive:cmfive \
 # Fix permissions
 RUN chmod -R ugo=rwX cache/ storage/ uploads/ && \
     chown -R cmfive:cmfive /var/lib/nginx /var/log/nginx
+
+# Set default timezone
+ENV TZ=Australia/Sydney
+RUN ln -s /usr/share/zoneinfo/Australia/Sydney /etc/localtime
 
 # Expose HTTP, HTTPS
 EXPOSE 80 443
