@@ -94,6 +94,10 @@ if [ -z "$IS_PLAYWRIGHT_CONTAINER" ]; then
 
     docker build -t playwright-cosine -f $TESTDIR/test_service.Dockerfile $PROJECTDIR
 
+    # Tests SHOULD assume playwright code is executable
+    # but if this script is not -x- the container won't launch!
+    # chmod -R 755 $TESTDIR
+
     docker run -t --rm \
         -e IS_PLAYWRIGHT_CONTAINER=1 \
         -e LANG=en_AU.UTF-8 \
