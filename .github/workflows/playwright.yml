@@ -120,9 +120,9 @@ jobs:
 
       # Tests will assume playwright code is executable
       # we should rely on deployment methods already to have provisioned:
-      # - name: Setup cmfive Test Environment
-      #   run: |
-      #     docker exec -t cmfive sh -c "chmod -R ugo=rwX /var/www/html*"
+      - name: Setup cmfive Test Environment
+        run: |
+          docker exec -t cmfive sh -c "chmod -R ugo=rwX /var/www/html*"
 
       - name: Inject configs into cmfive Test Environment
         run: |
