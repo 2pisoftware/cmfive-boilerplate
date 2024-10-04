@@ -96,7 +96,7 @@ if [ -z "$IS_PLAYWRIGHT_CONTAINER" ]; then
 
     # Tests SHOULD assume playwright code is executable
     # but if this script is not -x- the container won't launch!
-    sudo chmod -R 755 $TESTDIR
+    sudo chmod 755 $TESTDIR/docker_run_tests.sh
 
     docker run -t --rm \
         -e IS_PLAYWRIGHT_CONTAINER=1 \
