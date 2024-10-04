@@ -148,7 +148,7 @@ jobs:
 
       - name: Run Unit and Playwright tests
         run: |
-          sh test/docker_run_tests.sh --cosine_container cmfive
+          sh ./boilerplate/test/docker_run_tests.sh --cosine_container cmfive
             
       - name: Get container logs
         if: ${{ failure() }} || ${{ success() }}
