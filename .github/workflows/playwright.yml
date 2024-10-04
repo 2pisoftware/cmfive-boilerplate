@@ -143,88 +143,9 @@ jobs:
             echo "⚠️  WARNING: could not find dev tools in boilerplate"
           fi
 
-      - name: Prepare cmfive Test DB
+      - name: Run Unit and Playwright tests
         run: |
-          docker exec -t cmfive sh -c "DB_HOST=mysql-8 DB_USERNAME=root DB_PASSWORD=root DB_DATABASE=$DB_DATABASE DB_PORT=3306 php cmfive.php testDB setup; exit \$?";
-
-      # Setup Node
-      - uses: actions/setup-node@v4
-        with:
-            node-version: 20
-        
-      # Run Unit Tests
-      - name: "Run unit tests"
-        run: |
-          docker exec -u root cmfive chmod -R ugo=rwX /var/www/html/test/
-          docker exec -u cmfive cmfive sh -c "DB_HOST=mysql-8 DB_USERNAME=$DB_USERNAME DB_PASSWORD=$DB_PASSWORD DB_DATABASE=$DB_DATABASE DB_PORT=3306 php cmfive.php tests unit all; exit \$?"
-          if [ $? -gt 0 ]; then
-            echo "Admin module tests failed"
-          fi
-      # Setup playwright
-      - name: Setup Playwright
-        run: |
-          echo "Installing Playwright"
-          cd boilerplate/test/playwright
-          npm ci
-          npx playwright install --with-deps
-
-      - name: "Run admin module tests"
-        run: |
-            docker exec -u root cmfive sh -c "chmod ugo=rwX -R /var/www/html/system/modules/admin/install/migrations/"
-            cd boilerplate/test/playwright
-            npm run build
-            npm run test --module="admin" --reporter="github"
-            if [ $? -gt 0 ]; then
-                echo "Admin module tests failed"
-            fi
-      - name: "Run channel module tests"
-        run: |
-            cd boilerplate/test/playwright
-            npm run build
-            npm run test --module="channel" --reporter="github"
-            if [ $? -gt 0 ]; then
-                echo "Channel module tests failed"
-            fi
-      - name: "Run form module tests"
-        run: |
-            cd boilerplate/test/playwright
-            npm run build
-            npm run test --module="form" --reporter="github"
-            if [ $? -gt 0 ]; then
-                echo "Form module tests failed"
-            fi
-      - name: "Run report module tests"
-        run: |
-          cd boilerplate/test/playwright
-          npm run build
-          npm run test --module="report" --reporter="github"
-          if [ $? -gt 0 ]; then
-            echo "Report module tests failed"
-          fi
-      - name: "Run tag module tests"
-        run: |
-            cd boilerplate/test/playwright
-            npm run build
-            npm run test --module="tag" --reporter="github"
-            if [ $? -gt 0 ]; then
-                echo "Tag module tests failed"
-            fi
-      - name: "Run task module tests"
-        run: |
-            cd boilerplate/test/playwright
-            npm run build
-            npm run test --module="task" --reporter="github"
-            if [ $? -gt 0 ]; then
-                echo "Task module tests failed"
-            fi
-      - name: "Run timelog module tests"
-        run: |
-            cd boilerplate/test/playwright
-            npm run build
-            npm run test --module="timelog" --reporter="github"
-            if [ $? -gt 0 ]; then
-                echo "Timelog module tests failed"
-            fi
+          test/docker_run_tests.sh
             
       - name: Get container logs
         if: ${{ failure() }} || ${{ success() }}
@@ -247,7 +168,6 @@ jobs:
         with:
           name: test-output-${{matrix.node_version}}
           path: |
-            boilerplate/test/Codeception/tests/_output/
             boilerplate/storage/log/
             boilerplate/test/playwright/test-results/
             boilerplate/test/playwright/playwright-report/
