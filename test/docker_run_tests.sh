@@ -56,20 +56,21 @@ if [ -z "$IS_PLAYWRIGHT_CONTAINER" ]; then
     fi
     
     system_is_at=$(readlink -f $PROJECTDIR/system)
+    PAGER=cat
     echo ">> CONTAINER LABELS (BOILERPLATE) <<"
     echo "===================================="
     docker inspect --format='{{range $key, $value := .Config.Labels}}{{$key}}={{$value}}{{println}}{{end}}' cmfive
     echo ">> CONTAINER LABELS (CORE COMMIT) <<"
     echo "===================================="
     echo "VENDOR DIRECTORY:"
-    docker exec -u root $cosine_container sh -c "cd composer/vendor/2pisoftware/cmfive-core && git log --no-pager -1 --pretty=format:"CORE_HASH=\"%H\"%nCORE_COMMIT_MSG=\"%s\"%nCORE_REF=\"%D\"""
+    docker exec -u cmfive -e PAGER=$PAGER $cosine_container sh -c "cd composer/vendor/2pisoftware/cmfive-core && git log -1 --pretty=format:"CORE_HASH=\"%H\"%nCORE_COMMIT_MSG=\"%s\"%nCORE_REF=\"%D\"""
     echo ""
     if cd $system_is_at/.. ; then
         echo ""
         echo ">> TESTS ON BRANCH (CORE COMMIT) <<"
         echo "===================================="
         echo "MOUNTED CORE from $system_is_at: (this is mounted to /system)"
-        git log --no-pager -1 --pretty=format:"CORE_HASH=\"%H\"%nCORE_COMMIT_MSG=\"%s\"%nCORE_REF=\"%D\""
+        git log -1 --pretty=format:"CORE_HASH=\"%H\"%nCORE_COMMIT_MSG=\"%s\"%nCORE_REF=\"%D\""
         echo ""
     fi
     sysdir=`basename "$system_is_at"`
