@@ -176,7 +176,11 @@ cd /cmfive-boilerplate/test/playwright
 ls -lah
 ls ../Databases -lah
 ls ../../system/modules -lah
-ls ../../modules
+ls ../../modules -lah
+ls /cmfive-boilerplate/ -lah
+ls ../.. -lah
+ls / -lah
+
 
 npm i
 npm run build
