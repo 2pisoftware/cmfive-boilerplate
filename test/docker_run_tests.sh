@@ -72,6 +72,9 @@ if [ -z "$IS_PLAYWRIGHT_CONTAINER" ]; then
         git log -1 --pretty=format:"CORE_HASH=\"%H\"%nCORE_COMMIT_MSG=\"%s\"%nCORE_REF=\"%D\""
         echo ""
     fi
+    sysdir=`basename "$system_is_at"`
+    coredir=`dirname "$system_is_at"`
+    coredir=`basename "$coredir"`
 
     # Explicitly prep DB for testing:
     echo "Backup and snaphsot DB with migrations"
@@ -98,6 +101,9 @@ if [ -z "$IS_PLAYWRIGHT_CONTAINER" ]; then
     # but if this script is not -x- the container won't launch!
     # sudo chmod 755 $TESTDIR/docker_run_tests.sh
 
+    echo ""
+    echo "Tests will collate from: /$coredir/$sysdir"
+    echo "and from: /cmfive-boilerplate/modules"
     docker run -t --rm \
         -e IS_PLAYWRIGHT_CONTAINER=1 \
         -e LANG=en_AU.UTF-8 \
@@ -105,6 +111,7 @@ if [ -z "$IS_PLAYWRIGHT_CONTAINER" ]; then
         -e TEST_NODE_VERSION=$test_node_version \
         -v ms-playwright-data-cmfive:/ms-playwright \
         -v $PROJECTDIR:/cmfive-boilerplate \
+        -v $system_is_at:"/$coredir/$sysdir" \
         --ipc=host \
         --network=host \
         --cap-add=SYS_ADMIN \
@@ -120,7 +127,7 @@ if [ -z "$IS_PLAYWRIGHT_CONTAINER" ]; then
     # We can hold the DB as-is, for further manual testing.
     # But should clean up migration artefacts, to avoid git diff.
     cd $TESTDIR/playwright
-    ./cleanupTestMigrations.sh --no-confirm
+    bash ./cleanupTestMigrations.sh --no-confirm
     # but no: npm run cleanup
     
     if [ $DOCKER_EXIT_CODE -ne 0 ]; then
@@ -173,14 +180,8 @@ fi
 
 cd /cmfive-boilerplate/test/playwright
 
-ls -lah
+echo "DB snapshot is latest from:"
 ls ../Databases -lah
-ls ../../system/modules -lah
-ls ../../modules -lah
-ls /cmfive-boilerplate/ -lah
-ls ../.. -lah
-ls / -lah
-
 
 npm i
 npm run build
