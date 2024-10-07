@@ -175,15 +175,19 @@ if [ ! -z $TEST_NODE_VERSION ]; then
     echo "Switching node version"
     n $TEST_NODE_VERSION
     hash -r
-    node --version
 fi
+
+echo ""
+echo "Node is reporting:"
+node --version
 
 cd /cmfive-boilerplate/test/playwright
 
 echo "DB snapshot is latest from:"
 ls ../Databases -lah
 
-npm i
+npm ci
+npx playwright install --with-deps
 npm run build
 ls src -lah
 
