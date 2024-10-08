@@ -1,51 +1,40 @@
 
-1) Clone/pull/download: https://github.com/2pisoftware/cmfive-boilerplate
- - Position it nicely for WebServer to find
- - Match it to a CORE install (cmfive.php step[1] will clone main from scratch)
- - Make symlinks etc as required
- - Apply any other usual cmfive setup steps!
- - Enable TestRunner in cmfive-boilerplate\config.php:
-				Config::set("tests", array(
-					"testrunner"  => "ENABLED"
-				));
+1) Setup Cosine environment, using end-to-end containers with default/dev/test MySQL container.
+   - docker-compose in boilerplate root folder will standup up a typical dev/test container deployment
+   - Manage install & symlinking for CORE and CUSTOM MODULES per the target module code for testing
+   
+2) Check-or-Add settings to your config.php:
 
- FOR TEST ENVIRONMENT --> BEST TO PROCEED FROM HERE WITH DOCKER-"UP" FROM BOILERPLATE COMPOSE YML
+			//========== TestRunner Configuration ========================== 
+			Config::set("system.environment", "development");
+			Config::set("core_template.foundation.reveal.animation", "none");
+			Config::set("core_template.foundation.reveal.animation_speed", 0);
+			Config::set('tests', ['testrunner'  => 'ENABLED']);
 
- 2) cm5 --> Install
-    - TestRunner will need a 'volatile' database to work into.
-	 - Use "cmfive.php" to manage chosen cm5 database
+			//========== Database Configuration ==========================
+			Config::set("database", [
+				"hostname"  => getenv('DB_HOST') ?: "mysqldb",
+				"port"  => getenv('DB_PORT') ?: "3306",
+				"username"  => getenv('DB_USERNAME') ?: "cmfive",
+				"password"  => getenv('DB_PASSWORD') ?: "cmfive",
+				"database"  => getenv('DB_DATABASE') ?: "cmfive",
+				"driver"    => getenv('DB') ?: "mysql",
+				"backups" =>
+				[
+					'outputExt' => 'sql',
+					'commandPath' => [
+						'unix' => '/usr/bin/',
+					],
+					'backupCommand' => [
+						'unix' => 'mysqldump -u $username -h $hostname -P $port -p\'$password\' $dbname > $filename',
+					],
+					'restoreCommand' => [
+						'unix' => 'mysql -u $username -h $hostname -P $port -p\'$password\' $dbname < $filename',
+					],
+				]
+			]);
+ 
+3) run "docker_run_tests.sh"
+   - check if you need to run chmod 755 docker_run_tests.sh for permission
 
-     - Create/Check cmfive-boilerplate config.php for all database settings
-	       - use example to correctly configure DB executable commands and paths
-		   - leave parameters as-is; these will be auto-filled
-		   - these settings do not override any settings elsewhere (eg: in Admin module config)
-
-		 - CHECK THE CONFIG WORKS -> test for backup and restore, examine files in cmfive-boilerplate\backups
-	       - BE SURE YOU CAN ACCESS A BACKUP
-		   
-	 - Run : "Setup empty TestRunner DB and Administrator"
-	       - once only
-	       - backs up standing DB -> BUT ONLY IF backup config.php is correct!
-		   - deletes all data -> CAN ONLY BE RECOVERED if your backup is good!
-		   - runs all migrations & seeds test Admin user
-		   - grabs snapshot of new 'empty' database to use for tests
-	 
-3) Codeception --> Install
-	  - Use "test\.install\install.sh"
-		- it will get a fresh "composer.phar" & pull Codeception source + modules, 
- 			then "BOOTSTRAPS" codeception project environment
-		- if you cannot use bash, follow all steps in the script per your own OS tools
-
-4) Selenium support
-	  - provisioned by Docker, copy settings from config.example on config.php
-	  - customise if not using Docker 
-	  
-5) Check cmfive-boilerplate\test\Codeception\tests\acceptance.suite.dist.yml:
- 	--> needs to match your cmfive WebServer & Browser & WebDriver
-	  - provisioned from config.php
-	  	  - copy settings from config.example on config.php
-		  - set specifics for your DB (&Selenium if not using from Docker)
-
-6) Execute in --> cmfive-boilerplate:
- 	--> Use "cmfive.php" for TestRunner functions & as wrapper for command line tools
 
