@@ -197,6 +197,7 @@ The following options can be used with the Docker image. You may choose to use f
 - **DB_DATABASE:** The name of the database
 - **DB_USERNAME:** The username to connect to the database
 - **DB_PASSWORD:** The password to connect to the database
+- **CUSTOM_COFIG:** (optional) Custom configuration to add to the config.php file.
 - **ENVIRONMENT:** (optional) The environment to run in (development, production). Defaults to production.
 - **INSTALL_CORE_BRANCH:** (optional) The branch of the cmfive-core repository to switch to while the container is starting. If not specified it will use the built-in core. Note: If this method is used, the theme will not be compiled automatically for the specified branch.
 

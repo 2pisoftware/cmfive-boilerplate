@@ -13,7 +13,7 @@ Config::set("system.timezone", "Australia/Sydney");
 //========== Database Configuration ==========================
 Config::set("database", [
     "hostname"  => getenv('DB_HOST') ?: "mysqldb",
-    "port"  => getenv('DB_PORT') ?: "",
+    "port"      => getenv('DB_PORT') ?: "3306",
     "username"  => getenv('DB_USERNAME') ?: "cmfive",
     "password"  => getenv('DB_PASSWORD') ?: "cmfive",
     "database"  => getenv('DB_DATABASE') ?: "cmfive",
