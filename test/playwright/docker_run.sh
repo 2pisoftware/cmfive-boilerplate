@@ -25,6 +25,9 @@ if [ -z "$IS_PLAYWRIGHT_CONTAINER" ]; then
 
     docker run -it --rm \
          -e IS_PLAYWRIGHT_CONTAINER=1 \
+         -e TZ=Australia/Sydney \
+         -e LANG="en_AU.UTF-8" \
+         -e LC_ALL="en_AU.UTF-8" \
          -v $PROJECTDIR:/cmfive-boilerplate \
          -v ms-playwright-data-cmfive:/ms-playwright \
          --ipc=host \
@@ -77,8 +80,10 @@ npm run cleanup
 
 wait_for_response "http://localhost:3000" 30
 
-export WORKERS=3
-export RETRIES=2
+export WORKERS=1
+export RETRIES=0
+
+
 
 npm run test
 
