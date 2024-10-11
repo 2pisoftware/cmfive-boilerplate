@@ -82,6 +82,9 @@ $cmdMaker = [
     'cmfive' => [
         [
             'request' => "help", 'message' => "Command line options", 'function' => "synopsis", 'args' => false
+        ],
+        [
+            "request" => "export_audit", "message" => "Export audit logs from database according to config", "function" => "exportAuditLog", "args" => false
         ]
     ]
 
@@ -520,6 +523,72 @@ function generateEncryptionKeys()
     file_put_contents('config.php', "\nConfig::set('system.encryption', [\n\t'key' => '{$key_token}'\n]);", FILE_APPEND);
     echo "Key written to project config\n\n";
     return true;
+}
+
+function exportAuditLog()
+{
+    $w = new Web();
+    $w->initDB();
+
+    // Set up fake session to stop warnings
+    $_SESSION = [];
+
+    // Get audit logs in chunks, to prevent OOM
+    $page = 0;
+    $perPage = 100;
+
+    $export_file = "audit" . date('m-d-Y') . ".log";
+
+    $config = Config::get("audit.export_length_seconds", 30 * 24 * 60 * 60); // default 30 days
+    $older_than = date("Y-m-d H:i:s", time() - $config);
+
+    do {
+        $logs = AuditService::getInstance($w)->getObjects(
+            "Audit",
+            [ "dt_created <= ?" => $older_than],
+            false,
+            false,
+            "dt_created DESC",
+            $page * $perPage,
+            $perPage
+        );
+
+        $page++;
+
+        $out = array_map(fn (Audit $val) => auditToJson($val), $logs);
+        $out = join("\n", $out);
+
+        if (empty($out)) {
+            continue;
+        }
+
+        file_put_contents($export_file, $out, FILE_APPEND);
+    } while (!empty($logs));
+
+    AuditService::getInstance($w)->_db
+        ->delete("audit")
+        ->where("dt_created <= ?", $older_than)
+        ->execute();
+
+    echo "done exporting to " . $export_file;
+}
+
+function auditToJson(Audit $val) {
+    $ret = [
+        "dt_created" => $val->dt_created,
+        "created_id" => $val->created_id,
+        "module" => $val->module,
+        "submodule" => $val->submodule,
+        "action" => $val->action,
+        "path" => $val->path,
+        "ip" => $val->ip,
+        "db_action" => $val->db_action,
+        "db_class" => $val->db_class,
+        "db_id" => $val->db_id,
+        "message" => $val->message,
+    ];
+
+    return json_encode($ret);
 }
 
 function readConsoleLine($prompt = "Command: ")
