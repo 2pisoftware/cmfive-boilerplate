@@ -38,10 +38,14 @@ if [ ${#deletable[@]} -ne 0 ]; then
     done
     echo -e -n "\033[0m"
 
-    echo
-    echo -e "\033[0;33m"
-    read -p "Do you want to delete the files you have permission to delete? (y/n) " confirm_delete
-    echo -e "\033[0m"
+    if [ "$1" == "--no-confirm" ]; then
+        confirm_delete=Y
+    else
+        echo
+        echo -e "\033[0;33m"
+        read -p "Do you want to delete the files you have permission to delete? (y/n) " confirm_delete
+        echo -e "\033[0m"
+    fi
 
     if [[ "$confirm_delete" =~ ^[Yy]$ ]]; then
         for file in "${deletable[@]}"; do
