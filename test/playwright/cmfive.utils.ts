@@ -78,9 +78,16 @@ export class CmfiveHelper {
     }   
 
     static async fillAutoComplete(page: Page, field: string, search: string, value: string) {
-        await page.locator('#acp_' + field).click();
-        await page.keyboard.type(search);
-        await page.locator('.ui-menu-item :text("' + value + '")').click();
+		if (this.isBootstrap5(page)) {
+			await page.locator(`#${field}-ts-control`).locator("..").click();
+			await page.keyboard.type(search);
+			await page.locator(`#${field}-ts-dropdown`).getByText(value).click();
+		}
+		else {
+			await page.locator('#acp_' + field).click();
+			await page.keyboard.type(search);
+			await page.locator('.ui-menu-item :text("' + value + '")').click();
+		}
     }
 
     // Finds substring in string with given position
