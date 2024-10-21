@@ -19,7 +19,7 @@
 # This stage clones the cmfive-core repository and compiles the theme
 
 # Use the Node.js base image
-FROM node:20-alpine AS core
+FROM node:23-alpine AS core
 
 # Install git
 RUN apk --no-cache add \
