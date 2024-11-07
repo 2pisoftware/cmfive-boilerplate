@@ -1,3 +1,4 @@
+#build docker image
 include:
   - component: $CI_SERVER_FQDN/2pisoftware/pipelines/docker/build@v1.0.4
     inputs:
