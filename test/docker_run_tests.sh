@@ -10,10 +10,12 @@ set +e
 # usage: ./docker_run.sh --fresh
 # usage: ./docker_run.sh --node_ver 18
 # usage: ./docker_run.sh --cosine_container [default is 'cmfive']
+# usage: ./docker_run.sh --module [default is '']
 
 freshen_all=""
 test_node_version=""
 cosine_container="cmfive"
+module=""
 
 while test $# != 0
 do
@@ -24,6 +26,9 @@ do
     --) shift; break;;
     --cosine_container)
         shift; cosine_container=$1 ;;
+    --) shift; break;;
+    --module) 
+        shift; module=$1 ;;
     --) shift; break;;
     esac
     shift
@@ -110,6 +115,7 @@ if [ -z "$IS_PLAYWRIGHT_CONTAINER" ]; then
         -e LANG=en_AU.UTF-8 \
         -e LC_ALL=en_AU.UTF-8 \
         -e TEST_NODE_VERSION=$test_node_version \
+        -e MODULE=$module \
         -v ms-playwright-data-cmfive:/ms-playwright \
         -v $PROJECTDIR:/cmfive-boilerplate \
         -v $system_is_at:"/$coredir/$sysdir" \
@@ -198,7 +204,12 @@ export WORKERS=1
 # Retry failed tests, recommended 0 retries because of data consistency
 export RETRIES=0
 
-npm run test 
+if [ ! -z $MODULE ]; then
+    npm run test --module="$MODULE"
+else
+    npm run test
+fi
+
 PLAYWRIGHT_TESTS_EXIT_CODE=$?
     if [ $PLAYWRIGHT_TESTS_EXIT_CODE -ne 0 ]; then
         echo "Playwright tests failed: $PLAYWRIGHT_TESTS_EXIT_CODE"
