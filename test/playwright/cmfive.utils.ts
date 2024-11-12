@@ -82,6 +82,7 @@ export class CmfiveHelper {
 			await page.locator(`#${field}-ts-control`).locator("..").click();
 			await page.keyboard.type(search);
 			await page.locator(`#${field}-ts-dropdown`).getByText(value).click();
+			await page.keyboard.press("Escape");
 		}
 		else {
 			await page.locator('#acp_' + field).click();
