@@ -1,6 +1,6 @@
 #build docker image
 include:
-  - component: $CI_SERVER_FQDN/2pisoftware/pipelines/docker/build@v1.0.4
+  - component: $CI_SERVER_FQDN/2pisoftware/pipelines/docker/build@v1.0.10
     inputs:
       tag_prefix: "/cosine"
       stage: deploy
