@@ -23,6 +23,7 @@ fi
 echo "Running After Install"
 
 # Shift built pipeline boilerplate-asset into hosted /html/
+# make /html/ only if it does not already exist
 mkdir -p /var/www/html
 mv /var/www/cmfive-boilerplate/* /var/www/html
 mv /var/www/cmfive-boilerplate/.[!.]* /var/www/html
