@@ -19,7 +19,9 @@ setup:
     echo "== Saving full tag name to tag.env =="
     echo "DOCKER_TAG=$FULL_TAG" > tag.env
     echo ""
-
+  artifacts:
+    reports:
+      dotenv: tag.env
 
 #build docker image
 include:
