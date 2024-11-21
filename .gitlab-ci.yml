@@ -1,0 +1,30 @@
+stages:
+  - .pre
+  - build
+
+setup:
+  image: alpine
+  stage: .pre
+  script: |
+    echo "== Setting up environment =="
+    if [ "$CI_COMMIT_REF_NAME" = "$CI_DEFAULT_BRANCH" ]; then
+      export TAG="latest"
+    elif [ $CI_MERGE_REQUEST_IID ]; then
+      export TAG="mr-$CI_MERGE_REQUEST_IID"
+    else
+      export TAG=$CI_COMMIT_REF_SLUG
+    fi
+    export FULL_TAG=${CI_REGISTRY_IMAGE}:${TAG}
+    echo "🏷️ DOCKER_TAG will be $FULL_TAG"
+    echo "== Saving full tag name to tag.env =="
+    echo "DOCKER_TAG=$FULL_TAG" > tag.env
+    echo ""
+  artifacts:
+    reports:
+      dotenv: tag.env
+
+#build docker image
+include:
+  - component: $CI_SERVER_FQDN/2pisoftware/pipelines/docker/build@v1.1.0
+    inputs:
+      tag: $DOCKER_TAG

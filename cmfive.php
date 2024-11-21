@@ -351,7 +351,7 @@ function sketchComposerForCore($reference, $phpVersion)
         "description": "A boilerplate project layout for Cmfive",
         "require": {
             "2pisoftware/cmfive-core": "dev-$reference",
-            "aws/aws-sdk-php": "^3.24"
+            "aws/aws-sdk-php": "^3.288"
         },
         "config": {
             "vendor-dir": "composer/vendor",
