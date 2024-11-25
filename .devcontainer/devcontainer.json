@@ -1,5 +1,7 @@
 {
-    "image": "mcr.microsoft.com/devcontainers/base:debian",
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
     "customizations": {
         "vscode": {
             "extensions": [
