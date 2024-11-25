@@ -26,11 +26,12 @@ setup:
     else
       export COSINE_CORE_BRANCH="develop"
     fi
+    echo "Core branch is $COSINE_CORE_BRANCH"
     echo "BUILT_IN_CORE_BRANCH=$COSINE_CORE_BRANCH" > core_branch.env
     echo ""
   artifacts:
     reports:
-      dotenv: tag.env core_branch.env
+      dotenv: tag.env
 
 #add includes
 include:
