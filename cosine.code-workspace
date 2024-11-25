@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"name": "Boilerplate",
+			"path": "."
+		},
+		{
+			"name": "Core",
+			"path": "composer/vendor/2pisoftware/cmfive-core"
+		},
+		{
+			"name": "Modules",
+			"path": "modules",
+		}
+	],
+	"settings": {}
+}
