@@ -27,7 +27,7 @@ setup:
       export COSINE_CORE_BRANCH="develop"
     fi
     echo "Core branch is $COSINE_CORE_BRANCH"
-    echo "BUILT_IN_CORE_BRANCH=$COSINE_CORE_BRANCH" > core_branch.env
+    echo "BUILT_IN_CORE_BRANCH=$COSINE_CORE_BRANCH" >> tag.env
     echo ""
   artifacts:
     reports:
