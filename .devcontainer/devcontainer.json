@@ -7,7 +7,8 @@
         "vscode": {
             "extensions": [
                 "ms-azuretools.vscode-docker",
-                "gitlab.gitlab-workflow"
+                "gitlab.gitlab-workflow",
+                "xdebug.php-debug"
             ]
         }
     },
