@@ -1,9 +1,12 @@
 {
     "image": "mcr.microsoft.com/devcontainers/base:debian",
     "customizations": {
-        "extensions": [
-            "ms-azuretools.vscode-docker"
-        ]
+        "vscode": {
+            "extensions": [
+                "ms-azuretools.vscode-docker",
+                "gitlab.gitlab-workflow"
+            ]
+        }
     },
     "features": {
         "ghcr.io/devcontainers/features/docker-in-docker:2": {}
