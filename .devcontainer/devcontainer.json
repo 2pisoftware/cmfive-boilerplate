@@ -1,0 +1,12 @@
+{
+    "image": "mcr.microsoft.com/devcontainers/base:debian",
+    "customizations": {
+        "extensions": [
+            "ms-azuretools.vscode-docker"
+        ]
+    },
+    "features": {
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+    },
+    "postStartCommand": "docker compose up -d"
+}

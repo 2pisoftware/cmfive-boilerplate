@@ -1,14 +1,12 @@
 services:
 
-  mysqldb:
+  db:
     image: mysql:8
-    container_name: mysql-8
-    hostname: mysql-8
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_USER: cmfive
-      MYSQL_PASSWORD: cmfive
-      MYSQL_DATABASE: cmfive
+      MYSQL_USER: cosine
+      MYSQL_PASSWORD: cosine
+      MYSQL_DATABASE: cosine
       TZ: Australia/Sydney
     volumes:
       - dbdata:/var/lib/mysql:delegated
@@ -21,18 +19,17 @@ services:
       timeout: 5m
       retries: 20
 
-  webapp:
+  cosine:
     build:
       context: .
       dockerfile: dev.dockerfile
-    container_name: cmfive
-    hostname: nginx-php8.1
+    container_name: cosine
     environment:
       TZ: Australia/Sydney
-      DB_HOST: mysqldb
-      DB_DATABASE: cmfive
-      DB_USERNAME: cmfive
-      DB_PASSWORD: cmfive
+      DB_HOST: db
+      DB_DATABASE: cosine
+      DB_USERNAME: cosine
+      DB_PASSWORD: cosine
       DB_PORT: 3306
       ENVIRONMENT: development
       CUSTOM_CONFIG: |
@@ -47,20 +44,19 @@ services:
     restart: unless-stopped
     working_dir: /var/www/html
     links:
-      - mysqldb
+      - db
     depends_on:
-      mysqldb:
+      db:
         condition: service_healthy
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
   compiler:
     image: node:20-alpine
-    container_name: node-compiler
     volumes:
       - ./:/var/www/html
       - ./.codepipeline/docker/compiler.sh:/compiler.sh
-    command: "ash -c /compiler.sh"
+    command: "sh -c /compiler.sh"
     healthcheck:
       test: 
         - "CMD-SHELL"
@@ -72,7 +68,7 @@ services:
     restart: unless-stopped
     user: "1000:1000"
     depends_on:
-      webapp:
+      cosine:
         condition: service_healthy
 
 volumes:
