@@ -25,6 +25,7 @@ setup:
       export COSINE_CORE_BRANCH="main"
     else
       export COSINE_CORE_BRANCH="develop"
+    fi
     echo "BUILT_IN_CORE_BRANCH=$COSINE_CORE_BRANCH" > core_branch.env
     echo ""
   artifacts:
