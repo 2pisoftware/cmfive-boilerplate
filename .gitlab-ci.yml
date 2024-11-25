@@ -42,7 +42,7 @@ include:
 
   - component: $CI_SERVER_FQDN/2pisoftware/pipelines/playwright/test@v1.0.2
     inputs:
-      directory: /tests/playwright/
+      directory: ./test/playwright/
       run_cmd: npm run test
       wait_on: https://localhost:3443/ #http://test-website
 
