@@ -169,6 +169,9 @@ docker run --name mysql-8 -d -p 3306:3306 \
     --network=cmfive \
     mysql:8
 
+# Create the folders for storage, uploads and backups
+mkdir storage uploads backups
+
 # Run the cmfive container
 docker run --name cmfive -d -p 3000:80 \
     -v ./storage:/var/www/html/storage \
