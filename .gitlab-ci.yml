@@ -44,7 +44,7 @@ include:
     inputs:
       directory: ./test/playwright/
       run_cmd: npm run test
-      wait_on: https://localhost/ #http://test-website
+      wait_on: https://localhost:80/ #http://test-website
 
 playwright-test:
   services:
@@ -52,7 +52,7 @@ playwright-test:
       alias: test-website
     - mysql:8.0
   variables:
-    BASE_URL: https://localhost/ #http://test-website
+    BASE_URL: https://localhost:80/ #http://test-website
     MYSQL_DATABASE: cmfive
     MYSQL_ROOT_PASSWORD: cmfive
 
