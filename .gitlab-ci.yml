@@ -1,6 +1,7 @@
 stages:
   - .pre
   - build
+  - test
 
 setup:
   image: alpine
@@ -19,12 +20,39 @@ setup:
     echo "== Saving full tag name to tag.env =="
     echo "DOCKER_TAG=$FULL_TAG" > tag.env
     echo ""
+    echo "== Setting up core branch =="
+    if [ "$CI_COMMIT_REF_NAME" = "$CI_DEFAULT_BRANCH" ]; then
+      export COSINE_CORE_BRANCH="main"
+    else
+      export COSINE_CORE_BRANCH="develop"
+    echo "BUILT_IN_CORE_BRANCH=$COSINE_CORE_BRANCH" > core_branch.env
+    echo ""
   artifacts:
     reports:
-      dotenv: tag.env
+      dotenv: tag.env core_branch.env
 
-#build docker image
+#add includes
 include:
   - component: $CI_SERVER_FQDN/2pisoftware/pipelines/docker/build@v1.1.0
     inputs:
       tag: $DOCKER_TAG
+      additional_args: "BUILT_IN_CORE_BRANCH=$BUILT_IN_CORE_BRNACH"
+
+  - component: $CI_SERVER_FQDN/2pisoftware/pipelines/playwright/test@v1.0.2
+    inputs:
+      directory: /tests/playwright/
+      run_cmd: npm run test
+      wait_on: https://localhost:3443/ #http://test-website
+
+playwright-test:
+  services:
+    - name: $DOCKER_TAG
+      alias: test-website
+    - mysql:8.0
+  variables:
+    BASE_URL: https://localhost:3443/ #http://test-website
+    MYSQL_DATABASE: cmfive
+    MYSQL_ROOT_PASSWORD: cmfive
+
+
+
