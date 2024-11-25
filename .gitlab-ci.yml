@@ -40,7 +40,7 @@ include:
       tag: $DOCKER_TAG
       additional_args: --build-arg BUILT_IN_CORE_BRANCH=$BUILT_IN_CORE_BRANCH
 
-  - component: $CI_SERVER_FQDN/2pisoftware/pipelines/playwright/test@v1.0.2
+  - component: $CI_SERVER_FQDN/2pisoftware/pipelines/playwright/test@v1.0.3
     inputs:
       directory: ./test/playwright/
       run_cmd: npm run test
