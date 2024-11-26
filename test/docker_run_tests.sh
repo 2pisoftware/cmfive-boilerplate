@@ -13,7 +13,7 @@ set +e
 
 freshen_all=""
 test_node_version=""
-cosine_container="cmfive"
+cosine_container="cosine"
 
 while test $# != 0
 do
