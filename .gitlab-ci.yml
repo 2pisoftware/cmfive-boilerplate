@@ -58,8 +58,8 @@ playwright-test:
     MYSQL_ROOT_PASSWORD: cmfive
   before_script:
     # - php cmfive.php install core
-    - git clone --depth 1 https://github.com/2pisoftware/cmfive-core.git:../ -b $BUILT_IN_CORE_BRANCH
-    - ln -s ../cmfive-core/system/ system
+    - git clone --depth 1 https://github.com/2pisoftware/cmfive-core.git:../core -b $BUILT_IN_CORE_BRANCH
+    - ln -s ../core/system/ system
   artifacts:
     paths: 
       - ./storage
