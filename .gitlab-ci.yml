@@ -55,6 +55,9 @@ playwright-test:
     # BASE_URL: https://localhost:80/ #http://test-website
     MYSQL_DATABASE: cmfive
     MYSQL_ROOT_PASSWORD: cmfive
+  artifacts:
+    paths: 
+      - ./storage/logs
 
 
 
