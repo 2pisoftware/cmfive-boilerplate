@@ -69,8 +69,8 @@ docker-build:
     - echo "== Setting up config file for tests =="
     - cp .codepipeline/docker/config.default.php ./config.php
     - ls ./
-  after_script:
-    - 
+  # after_script:
+  #   - 
 
 playwright-test:
   services:
