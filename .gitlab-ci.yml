@@ -46,7 +46,7 @@ include:
       directory: ./test/playwright/
       test_results_dir: ./test/playwright/test-results
       run_cmd: npm run build && npm run test
-      # wait_on: https://localhost:80/ #http://test-website
+      wait_on: http://test-website
 
 playwright-test:
   services:
@@ -54,13 +54,16 @@ playwright-test:
       alias: test-website
     - mysql:8.0
   variables:
-    # BASE_URL: https://localhost:80/ #http://test-website
+    BASE_URL: http://test-website
     MYSQL_DATABASE: cmfive
     MYSQL_ROOT_PASSWORD: cmfive
   before_script:
     - node --version
     # - php cmfive.php install core
     - git clone --depth 1 https://github.com/2pisoftware/cmfive-core.git -b $BUILT_IN_CORE_BRANCH
+    - cd cmfive-core
+    - git status
+    - cd ..
     - ln -s cmfive-core/system/ system
   
 
