@@ -44,13 +44,14 @@ fi
 # Wait for database to be ready
 if [ -n "$DB_HOST" ]; then
     echo "🔍  Waiting for database to be ready"
-    triesleft=5
+    timestamp=$(date +%s)
+    secondsToWait=30
     until mysql -h $DB_HOST -u $DB_USERNAME -p$DB_PASSWORD -e ";" 2>/dev/null; do
         sleep 1
-        triesleft=$((triesleft-1))
-        echo "⏳  $triesleft tries left"
-        if [ $triesleft -eq 0 ]; then
-            error "Database connection failed"
+        current=$(date +%s)
+        echo "Time left: $((timestamp + secondsToWait - current)) seconds"
+        if [ $((current - timestamp)) -gt $secondsToWait ]; then
+            error "Failed to connect to database"
         fi
     done
     echo "Database is ready"
