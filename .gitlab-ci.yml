@@ -29,6 +29,19 @@ setup:
     echo "Core branch is $COSINE_CORE_BRANCH"
     echo "BUILT_IN_CORE_BRANCH=$COSINE_CORE_BRANCH" >> tag.env
     echo ""
+    echo "== Setting up DB config for tests =="
+    # DB_HOST=mysql-8 \
+    # -e DB_USERNAME=$DB_USERNAME \
+    # -e DB_PASSWORD=$DB_PASSWORD \
+    # -e DB_DATABASE=$DB_DATABASE \
+    export DB_HOST="mysql"
+    export DB_USERNAME="runner"
+    export DB_PASSWORD="cmfive"
+    export DB_DATABASE="cmfive"
+    echo "DB_HOST=$DB_HOST" >> tag.env
+    echo "DB_USERNAME=$DB_USERNAME" >> tag.env
+    echo "DB_PASSWORD=$DB_PASSWORD" >> tag.env
+    echo "DB_DATABASE=$DB_DATABASE" >> tag.env
   artifacts:
     reports:
       dotenv: tag.env
@@ -64,8 +77,8 @@ playwright-test:
     # -e DB_USERNAME=$DB_USERNAME \
     # -e DB_PASSWORD=$DB_PASSWORD \
     # -e DB_DATABASE=$DB_DATABASE \
-    - docker exec -i $DOCKER_TAG /bin/bash -c "export DB_HOST=mysql && export DB_USERNAME=runner && export DB_PASSWORD=$MYSQL_ROOT_PASSWORD && DB_DATABASE=$MYSQL_DATABASE"
-    - docker exec -i $DOCKER_TAG /bin/bash -c "rm -f /var/www/html/cache/config.cache"
+    # - docker exec -i $DOCKER_TAG /bin/bash -c "export DB_HOST=mysql && export DB_USERNAME=runner && export DB_PASSWORD=$MYSQL_ROOT_PASSWORD && DB_DATABASE=$MYSQL_DATABASE"
+    # - docker exec -i $DOCKER_TAG /bin/bash -c "rm -f /var/www/html/cache/config.cache"
     # - docker exec -i $DOKCER_TAG /bin/bash -c ""
     - node --version
     # - php cmfive.php install core
