@@ -64,6 +64,12 @@ include:
       run_cmd: npx playwright install --with-deps && npm run build && npm run test
       wait_on: http://test-website
 
+docker-build:
+  before_script:
+    - echo "== Setting up config file for tests =="
+    - cp .codepipeline/docker/config.default.php ./config.php
+    - ls ./
+
 playwright-test:
   services:
     - name: $DOCKER_TAG
