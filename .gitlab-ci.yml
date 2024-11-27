@@ -45,7 +45,7 @@ include:
       image: mcr.microsoft.com/playwright:v1.49.0-jammy
       directory: ./test/playwright/
       test_results_dir: ./test/playwright/test-results
-      run_cmd: npm run build && npm run test
+      run_cmd: npx playwright install --with-deps && npm run build && npm run test
       wait_on: http://test-website
 
 playwright-test:
@@ -58,6 +58,15 @@ playwright-test:
     MYSQL_DATABASE: cmfive
     MYSQL_ROOT_PASSWORD: cmfive
   before_script:
+    # set up the database
+    # - mysql --user=root --password="$MYSQL_ROOT_PASSWORD"
+    # DB_HOST=mysql-8 \
+    # -e DB_USERNAME=$DB_USERNAME \
+    # -e DB_PASSWORD=$DB_PASSWORD \
+    # -e DB_DATABASE=$DB_DATABASE \
+    - docker exec -i $DOCKER_TAG /bin/bash -c "export DB_HOST=mysql && export DB_USERNAME=runner && export DB_PASSWORD=$MYSQL_ROOT_PASSWORD && DB_DATABASE=$MYSQL_DATABASE"
+    - docker exec -i $DOCKER_TAG /bin/bash -c "rm -f /var/www/html/cache/config.cache"
+    # - docker exec -i $DOKCER_TAG /bin/bash -c ""
     - node --version
     # - php cmfive.php install core
     - git clone --depth 1 https://github.com/2pisoftware/cmfive-core.git -b $BUILT_IN_CORE_BRANCH
