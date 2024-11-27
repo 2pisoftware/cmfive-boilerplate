@@ -71,6 +71,7 @@ playwright-test:
     MYSQL_PASSWORD: runner
     DB_PASSWORD: runner
     MYSQL_RANDOM_ROOT_PASSWORD: yes
+    CI_DEBUG_SERVICES: "true"
 
   before_script:
     - git clone --depth 1 https://github.com/2pisoftware/cmfive-core.git -b $BUILT_IN_CORE_BRANCH
