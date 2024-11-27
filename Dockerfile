@@ -56,6 +56,7 @@ ARG PHP_VERSION=81
 ENV PHP_VERSION=$PHP_VERSION
 ARG UID=1000
 ARG GID=1000
+ARG CONFIG_PATH=/bootstrap/config.default.php
 
 # Create cmfive user and group
 RUN addgroup -g ${GID} cmfive && \
@@ -115,7 +116,7 @@ COPY /.codepipeline/docker/configs/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY /.codepipeline/docker/configs/nginx/default.conf /etc/nginx/conf.d/default.conf
 COPY /.codepipeline/docker/configs/fpm/ /etc/php/
 COPY /.codepipeline/docker/setup.sh /bootstrap/setup.sh
-COPY /.codepipeline/docker/config.default.php /bootstrap/config.default.php
+COPY /.codepipeline/docker/config.default.php ${CONFIG_PATH}
 
 # Copy source
 COPY --chown=cmfive:cmfive . /var/www/html
