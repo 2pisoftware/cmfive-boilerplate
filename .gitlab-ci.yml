@@ -59,6 +59,7 @@ playwright-test:
     - name: mysql:8.0
       alias: cosine-db
   variables:
+    FF_NETWORK_PER_BUILD: 1
     TEST_HOST: http://test-website
     TEST_PORT: 80
     ENVIRONMENT: development
