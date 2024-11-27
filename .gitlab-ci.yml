@@ -61,7 +61,7 @@ include:
       image: mcr.microsoft.com/playwright:v1.49.0-jammy
       directory: ./test/playwright/
       test_results_dir: ./test/playwright/test-results
-      run_cmd: npx playwright install --with-deps && npm run build && npm run test
+      run_cmd: npm run build && npm run test
       wait_on: http://test-website
 
 docker-build:
