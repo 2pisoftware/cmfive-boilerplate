@@ -54,7 +54,7 @@ include:
   - component: $CI_SERVER_FQDN/2pisoftware/pipelines/docker/build@v1.1.0
     inputs:
       tag: $DOCKER_TAG
-      additional_args: --build-arg BUILT_IN_CORE_BRANCH=$BUILT_IN_CORE_BRANCH
+      additional_args: --build-arg BUILT_IN_CORE_BRANCH=$BUILT_IN_CORE_BRANCH --build-arg CONFIG_PATH=/config.php
 
   - component: $CI_SERVER_FQDN/2pisoftware/pipelines/playwright/test@v1.0.4
     inputs:
@@ -69,6 +69,8 @@ docker-build:
     - echo "== Setting up config file for tests =="
     - cp .codepipeline/docker/config.default.php ./config.php
     - ls ./
+  after_script:
+    - 
 
 playwright-test:
   services:
