@@ -79,7 +79,8 @@ playwright-test:
       alias: test-website
     - mysql:8.0
   variables:
-    BASE_URL: http://test-website
+    TEST_HOST: http://test-website
+    TEST_PORT: 80
     MYSQL_DATABASE: cmfive
     MYSQL_ROOT_PASSWORD: cmfive
   before_script:
@@ -92,7 +93,7 @@ playwright-test:
     # - docker exec -i $DOCKER_TAG /bin/bash -c "export DB_HOST=mysql && export DB_USERNAME=runner && export DB_PASSWORD=$MYSQL_ROOT_PASSWORD && DB_DATABASE=$MYSQL_DATABASE"
     # - docker exec -i $DOCKER_TAG /bin/bash -c "rm -f /var/www/html/cache/config.cache"
     # - docker exec -i $DOKCER_TAG /bin/bash -c ""
-    - bash -e BASE_URL="http://test-website"
+    # - bash -e BASE_URL="http://test-website"
     - node --version
     # - php cmfive.php install core
     - git clone --depth 1 https://github.com/2pisoftware/cmfive-core.git -b $BUILT_IN_CORE_BRANCH
