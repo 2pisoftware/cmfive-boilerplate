@@ -29,21 +29,6 @@ setup:
     echo "Core branch is $COSINE_CORE_BRANCH"
     echo "BUILT_IN_CORE_BRANCH=$COSINE_CORE_BRANCH" >> tag.env
     echo ""
-    echo "== Setting up DB config for tests =="
-    # DB_HOST=mysql-8 \
-    # -e DB_USERNAME=$DB_USERNAME \
-    # -e DB_PASSWORD=$DB_PASSWORD \
-    # -e DB_DATABASE=$DB_DATABASE \
-    export DB_HOST="mysql"
-    export DB_USERNAME="runner"
-    export DB_PASSWORD="cmfive"
-    export DB_DATABASE="cmfive"
-    echo "DB_HOST=$DB_HOST" >> tag.env
-    echo "DB_USERNAME=$DB_USERNAME" >> tag.env
-    echo "DB_PASSWORD=$DB_PASSWORD" >> tag.env
-    echo "DB_DATABASE=$DB_DATABASE" >> tag.env
-    export ENVIRONMENT="development"
-    echo "ENVIRONMENT=$ENVIRONMENT" >> tag.env
     
 
   artifacts:
@@ -65,35 +50,28 @@ include:
       run_cmd: npm run build && npm run test
       wait_on: http://test-website
 
-# docker-build:
-#   before_script:
-#     - echo "== Setting up config file for tests =="
-#     - cp .codepipeline/docker/config.default.php ./config.php
-#     - ls ./
-#   # after_script:
-#   #   - 
-
 playwright-test:
   services:
+    # Cosine
     - name: $DOCKER_TAG
       alias: test-website
-    - mysql:8.0
+    # Database
+    - name: mysql:8.0
+      alias: cosine-db
   variables:
     TEST_HOST: http://test-website
     TEST_PORT: 80
-    MYSQL_DATABASE: cmfive
+    ENVIRONMENT: development
     MYSQL_ROOT_PASSWORD: cmfive
+    DB_HOST: cosine-db
+    MYSQL_DATABASE: cosine
+    DB_DATABASE: cosine
+    MYSQL_USER: runner
+    DB_USERNAME: runner
+    MYSQL_PASSWORD: runner
+    DB_PASSWORD: runner
+
   before_script:
-    # set up the database
-    # - mysql --user=root --password="$MYSQL_ROOT_PASSWORD"
-    # DB_HOST=mysql-8 \
-    # -e DB_USERNAME=$DB_USERNAME \
-    # -e DB_PASSWORD=$DB_PASSWORD \
-    # -e DB_DATABASE=$DB_DATABASE \
-    # - docker exec -i $DOCKER_TAG /bin/bash -c "export DB_HOST=mysql && export DB_USERNAME=runner && export DB_PASSWORD=$MYSQL_ROOT_PASSWORD && DB_DATABASE=$MYSQL_DATABASE"
-    # - docker exec -i $DOCKER_TAG /bin/bash -c "rm -f /var/www/html/cache/config.cache"
-    # - docker exec -i $DOKCER_TAG /bin/bash -c ""
-    # - bash -e BASE_URL="http://test-website"
     - node --version
     # - php cmfive.php install core
     - git clone --depth 1 https://github.com/2pisoftware/cmfive-core.git -b $BUILT_IN_CORE_BRANCH
