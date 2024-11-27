@@ -87,6 +87,7 @@ RUN apk --no-cache add \
     php$PHP_VERSION-simplexml \
     php$PHP_VERSION-fileinfo \
     nginx \
+    mysql-client \
     supervisor \
     bash \
     openssl \
@@ -161,6 +162,11 @@ COPY --chown=cmfive:cmfive \
 RUN chmod -R ugo=rwX cache/ storage/ uploads/ && \
     chown -R cmfive:cmfive /var/lib/nginx /var/log/nginx
 
+# Install startup banner
+COPY --chown=cmfive:cmfive /.codepipeline/docker/banner_starting.php /var/www/html/banner.php
+COPY --chown=cmfive:cmfive /.codepipeline/docker/banner_starting.php /bootstrap/banner_starting.php
+COPY --chown=cmfive:cmfive /.codepipeline/docker/banner_error.php /bootstrap/banner_error.php
+
 # Expose HTTP, HTTPS
 EXPOSE 80 443
 
@@ -169,6 +175,5 @@ HEALTHCHECK --interval=15s --timeout=5m --start-period=5s --retries=15 \
   CMD supervisorctl status nginx | grep -q "RUNNING" && \
       supervisorctl status php-fpm | grep -q "RUNNING" && \
       test -f /home/cmfive/.cmfive-installed
-
 # Start supervisord
 CMD ["supervisord", "--nodaemon", "--configuration", "/etc/supervisord.conf"]

@@ -44,3 +44,6 @@ test/playwright/node_modules/
 test/playwright/test-results/
 test/playwright/src/
 test/playwright/*.png
+
+# Banners
+/banner*.php

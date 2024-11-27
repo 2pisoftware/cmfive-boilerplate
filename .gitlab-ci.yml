@@ -15,7 +15,7 @@ setup:
     else
       export TAG=$CI_COMMIT_REF_SLUG
     fi
-    export FULL_TAG=${CI_REGISTRY_IMAGE}:${TAG}
+    export FULL_TAG=${CI_REGISTRY_IMAGE}/cosine:${TAG}
     echo "🏷️ DOCKER_TAG will be $FULL_TAG"
     echo "== Saving full tag name to tag.env =="
     echo "DOCKER_TAG=$FULL_TAG" > tag.env
