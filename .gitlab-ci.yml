@@ -44,6 +44,7 @@ setup:
     echo "DB_DATABASE=$DB_DATABASE" >> tag.env
     echo "== Setting up config file for tests =="
     cp .codepipeline/docker/config.default.php ./config.php
+    ls ./
   artifacts:
     reports:
       dotenv: tag.env
