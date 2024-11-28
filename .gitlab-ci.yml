@@ -73,6 +73,7 @@ playwright-test:
     DB_PASSWORD: runner
     MYSQL_RANDOM_ROOT_PASSWORD: yes
     MYSQL_ROOT_HOST: '%'
+    MYSQL_USER_HOST: '%'
     CI_DEBUG_SERVICES: "true"
 
   before_script:
