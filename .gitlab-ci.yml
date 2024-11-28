@@ -76,7 +76,7 @@ playwright-test:
     CI_DEBUG_SERVICES: "true"
 
   before_script:
-    - sudo apt-get install -y mysql-server mysql-client libmysqlclient-dev
+    - apt-get install -y mysql-server mysql-client libmysqlclient-dev
     - mysql --host=${MYSQL_HOST} --user=root --password=${MYSQL_ROOT_PASSWORD} <<-EOSQL
         SHOW DATABASES;
         SELECT user, host FROM mysql.user;
