@@ -71,12 +71,15 @@ playwright-test:
     DB_USERNAME: runner
     MYSQL_PASSWORD: runner
     DB_PASSWORD: runner
-    MYSQL_RANDOM_ROOT_PASSWORD: yes
+    # MYSQL_RANDOM_ROOT_PASSWORD: true
     MYSQL_ROOT_HOST: '%'
-    MYSQL_USER_HOST: '%'
     CI_DEBUG_SERVICES: "true"
 
   before_script:
+    - mysql --host=${MYSQL_HOST} --user=root --password=${MYSQL_ROOT_PASSWORD} <<-EOSQL
+        SHOW DATABASES;
+        SELECT user, host FROM mysql.user;
+      EOSQL
     - git clone --depth 1 https://github.com/2pisoftware/cmfive-core.git -b $BUILT_IN_CORE_BRANCH
     - cd cmfive-core
     - git status
