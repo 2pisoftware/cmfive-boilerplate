@@ -76,6 +76,7 @@ playwright-test:
     CI_DEBUG_SERVICES: "true"
 
   before_script:
+    - cat /etc/hosts
     - apt-get update && apt-get install -y git curl libmcrypt-dev default-mysql-client
     - mysql --version
     - sleep 20
