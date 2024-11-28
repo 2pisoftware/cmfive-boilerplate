@@ -75,12 +75,14 @@ playwright-test:
     MYSQL_ROOT_HOST: '%'
     CI_DEBUG_SERVICES: "true"
   before_script:
+    - ping cosine-db -c 10
     - git clone --depth 1 https://github.com/2pisoftware/cmfive-core.git -b $BUILT_IN_CORE_BRANCH
     - cd cmfive-core
     - git status
     - cd ..
     - ln -s cmfive-core/system/ system
   script:
+    - ping cosine-db -c 10
     - cat /etc/hosts
     - apt-get update && apt-get install -y git curl libmcrypt-dev default-mysql-client
     - mysql --version
