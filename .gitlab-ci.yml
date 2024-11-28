@@ -79,7 +79,7 @@ playwright-test:
     - apt-get update && apt-get install -y git curl libmcrypt-dev default-mysql-client
     - mysql --version
     - sleep 20
-    - echo "SHOW tables;" | mysql -u root -p"$MYSQL_ROOT_PASSWORD" -h "${MYSQL_HOST}" -P 3306 "${MYSQL_DATABASE}"
+    - echo "SHOW tables;" | mysql --protocol=TCP -u root -p"$MYSQL_ROOT_PASSWORD" -h "${MYSQL_HOST}" -P 3306 "${MYSQL_DATABASE}"
     - echo "Database host is '${MYSQL_HOST}'"
     - mysql --user=$MYSQL_USER --password=$MYSQL_PASSWORD --database=$MYSQL_DATABASE --host=$MYSQL_HOST --execute="SHOW DATABASES; SELECT user, host FROM mysql.user;"
     - git clone --depth 1 https://github.com/2pisoftware/cmfive-core.git -b $BUILT_IN_CORE_BRANCH
