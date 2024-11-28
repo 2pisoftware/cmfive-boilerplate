@@ -85,7 +85,7 @@ playwright-test:
     - apt-get update && apt-get install -y git curl libmcrypt-dev default-mysql-client
     - mysql --version
     - sleep 20
-    - echo "SHOW tables;" | mysql --protocol=TCP -u root -p"$MYSQL_ROOT_PASSWORD" -h 127.0.0.2 -P 3306 "${MYSQL_DATABASE}"
+    - echo "SHOW tables;" | mysql --protocol=TCP -u root -p"$MYSQL_ROOT_PASSWORD" -h"$DB_HOST "${MYSQL_DATABASE}"
     - echo "Database host is '${MYSQL_HOST}'"
     - mysql --user=$MYSQL_USER --password=$MYSQL_PASSWORD --database=$MYSQL_DATABASE --host=$MYSQL_HOST --execute="SHOW DATABASES; SELECT user, host FROM mysql.user;"
 
