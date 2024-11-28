@@ -81,7 +81,7 @@ playwright-test:
     - cd ..
     - ln -s cmfive-core/system/ system
   script:
-    - sleep 20
+    - sleep 300
     - cat /etc/hosts
     - apt-get update && apt-get install -y git curl libmcrypt-dev default-mysql-client
     - mysql --version
