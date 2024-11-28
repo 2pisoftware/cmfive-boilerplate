@@ -52,12 +52,12 @@ include:
 
 playwright-test:
   services:
-    # Cosine
-    - name: $DOCKER_TAG
-      alias: test-website
     # Database
     - name: mysql:8.0
       alias: cosine-db
+    # Cosine
+    - name: $DOCKER_TAG
+      alias: test-website
   variables:
     FF_NETWORK_PER_BUILD: 1
     TEST_HOST: http://test-website
@@ -76,6 +76,7 @@ playwright-test:
     CI_DEBUG_SERVICES: "true"
 
   before_script:
+    - sudo apt-get install -y mysql-server mysql-client libmysqlclient-dev
     - mysql --host=${MYSQL_HOST} --user=root --password=${MYSQL_ROOT_PASSWORD} <<-EOSQL
         SHOW DATABASES;
         SELECT user, host FROM mysql.user;
