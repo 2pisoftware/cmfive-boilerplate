@@ -78,6 +78,7 @@ playwright-test:
   before_script:
     - apt-get update && apt-get install -y git curl libmcrypt-dev default-mysql-client
     - mysql --version
+    - /etc/init.d/mysqld start
     - sleep 20
     - echo "SHOW tables;" | mysql -u root -p"$MYSQL_ROOT_PASSWORD" -h "${MYSQL_HOST}" "${MYSQL_DATABASE}"
     - echo "Database host is '${MYSQL_HOST}'"
