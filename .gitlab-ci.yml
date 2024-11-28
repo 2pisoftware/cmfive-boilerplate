@@ -74,8 +74,13 @@ playwright-test:
     # MYSQL_RANDOM_ROOT_PASSWORD: true
     MYSQL_ROOT_HOST: '%'
     CI_DEBUG_SERVICES: "true"
-
   before_script:
+    - git clone --depth 1 https://github.com/2pisoftware/cmfive-core.git -b $BUILT_IN_CORE_BRANCH
+    - cd cmfive-core
+    - git status
+    - cd ..
+    - ln -s cmfive-core/system/ system
+  script:
     - cat /etc/hosts
     - apt-get update && apt-get install -y git curl libmcrypt-dev default-mysql-client
     - mysql --version
@@ -83,12 +88,6 @@ playwright-test:
     - echo "SHOW tables;" | mysql --protocol=TCP -u root -p"$MYSQL_ROOT_PASSWORD" -h 127.0.0.2 -P 3306 "${MYSQL_DATABASE}"
     - echo "Database host is '${MYSQL_HOST}'"
     - mysql --user=$MYSQL_USER --password=$MYSQL_PASSWORD --database=$MYSQL_DATABASE --host=$MYSQL_HOST --execute="SHOW DATABASES; SELECT user, host FROM mysql.user;"
-    - git clone --depth 1 https://github.com/2pisoftware/cmfive-core.git -b $BUILT_IN_CORE_BRANCH
-    - cd cmfive-core
-    - git status
-    - cd ..
-    - ln -s cmfive-core/system/ system
-  
 
 
 
