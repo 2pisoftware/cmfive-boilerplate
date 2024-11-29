@@ -64,6 +64,7 @@ playwright-test:
     TEST_PORT: 80
     ENVIRONMENT: development
     MYSQL_ROOT_PASSWORD: cmfive
+    MYSQL_HOST: cosine-db
     DB_HOST: cosine-db
     MYSQL_DATABASE: cosine
     DB_DATABASE: cosine
