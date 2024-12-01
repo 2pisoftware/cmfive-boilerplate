@@ -86,7 +86,6 @@ playwright-test:
     - cat /etc/hosts
     - apt-get update && apt-get install -y git curl libmcrypt-dev default-mysql-client
     - mysql --version
-    - sleep 20
     - echo "CREATE USER $DB_USERNAME@'%' IDENTIFIED BY '$DB_PASSWORD'; GRANT ALL PRIVILEGES ON $DB_DATABASE.* TO $DB_USERNAME@'%'; FLUSH PRIVILEGES;" | mysql --protocol=TCP -u root -p"$MYSQL_ROOT_PASSWORD" -h"$DB_HOST" "$MYSQL_DATABASE"
     - echo "Database host is '$MYSQL_HOST'"
     
