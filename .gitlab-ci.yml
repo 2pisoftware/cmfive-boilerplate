@@ -69,9 +69,9 @@ playwright-test:
     MYSQL_DATABASE: cosine
     DB_DATABASE: cosine
     MYSQL_USER: runner
-    DB_USERNAME: runner
+    DB_USERNAME: cosine
     MYSQL_PASSWORD: runner
-    DB_PASSWORD: runner
+    DB_PASSWORD: cosine
     # MYSQL_RANDOM_ROOT_PASSWORD: true
     MYSQL_ROOT_HOST: '%'
     CI_DEBUG_SERVICES: "true"
@@ -87,9 +87,9 @@ playwright-test:
     - apt-get update && apt-get install -y git curl libmcrypt-dev default-mysql-client
     - mysql --version
     - sleep 20
-    - echo "SHOW tables;" | mysql --protocol=TCP -u root -p"$MYSQL_ROOT_PASSWORD" -h"$DB_HOST" "$MYSQL_DATABASE"
+    - echo "CREATE USER $DB_USERNAME@'%' IDENTIFIED BY '$DB_PASSWORD'; GRANT ALL PRIVILEGES ON $DB_DATABASE.* TO $DB_USERNAME@'%'; FLUSH PRIVILEGES;" | mysql --protocol=TCP -u root -p"$MYSQL_ROOT_PASSWORD" -h"$DB_HOST" "$MYSQL_DATABASE"
     - echo "Database host is '$MYSQL_HOST'"
-    - mysql --user=$MYSQL_USER --password=$MYSQL_PASSWORD --database=$MYSQL_DATABASE --host=$MYSQL_HOST --execute="SHOW DATABASES; SELECT user, host FROM mysql.user;"
+    
 
 
 
