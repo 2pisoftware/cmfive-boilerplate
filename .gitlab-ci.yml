@@ -88,7 +88,7 @@ playwright-test:
     - mysql --version
     - echo "CREATE USER $DB_USERNAME@'%' IDENTIFIED BY '$DB_PASSWORD'; GRANT ALL PRIVILEGES ON $DB_DATABASE.* TO $DB_USERNAME@'%'; FLUSH PRIVILEGES;" | mysql --protocol=TCP -u root -p"$MYSQL_ROOT_PASSWORD" -h"$DB_HOST" "$MYSQL_DATABASE"
     - echo "Database host is '$MYSQL_HOST'"
-    
+    - sleep 300
 
 
 
