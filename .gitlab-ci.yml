@@ -58,10 +58,6 @@ playwright-test:
     # Cosine
     - name: $DOCKER_TAG
       alias: test-website
-      entrypoint:
-        - /bin/sh
-        - -c
-        - ping -i 1 -w 20 cosine-db
   variables:
     FF_NETWORK_PER_BUILD: 1
     CI_DEBUG_SERVICES: "true"
@@ -74,25 +70,14 @@ playwright-test:
     MYSQL_DATABASE: cosine
     DB_DATABASE: cosine
     MYSQL_USER: runner
-    DB_USERNAME: cosine
+    DB_USERNAME: runner
     MYSQL_PASSWORD: runner
-    DB_PASSWORD: cosine
-    # MYSQL_RANDOM_ROOT_PASSWORD: true
-    MYSQL_ROOT_HOST: '%'
+    DB_PASSWORD: runner
   before_script:
     - git clone --depth 1 https://github.com/2pisoftware/cmfive-core.git -b $BUILT_IN_CORE_BRANCH
     - cd cmfive-core
     - git status
     - cd ..
     - ln -s cmfive-core/system/ system
-  script:
-    - sleep 30
-    - cat /etc/hosts
-    - apt-get update && apt-get install -y git curl libmcrypt-dev default-mysql-client
-    - mysql --version
-    - echo "CREATE USER $DB_USERNAME@'%' IDENTIFIED BY '$DB_PASSWORD'; GRANT ALL PRIVILEGES ON $DB_DATABASE.* TO $DB_USERNAME@'%'; FLUSH PRIVILEGES;" | mysql --protocol=TCP -u root -p"$MYSQL_ROOT_PASSWORD" -h"$DB_HOST" "$MYSQL_DATABASE"
-    - echo "Database host is '$MYSQL_HOST'"
-    - sleep 300
-
 
 
