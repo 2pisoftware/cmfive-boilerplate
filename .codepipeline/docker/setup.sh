@@ -49,6 +49,7 @@ if [ -n "$DB_HOST" ]; then
     echo "db host = $DB_HOST"
     echo "db username = $DB_USERNAME"
     echo "db password = $DB_PASSWORD"
+    mysql -h $DB_HOST -u $DB_USERNAME -p$DB_PASSWORD -e
     until mysql -h $DB_HOST -u $DB_USERNAME -p$DB_PASSWORD -e ";" 2>/dev/null; do
         sleep 1
         current=$(date +%s)
