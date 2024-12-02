@@ -3,7 +3,7 @@ import { GLOBAL_TIMEOUT, CmfiveHelper } from "@utils/cmfive";
 
 test.describe.configure({mode: 'parallel'});
 
-test("Test that hello is world", async ({ page }) => {
+test("that hello is world", async ({ page }) => {
     test.setTimeout(GLOBAL_TIMEOUT);
     CmfiveHelper.acceptDialog(page);
 
