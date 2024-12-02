@@ -61,9 +61,9 @@ export class CmfiveHelper {
     }
 
     // Call exactly once per test before any dialogs pop up
-    static async acceptDialog(page: Page)
+    static acceptDialog(page: Page)
     {
-        page.on('dialog', dialog => dialog.accept());
+        page.on('dialog', dialog => void dialog.accept());
     }
 
     static async fillDatePicker(page: Page, datePickerTitle: string, field: string, date: DateTime) {          
@@ -78,7 +78,7 @@ export class CmfiveHelper {
     }   
 
     static async fillAutoComplete(page: Page, field: string, search: string, value: string) {
-		if (this.isBootstrap5(page)) {
+		if (await this.isBootstrap5(page)) {
 			await page.locator(`#${field}-ts-control`).locator("..").click();
 			await page.keyboard.type(search);
 			await page.locator(`#${field}-ts-dropdown`).getByText(value).click();
