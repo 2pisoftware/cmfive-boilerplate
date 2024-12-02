@@ -58,8 +58,13 @@ playwright-test:
     # Cosine
     - name: $DOCKER_TAG
       alias: test-website
+      entrypoint:
+        - /bin/sh
+        - -c
+        - ping -i 1 -w 20 cosine-db
   variables:
     FF_NETWORK_PER_BUILD: 1
+    CI_DEBUG_SERVICES: "true"
     TEST_HOST: http://test-website
     TEST_PORT: 80
     ENVIRONMENT: development
@@ -74,7 +79,6 @@ playwright-test:
     DB_PASSWORD: cosine
     # MYSQL_RANDOM_ROOT_PASSWORD: true
     MYSQL_ROOT_HOST: '%'
-    CI_DEBUG_SERVICES: "true"
   before_script:
     - git clone --depth 1 https://github.com/2pisoftware/cmfive-core.git -b $BUILT_IN_CORE_BRANCH
     - cd cmfive-core
