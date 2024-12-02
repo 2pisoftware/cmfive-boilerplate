@@ -69,8 +69,8 @@ playwright-test:
     DB_HOST: cosine-db
     MYSQL_DATABASE: cosine
     DB_DATABASE: cosine
-    MYSQL_USER: root
-    DB_USERNAME: cosine
+    MYSQL_USER: cosine
+    DB_USERNAME: root
     MYSQL_PASSWORD: cosine
     DB_PASSWORD: cosine
   before_script:
