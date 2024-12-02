@@ -45,8 +45,8 @@ fi
 if [ -n "$DB_HOST" ]; then
     echo "🔍  Waiting for database to be ready"
     timestamp=$(date +%s)
-    secondsToWait=80 # 30
-    until mysql -h $DB_HOST -u $DB_USERNAME -p$DB_PASSWORD -e ";" 2>/dev/null; do
+    secondsToWait=30
+    until mysql --protocol=TCP -h $DB_HOST -u $DB_USERNAME -p$DB_PASSWORD -e ";" 2>/dev/null; do
         sleep 1
         current=$(date +%s)
         echo "Time left: $((timestamp + secondsToWait - current)) seconds"
