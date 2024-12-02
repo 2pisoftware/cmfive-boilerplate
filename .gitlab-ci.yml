@@ -64,15 +64,15 @@ playwright-test:
     TEST_HOST: http://test-website
     TEST_PORT: 80
     ENVIRONMENT: development
-    MYSQL_ROOT_PASSWORD: cmfive
+    MYSQL_ROOT_PASSWORD: cosine
     MYSQL_HOST: cosine-db
     DB_HOST: cosine-db
     MYSQL_DATABASE: cosine
     DB_DATABASE: cosine
-    MYSQL_USER: runner
-    DB_USERNAME: runner
-    MYSQL_PASSWORD: runner
-    DB_PASSWORD: runner
+    MYSQL_USER: root
+    DB_USERNAME: cosine
+    MYSQL_PASSWORD: cosine
+    DB_PASSWORD: cosine
   before_script:
     - git clone --depth 1 https://github.com/2pisoftware/cmfive-core.git -b $BUILT_IN_CORE_BRANCH
     - cd cmfive-core
