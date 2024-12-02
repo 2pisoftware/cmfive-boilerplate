@@ -46,6 +46,9 @@ if [ -n "$DB_HOST" ]; then
     echo "🔍  Waiting for database to be ready"
     timestamp=$(date +%s)
     secondsToWait=30
+    echo "db host = $DB_HOST"
+    echo "db username = $DB_USERNAME"
+    echo "db password = $DB_PASSWORD"
     until mysql --protocol=TCP -h $DB_HOST -u $DB_USERNAME -p$DB_PASSWORD -e ";" 2>/dev/null; do
         sleep 1
         current=$(date +%s)
