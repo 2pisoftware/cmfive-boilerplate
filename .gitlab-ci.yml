@@ -55,6 +55,7 @@ playwright-test:
     # Database
     - name: mysql:8.0
       alias: cosine-db
+      command: [ "--default-authentication-plugin=mysql_native_password" ]
     # Cosine
     - name: $DOCKER_TAG
       alias: test-website
