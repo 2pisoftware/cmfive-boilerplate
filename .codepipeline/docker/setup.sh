@@ -50,8 +50,9 @@ if [ -n "$DB_HOST" ]; then
     echo "db username = $DB_USERNAME"
     echo "db password = $DB_PASSWORD"
     mysql -h $DB_HOST -u $DB_USERNAME -p$DB_PASSWORD -e "SHOW DATABASES;"
-    until mysql -h $DB_HOST -u $DB_USERNAME -p$DB_PASSWORD -e "SHOW DATABASES" ";" 2>/dev/null; do
+    until mysql -h $DB_HOST -u $DB_USERNAME -p$DB_PASSWORD -e "SHOW DATABASES;" 2>/dev/null; do
         sleep 1
+        mysql -h $DB_HOST -u $DB_USERNAME -p$DB_PASSWORD $DB_DATABASE -e "SHOW TABLES;"
         current=$(date +%s)
         echo "Time left: $((timestamp + secondsToWait - current)) seconds"
         if [ $((current - timestamp)) -gt $secondsToWait ]; then
