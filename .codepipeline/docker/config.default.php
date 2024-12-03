@@ -95,4 +95,4 @@ Config::set('system.rest_include', [
     // "Contact"
 ]);
 
-Config::set('tests', ['testrunner'  => 'ENABLED']);
+//Config::set('tests', ['testrunner'  => 'ENABLED']);
