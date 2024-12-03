@@ -94,3 +94,5 @@ Config::set('system.rest_api_key', "abcdefghijklmnopqrstuvwxyz1234567890");
 Config::set('system.rest_include', [
     // "Contact"
 ]);
+
+Config::set('tests', ['testrunner'  => 'ENABLED']);
