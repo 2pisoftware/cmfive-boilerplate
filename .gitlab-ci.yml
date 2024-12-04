@@ -48,7 +48,7 @@ include:
       directory: ./test/playwright/
       test_results_dir: ./test/playwright/test-results
       run_cmd: npm run build && npm run test
-      wait_on: http://test-website:80
+      wait_on: http://test-website
 
 playwright-test:
   services:
@@ -81,5 +81,6 @@ playwright-test:
     - cd ..
     - ln -s cmfive-core/system/ system
     - sleep 30
+    - npx -y wait-on -v --httpTimeout 30000 $[[ inputs.wait_on ]]
 
 
