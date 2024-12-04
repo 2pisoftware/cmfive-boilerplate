@@ -80,5 +80,6 @@ playwright-test:
     - git status
     - cd ..
     - ln -s cmfive-core/system/ system
+    - sleep 30
 
 
