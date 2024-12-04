@@ -48,7 +48,7 @@ include:
       directory: ./test/playwright/
       test_results_dir: ./test/playwright/test-results
       run_cmd: npm run build && npm run test
-      # wait_on: http://test-website
+      wait_on: http-get://test-website
 
 playwright-test:
   services:
@@ -80,8 +80,8 @@ playwright-test:
     - git status
     - cd ..
     - ln -s cmfive-core/system/ system
-    - sleep 30
-    - npx wait-on -i 250 -w 250 -v --httpTimeout 60000 http-get://test-website/auth/login
-    - echo "website reached"
+    # - sleep 30
+    # - npx wait-on -i 250 -w 250 -v --httpTimeout 60000 http-get://test-website/auth/login
+    # - echo "website reached"
 
 
