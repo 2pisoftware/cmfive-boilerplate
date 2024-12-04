@@ -81,6 +81,6 @@ playwright-test:
     - cd ..
     - ln -s cmfive-core/system/ system
     - sleep 30
-    - npx -y wait-on -v --httpTimeout 30000 $[[ inputs.wait_on ]]
+    - npx -y wait-on -v --httpTimeout 30000 $TEST_HOST
 
 
