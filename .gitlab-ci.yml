@@ -48,7 +48,7 @@ include:
       directory: ./test/playwright/
       test_results_dir: ./test/playwright/test-results
       run_cmd: npm run build && npm run test
-      wait_on: http://test-website
+      wait_on: http://test-website:80
 
 playwright-test:
   services:
