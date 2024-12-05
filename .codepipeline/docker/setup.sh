@@ -173,12 +173,6 @@ if [ "$ENVIRONMENT" = "development" ]; then
     fi
 fi
 
-# run the theme compiler
-echo "=========================="
-echo " running the theme complier"
-echo "=========================="
-bash /bootstrap/compiler.sh
-
 #Let container know that everything is finished
 echo "=========================="
 echo "✅  Cosine setup complete"
