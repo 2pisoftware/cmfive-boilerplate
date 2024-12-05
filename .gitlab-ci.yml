@@ -61,7 +61,7 @@ playwright-test:
       alias: test-website
   variables:
     FF_NETWORK_PER_BUILD: 1
-    CI_DEBUG_SERVICES: "true"
+    # CI_DEBUG_SERVICES: "true"
     TEST_HOST: http://test-website
     TEST_PORT: 80
     ENVIRONMENT: development
