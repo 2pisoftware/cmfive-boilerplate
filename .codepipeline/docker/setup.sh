@@ -177,7 +177,7 @@ fi
 echo "=========================="
 echo " running the theme complier"
 echo "=========================="
-bash /var/www/.codepipeline/docker/compiler.sh
+bash /bootstrap/compiler.sh
 
 #Let container know that everything is finished
 echo "=========================="
