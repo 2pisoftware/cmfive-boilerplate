@@ -48,7 +48,7 @@ RUN cd /cmfive-core/system/templates/base && \
 # This stage builds the final Cosine image
 
 # Use the Alpine Linux base image
-FROM alpine:3.19.4
+FROM alpine:3.21.0
 
 # PHP version
 # note: see Alpine packages for available versions
