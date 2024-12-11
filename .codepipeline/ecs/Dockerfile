@@ -48,7 +48,7 @@ RUN php cmfive.php install core $CMFIVE_CORE_BRANCH
 # Install NPM dependencies.
 WORKDIR /var/www/html/composer/vendor/2pisoftware/cmfive-core/system/templates/base
 RUN npm ci
-RUN npm run production
+RUN npm run prod
 
 # Set file permissions.
 WORKDIR /var/www/html
