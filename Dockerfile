@@ -56,7 +56,6 @@ ARG PHP_VERSION=81
 ENV PHP_VERSION=$PHP_VERSION
 ARG UID=1000
 ARG GID=1000
-ARG CONFIG_PATH=/bootstrap/config.default.php
 
 # Create cmfive user and group
 RUN addgroup -g ${GID} cmfive && \
