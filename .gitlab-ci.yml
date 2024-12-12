@@ -4,8 +4,8 @@ stages:
   - test
 
 setup:
-  image: setup
-  stage: build
+  image: alpine:latest
+  stage: setup
   script: |
     echo $CI_JOB_TOKEN
     echo "== Setting up environment =="
