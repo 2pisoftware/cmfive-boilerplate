@@ -72,6 +72,8 @@ docker-build:
     key: $CI_COMMIT_REF_NAME
     paths:
       - core
+  needs:
+    - prepare-core
 
 playwright-test:
   services:
