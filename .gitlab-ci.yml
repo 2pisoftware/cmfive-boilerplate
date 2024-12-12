@@ -40,9 +40,11 @@ prepare-core:
   image: node:alpine
   script: |
     echo "== Preparing a core for tag: $DOCKER_TAG =="
-    echo "== Cloning core =="
-    apk add git
-    git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${CI_SERVER_FQDN}/${CORE_REPO}.git -b $BUILT_IN_CORE_BRANCH core
+    echo "== Downloading core =="
+    URL=$CI_SERVER_FQDN/api/v4/projects/$CORE_REPO/repository/archive?sha=refs/head/$BUILT_IN_CORE_BRANCH
+    echo "URL: $URL"
+    wget $URL -O core.tar.gz --header="PRIVATE_TOKEN: $CI_JOB_TOKEN"
+    tar xzf core.tar.gz
     echo "== Compiling theme =="
     cd core/system/templates/base
     npm ci || npm install
@@ -75,6 +77,9 @@ include:
 # Add core to the build job
 docker-build:
   before_script: |
+    echo "== Core information =="
+    cd core
+    git status
     echo "== Building tag: $DOCKER_TAG =="
   dependencies:
     - buildvars
@@ -106,10 +111,12 @@ playwright-test:
     MYSQL_PASSWORD: cosine
     DB_PASSWORD: cosine
   before_script:
-    - git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@${CI_SERVER_FQDN}/${CORE_REPO}.git -b $BUILT_IN_CORE_BRANCH cmfive-core
-    - cd cmfive-core
+    - cd core
     - git status
     - cd ..
-    - ln -s cmfive-core/system/ system
+    - ln -s core/system/ system
+  dependencies:
+    - buildvars
+    - prepare-core
 
 
