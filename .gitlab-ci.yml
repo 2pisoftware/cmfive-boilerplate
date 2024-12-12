@@ -30,19 +30,34 @@ setup:
     echo "Core branch is $COSINE_CORE_BRANCH"
     echo "BUILT_IN_CORE_BRANCH=$COSINE_CORE_BRANCH" >> tag.env
     echo ""
-    
-
   artifacts:
     reports:
       dotenv: tag.env
 
-#add includes
+prepare-core:
+  stage: build
+  image: node:alpine
+  script: |
+    echo "== Cloning core =="
+    apk add git
+    git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${CI_SERVER_FQDN}/${CORE_REPO}.git -b $COSINE_CORE_BRANCH core
+    echo "== Compiling theme =="
+    cd core/system/templates/base
+    npm ci || npm install
+    npm run prod || npm run production
+  cache:
+    key: $CI_COMMIT_REF_NAME
+    paths:
+      - core
+
 include:
+  # Build the Docker image
   - component: $CI_SERVER_FQDN/2pisoftware/pipelines/docker/build@v1.1.0
     inputs:
       tag: $DOCKER_TAG
       additional_args: --build-arg BUILT_IN_CORE_BRANCH=$BUILT_IN_CORE_BRANCH
 
+  # Run Playwright tests
   - component: $CI_SERVER_FQDN/2pisoftware/pipelines/playwright/test@v1.0.4
     inputs:
       image: mcr.microsoft.com/playwright:v1.49.0-jammy
@@ -50,6 +65,13 @@ include:
       test_results_dir: ./test/playwright/test-results
       run_cmd: npm run build && npm run test
       wait_on: http-get://test-website
+
+# Add cache to the build job
+docker-build:
+  cache:
+    key: $CI_COMMIT_REF_NAME
+    paths:
+      - core
 
 playwright-test:
   services:
@@ -77,7 +99,7 @@ playwright-test:
     MYSQL_PASSWORD: cosine
     DB_PASSWORD: cosine
   before_script:
-    - git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.internal.2pisoftware.com/2pisoftware/cosine/core.git -b $BUILT_IN_CORE_BRANCH
+    - git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@${CI_SERVER_FQDN}/${CORE_REPO}.git -b $BUILT_IN_CORE_BRANCH cmfive-core
     - cd cmfive-core
     - git status
     - cd ..

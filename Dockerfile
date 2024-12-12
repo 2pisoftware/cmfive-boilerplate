@@ -5,49 +5,11 @@
 # This image provides a fully working Cosine instance
 
 # It provides the following build arguments:
-# - CORE_BRANCH: The branch to clone from the cmfive-core repository
 # - PHP_VERSION: The version of PHP to use
 # - UID: The user ID of the cmfive user
 # - GID: The group ID of the cmfive group
 
 # NOTE: See the .dockerignore file to see what is excluded from the image.
-
-# --------------------------------------------------------------------------
-# == Core stage ==
-# --------------------------------------------------------------------------
-
-# This stage clones the cmfive-core repository and compiles the theme
-
-# Use the Node.js base image
-FROM node:20-alpine AS core
-
-# Install git
-RUN apk --no-cache add \
-    git
-
-# Set the default branch to clone
-ARG BUILT_IN_CORE_BRANCH=main
-# Invalidate the cache if the branch has changed
-ADD https://gitlab.internal.2pisoftware.com/2pisoftware/cosine/core/git/refs/heads/$BUILT_IN_CORE_BRANCH /version.json
-# Clone github.com/2pisoftware/cmfive-core
-ENV CI_JOB_TOKEN=$CI_JOB_TOKEN
-RUN echo $CI_JOB_TOKEN
-RUN git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.internal.2pisoftware.com/2pisoftware/cosine/core.git -b $BUILT_IN_CORE_BRANCH
-
-# Get the repo metadata
-RUN cd /core && \
-    git log -1 --pretty=format:"CORE_HASH=\"%H\"%nCORE_COMMIT_MSG=\"%s\"%nCORE_REF=\"%D\"" > /.core-metadata
-
-# Compile the theme
-RUN cd /core/system/templates/base && \
-    npm ci && \
-    npm run prod
-
-# --------------------------------------------------------------------------
-# == Cosine stage ==
-# --------------------------------------------------------------------------
-
-# This stage builds the final Cosine image
 
 # Use the Alpine Linux base image
 FROM alpine:3.19.4
@@ -130,16 +92,8 @@ WORKDIR /var/www/html
 RUN rm -rf .codepipeline
 
 # Copy the core
-COPY --chown=cmfive:cmfive \
-    --from=core \
-    /cmfive-core/system/ \
+COPY core/system/ \
     composer/vendor/2pisoftware/cmfive-core/system/
-
-# Metadata for core
-COPY --chown=cmfive:cmfive \
-    --from=core \
-    /.core-metadata \
-    /.core-metadata
 
 # Link system
 RUN ln -s composer/vendor/2pisoftware/cmfive-core/system/ system
@@ -148,15 +102,11 @@ RUN ln -s composer/vendor/2pisoftware/cmfive-core/system/ system
 RUN su cmfive -c 'INSTALL_ENV=docker php cmfive.php install core'
 
 # Copy theme
-COPY --chown=cmfive:cmfive \
-    --from=core \
-    /cmfive-core/system/templates/base/dist \
+COPY core/system/templates/base/dist \
     system/templates/base/dist
     
 # Copy theme node modules
-COPY --chown=cmfive:cmfive \
-    --from=core \
-    /cmfive-core/system/templates/base/node_modules \
+COPY core/system/templates/base/node_modules \
     system/templates/base/node_modules
 
 # Fix permissions
