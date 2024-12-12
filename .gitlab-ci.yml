@@ -67,6 +67,8 @@ include:
 
 # Add core to the build job
 docker-build:
+  needs:
+    - prepare-core
   dependencies:
     - prepare-core
 
