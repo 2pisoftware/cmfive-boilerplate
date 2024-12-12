@@ -54,7 +54,7 @@ prepare-core:
       - core/system/templates/base/node_modules/**/*
     expire_in: 1 day
   needs:
-    - setup
+    - buildvars
 
 include:
   # Build the Docker image
