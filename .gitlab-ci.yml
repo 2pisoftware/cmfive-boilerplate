@@ -76,7 +76,7 @@ playwright-test:
     MYSQL_PASSWORD: cosine
     DB_PASSWORD: cosine
   before_script:
-    - git clone --depth 1 https://gitlab.internal.2pisoftware.com/2pisoftware/cosine/core.git -b $BUILT_IN_CORE_BRANCH
+    - git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.internal.2pisoftware.com/2pisoftware/cosine/core.git -b $BUILT_IN_CORE_BRANCH
     - cd cmfive-core
     - git status
     - cd ..
