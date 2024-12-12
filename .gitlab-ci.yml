@@ -55,7 +55,6 @@ include:
   - component: $CI_SERVER_FQDN/2pisoftware/pipelines/docker/build@v1.1.0
     inputs:
       tag: $DOCKER_TAG
-      additional_args: --build-arg BUILT_IN_CORE_BRANCH=$BUILT_IN_CORE_BRANCH
 
   # Run Playwright tests
   - component: $CI_SERVER_FQDN/2pisoftware/pipelines/playwright/test@v1.0.4
@@ -73,6 +72,7 @@ docker-build:
     paths:
       - core
   needs:
+    - setup
     - prepare-core
 
 playwright-test:
