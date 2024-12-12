@@ -48,6 +48,8 @@ prepare-core:
   artifacts:
     paths:
       - core
+    exclude:
+      - core/system/templates/base/node_modules
     expire_in: 1 day
 
 include:
