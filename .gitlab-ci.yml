@@ -50,6 +50,8 @@ prepare-core:
     exclude:
       - core/system/templates/base/node_modules/**/*
     expire_in: 1 day
+  needs:
+    - setup
 
 include:
   # Build the Docker image
