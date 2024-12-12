@@ -30,6 +30,7 @@ ARG BUILT_IN_CORE_BRANCH=main
 # Invalidate the cache if the branch has changed
 ADD https://gitlab.internal.2pisoftware.com/2pisoftware/cosine/core/git/refs/heads/$BUILT_IN_CORE_BRANCH /version.json
 # Clone github.com/2pisoftware/cmfive-core
+ENV CI_JOB_TOKEN=$CI_JOB_TOKEN
 RUN echo $CI_JOB_TOKEN
 RUN git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.internal.2pisoftware.com/2pisoftware/cosine/core.git -b $BUILT_IN_CORE_BRANCH
 
