@@ -1,11 +1,10 @@
 stages:
-  - .pre
   - build
   - test
 
 setup:
   image: alpine
-  stage: .pre
+  stage: build
   script: |
     echo $CI_JOB_TOKEN
     echo "== Setting up environment =="
@@ -49,7 +48,7 @@ prepare-core:
     paths:
       - core
     exclude:
-      - core/system/templates/base/node_modules
+      - core/system/templates/base/node_modules/**/*
     expire_in: 1 day
 
 include:
