@@ -1,9 +1,10 @@
 stages:
+  - setup
   - build
   - test
 
 setup:
-  image: alpine
+  image: setup
   stage: build
   script: |
     echo $CI_JOB_TOKEN
@@ -18,7 +19,7 @@ setup:
     export FULL_TAG=${CI_REGISTRY_IMAGE}/cosine:${TAG}
     echo "🏷️ DOCKER_TAG will be $FULL_TAG"
     echo "== Saving full tag name to tag.env =="
-    echo "DOCKER_TAG=$FULL_TAG" > tag.env
+    echo "DOCKER_TAG=$FULL_TAG" > .env
     echo ""
     echo "== Setting up core branch =="
     if [ "$CI_COMMIT_REF_NAME" = "$CI_DEFAULT_BRANCH" ]; then
@@ -27,16 +28,17 @@ setup:
       export COSINE_CORE_BRANCH="develop"
     fi
     echo "Core branch is $COSINE_CORE_BRANCH"
-    echo "BUILT_IN_CORE_BRANCH=$COSINE_CORE_BRANCH" >> tag.env
+    echo "BUILT_IN_CORE_BRANCH=$COSINE_CORE_BRANCH" >> .env
     echo ""
   artifacts:
     reports:
-      dotenv: tag.env
+      dotenv: .env
 
 prepare-core:
   stage: build
   image: node:alpine
   script: |
+    echo "== Preparing a core for tag: $DOCKER_TAG =="
     echo "== Cloning core =="
     apk add git
     git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${CI_SERVER_FQDN}/${CORE_REPO}.git -b $BUILT_IN_CORE_BRANCH core
@@ -49,6 +51,8 @@ prepare-core:
       - core
     exclude:
       - core/system/templates/base/node_modules/**/*
+    reports:
+      dotenv: .env
     expire_in: 1 day
   needs:
     - setup
