@@ -39,7 +39,7 @@ RUN cd /cmfive-core && \
 # Compile the theme
 RUN cd /cmfive-core/system/templates/base && \
     npm ci && \
-    npm run production
+    npm run prod
 
 # --------------------------------------------------------------------------
 # == Cosine stage ==
