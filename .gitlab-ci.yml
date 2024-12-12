@@ -71,6 +71,7 @@ include:
 docker-build:
   needs:
     - prepare-core
+    - setup
   dependencies:
     - prepare-core
 
