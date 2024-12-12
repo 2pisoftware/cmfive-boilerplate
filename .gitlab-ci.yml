@@ -40,7 +40,7 @@ prepare-core:
   script: |
     echo "== Cloning core =="
     apk add git
-    git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${CI_SERVER_FQDN}/${CORE_REPO}.git -b $COSINE_CORE_BRANCH core
+    git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${CI_SERVER_FQDN}/${CORE_REPO}.git -b $BUILT_IN_CORE_BRANCH core
     echo "== Compiling theme =="
     cd core/system/templates/base
     npm ci || npm install
