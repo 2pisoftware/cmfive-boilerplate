@@ -59,7 +59,7 @@ include:
   # Build the Docker image
   - component: $CI_SERVER_FQDN/2pisoftware/pipelines/docker/build@v1.1.0
     inputs:
-      tag: "$DOCKER_TAG"
+      tag: "$$DOCKER_TAG"
 
   # Run Playwright tests
   - component: $CI_SERVER_FQDN/2pisoftware/pipelines/playwright/test@v1.0.4
@@ -72,6 +72,8 @@ include:
 
 # Add core to the build job
 docker-build:
+  variables:
+    DOCKER_TAG: $DOCKER_TAG
   before_script: |
     echo "== Building tag: $DOCKER_TAG =="
   needs:
