@@ -76,11 +76,9 @@ include:
 docker-build:
   before_script: |
     echo "== Building tag: $DOCKER_TAG =="
-    # Download core from previous job
-    URL={CI_SERVER_FQDN}/${CI_PROJECT_PATH}/-/jobs/$CI_JOB_ID/artifacts/core.tar.gz
-    echo "Downloading core from $URL"
-    wget --header="PRIVATE-TOKEN: $CI_JOB_TOKEN" $URL
-    tar xzf core.tar.gz
+  dependencies:
+    - buildvars
+    - prepare-core
 
 playwright-test:
   services:
