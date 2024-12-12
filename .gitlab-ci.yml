@@ -45,10 +45,10 @@ prepare-core:
     cd core/system/templates/base
     npm ci || npm install
     npm run prod || npm run production
-  cache:
-    key: $CI_COMMIT_REF_NAME
+  artifacts:
     paths:
       - core
+    expire_in: 1 day
 
 include:
   # Build the Docker image
@@ -65,14 +65,9 @@ include:
       run_cmd: npm run build && npm run test
       wait_on: http-get://test-website
 
-# Add cache to the build job
+# Add core to the build job
 docker-build:
-  cache:
-    key: $CI_COMMIT_REF_NAME
-    paths:
-      - core
-  needs:
-    - setup
+  dependencies:
     - prepare-core
 
 playwright-test:
