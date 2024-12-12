@@ -1,9 +1,10 @@
 stages:
   - setup
-  - build
+  - core
+  - docker
   - test
 
-setup:
+buildvars:
   image: alpine:latest
   stage: setup
   script: |
@@ -35,7 +36,7 @@ setup:
       dotenv: .env
 
 prepare-core:
-  stage: build
+  stage: core
   image: node:alpine
   script: |
     echo "== Preparing a core for tag: $DOCKER_TAG =="
@@ -60,6 +61,7 @@ include:
   - component: $CI_SERVER_FQDN/2pisoftware/pipelines/docker/build@v1.1.0
     inputs:
       tag: "$DOCKER_TAG"
+      stage: docker
 
   # Run Playwright tests
   - component: $CI_SERVER_FQDN/2pisoftware/pipelines/playwright/test@v1.0.4
@@ -74,7 +76,9 @@ include:
 docker-build:
   before_script: |
     echo "== Building tag: $DOCKER_TAG =="
-    
+    echo "== Pulling core =="
+  dependencies:
+    - prepare-core
 
 playwright-test:
   services:
