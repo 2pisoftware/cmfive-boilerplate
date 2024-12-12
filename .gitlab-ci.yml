@@ -41,7 +41,7 @@ prepare-core:
   script: |
     echo "== Preparing a core for tag: $DOCKER_TAG =="
     echo "== Downloading core =="
-    URL=$CI_SERVER_FQDN/api/v4/projects/$CORE_REPO/repository/archive?sha=refs/head/$BUILT_IN_CORE_BRANCH
+    URL=$CI_SERVER_FQDN/api/v4/projects/$CORE_PROJECT_ID/repository/archive?sha=$BUILT_IN_CORE_BRANCH
     echo "URL: $URL"
     wget $URL -O core.tar.gz --header="PRIVATE_TOKEN: $CI_JOB_TOKEN"
     tar xzf core.tar.gz
