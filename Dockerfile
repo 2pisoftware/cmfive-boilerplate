@@ -28,16 +28,16 @@ RUN apk --no-cache add \
 # Set the default branch to clone
 ARG BUILT_IN_CORE_BRANCH=main
 # Invalidate the cache if the branch has changed
-ADD https://api.github.com/repos/2pisoftware/cmfive-core/git/refs/heads/$BUILT_IN_CORE_BRANCH /version.json
+ADD https://gitlab.internal.2pisoftware.com/2pisoftware/cosine/core/git/refs/heads/$BUILT_IN_CORE_BRANCH /version.json
 # Clone github.com/2pisoftware/cmfive-core
-RUN git clone --depth 1 https://github.com/2pisoftware/cmfive-core.git -b $BUILT_IN_CORE_BRANCH
+RUN git clone --depth 1 https://gitlab.internal.2pisoftware.com/2pisoftware/cosine/core.git -b $BUILT_IN_CORE_BRANCH
 
 # Get the repo metadata
-RUN cd /cmfive-core && \
+RUN cd /core && \
     git log -1 --pretty=format:"CORE_HASH=\"%H\"%nCORE_COMMIT_MSG=\"%s\"%nCORE_REF=\"%D\"" > /.core-metadata
 
 # Compile the theme
-RUN cd /cmfive-core/system/templates/base && \
+RUN cd /core/system/templates/base && \
     npm ci && \
     npm run prod
 
