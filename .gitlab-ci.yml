@@ -41,10 +41,7 @@ prepare-core:
   script: |
     echo "== Preparing a core for tag: $DOCKER_TAG =="
     echo "== Downloading core =="
-    URL=$CI_SERVER_FQDN/api/v4/projects/$CORE_PROJECT_ID/repository/archive?sha=$BUILT_IN_CORE_BRANCH
-    echo "URL: $URL"
-    wget $URL -O core.tar.gz --header="PRIVATE_TOKEN: $CI_JOB_TOKEN"
-    tar xzf core.tar.gz
+    git clone --branch $COSINE_CORE_BRANCH --depth=1 https://gitlab-ci-token:${CI_JOB_TOKEN}@$CI_SERVER_FQDN/$COSINE_CORE_PROJECT.git core
     echo "== Compiling theme =="
     cd core/system/templates/base
     npm ci || npm install
