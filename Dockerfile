@@ -104,10 +104,6 @@ RUN su cmfive -c 'INSTALL_ENV=docker php cmfive.php install core'
 # Copy theme
 COPY core/system/templates/base/dist \
     system/templates/base/dist
-    
-# Copy theme node modules
-COPY core/system/templates/base/node_modules \
-    system/templates/base/node_modules
 
 # Fix permissions
 RUN chmod -R ugo=rwX cache/ storage/ uploads/ && \
