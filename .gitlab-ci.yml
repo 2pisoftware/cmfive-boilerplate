@@ -41,6 +41,7 @@ prepare-core:
   script: |
     echo "== Preparing a core for tag: $DOCKER_TAG =="
     echo "== Downloading core =="
+    apk add --no-cache git
     git clone --branch $COSINE_CORE_BRANCH --depth=1 https://gitlab-ci-token:${CI_JOB_TOKEN}@$CI_SERVER_FQDN/$COSINE_CORE_PROJECT.git core
     echo "== Compiling theme =="
     cd core/system/templates/base
