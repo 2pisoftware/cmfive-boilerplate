@@ -43,8 +43,8 @@ prepare-core:
     echo "== Downloading core =="
     apk add --no-cache git
     echo "Path: $COSINE_CORE_PROJECT"
-    echo "Branch: $COSINE_CORE_BRANCH"
-    git clone --branch $COSINE_CORE_BRANCH --depth=1 https://gitlab-ci-token:${CI_JOB_TOKEN}@$CI_SERVER_FQDN/$COSINE_CORE_PROJECT.git core
+    echo "Branch: $BUILT_IN_CORE_BRANCH"
+    git clone --branch $BUILT_IN_CORE_BRANCH --depth=1 https://gitlab-ci-token:${CI_JOB_TOKEN}@$CI_SERVER_FQDN/$COSINE_CORE_PROJECT.git core
     echo "== Compiling theme =="
     cd core/system/templates/base
     npm ci || npm install
