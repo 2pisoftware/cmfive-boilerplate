@@ -9,6 +9,7 @@
 /log
 
 .phpunit.result.cache
+.core-metadata
 
 desktop.ini
 docker-compose.override.yml

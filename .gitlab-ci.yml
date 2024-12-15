@@ -45,8 +45,11 @@ prepare-core:
     echo "Path: $COSINE_CORE_PROJECT"
     echo "Branch: $BUILT_IN_CORE_BRANCH"
     git clone --branch $BUILT_IN_CORE_BRANCH --depth=1 https://gitlab-ci-token:${CI_JOB_TOKEN}@$CI_SERVER_FQDN/$COSINE_CORE_PROJECT.git core
+    cd core
+    echo "Writing core metadata"
+    git log -1 --pretty=format:"CORE_HASH=\"%H\"%nCORE_COMMIT_MSG=\"%s\"%nCORE_REF=\"%D\"" > .core-metadata
     echo "== Compiling theme =="
-    cd core/system/templates/base
+    cd system/templates/base
     npm ci || npm install
     npm run prod || npm run production
   artifacts:
@@ -81,7 +84,7 @@ docker-build:
   before_script: |
     echo "== Core information =="
     cd core
-    git status
+    ls -la
     echo "== Building tag: $DOCKER_TAG =="
   dependencies:
     - buildvars
@@ -114,7 +117,7 @@ playwright-test:
     DB_PASSWORD: cosine
   before_script:
     - cd core
-    - git status
+    - cat .core-metadata
     - cd ..
     - ln -s core/system/ system
   dependencies:
