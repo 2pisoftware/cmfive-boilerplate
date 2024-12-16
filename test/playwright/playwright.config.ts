@@ -5,7 +5,7 @@ export default defineConfig({
     retries: process.env.RETRIES ? parseInt(process.env.RETRIES, 10) : undefined,
     /* Reporter to use. See https://playwright.dev/docs/test-reporters */
     reporter: [
-        ['junit', { outputFile: 'test-results/junit.xml' }],
+        ['junit', { outputFile: './testResults/junit.xml' }],
     ],
 
     use: {
