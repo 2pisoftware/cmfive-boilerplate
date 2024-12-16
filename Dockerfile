@@ -99,7 +99,7 @@ COPY --chown=cmfive:cmfive core/system/ \
 RUN ln -s composer/vendor/2pisoftware/cmfive-core/system/ system
 
 # Install core
-RUN echo "<?php \n" > /var/www/html/config.php
+RUN touch /var/www/html/config.php
 RUN su cmfive -c 'INSTALL_ENV=docker php cmfive.php install core'
 
 # Copy theme

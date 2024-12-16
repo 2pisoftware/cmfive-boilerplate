@@ -63,7 +63,7 @@ fi
 echo "🏗️  Setting up Cosine"
 
 # Copy the config template if config.php doesn't exist
-if [ ! -f config.php ]; then
+if [ ! -s config.php ]; then
     echo "Installing config.php"
     cp /bootstrap/config.default.php config.php
 fi
