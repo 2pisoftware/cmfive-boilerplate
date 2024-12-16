@@ -92,13 +92,14 @@ WORKDIR /var/www/html
 RUN rm -rf .codepipeline
 
 # Copy the core
-COPY core/system/ \
+COPY --chown=cmfive:cmfive core/system/ \
     composer/vendor/2pisoftware/cmfive-core/system/
 
 # Link system
 RUN ln -s composer/vendor/2pisoftware/cmfive-core/system/ system
 
 # Install core
+RUN echo "<?php \n" > /var/www/html/config.php
 RUN su cmfive -c 'INSTALL_ENV=docker php cmfive.php install core'
 
 # Copy theme
