@@ -71,7 +71,7 @@ include:
       stage: docker
 
   # Run Playwright tests
-  - component: $CI_SERVER_FQDN/2pisoftware/pipelines/playwright/test@v1.0.4
+  - component: $CI_SERVER_FQDN/2pisoftware/pipelines/playwright/test@v1.0.5
     inputs:
       image: mcr.microsoft.com/playwright:v1.49.0-jammy
       directory: ./test/playwright/
