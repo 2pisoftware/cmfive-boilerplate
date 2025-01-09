@@ -50,7 +50,6 @@ export class CmfiveHelper {
         if (bootstrap5 || isMobile) {
             await navbarCategory.click();
             // check that nav menu is open
-            await page.waitForTimeout(2000); // waits for 2 seconds
             const menuOpen = await page.locator("#topnav_" + category.toLowerCase().split(" ").join("_") + "_dropdown_link").getAttribute("aria-expanded"); // toHaveAttribute("aria-expanded", "true")
             if (bootstrap5 && menuOpen != "true") {
                 await navbarCategory.click();
