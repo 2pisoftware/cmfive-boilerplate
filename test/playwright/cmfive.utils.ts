@@ -7,13 +7,13 @@ export const GLOBAL_TIMEOUT = +(process.env.TIMEOUT ?? 30_000);
 export class CmfiveHelper {
     static randomID = (prefix: string) => prefix + (Math.random() + 1).toString(36).substring(7)
 
-    static async login(page: Page, user: string, password: string)
+    static async login(page: Page, user: string, password: string, redirect_url = "/main/index")
     {
         await page.goto(HOST + "/auth/login");
         await page.locator("#login").fill(user);
         await page.locator("#password").fill(password);
         await page.getByRole("button", {name: "Login"}).click();
-        await page.waitForURL(HOST + "/main/index")   
+        await page.waitForURL(HOST + redirect_url);
     }
 
     static async logout(page: Page)
