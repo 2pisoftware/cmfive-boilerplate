@@ -26,7 +26,7 @@ buildvars:
     if [ "$CI_COMMIT_REF_NAME" = "$CI_DEFAULT_BRANCH" ]; then
       export COSINE_CORE_BRANCH="main"
     else
-      export COSINE_CORE_BRANCH="develop"
+      export COSINE_CORE_BRANCH="feat-RemoveReferenceToCmfiveFromVite"
     fi
     echo "Core branch is $COSINE_CORE_BRANCH"
     echo "BUILT_IN_CORE_BRANCH=$COSINE_CORE_BRANCH" >> .env
