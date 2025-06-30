@@ -7,13 +7,13 @@
     "build": "node build.js",
     "setup": "docker exec -i cmfive bash -c \"php cmfive.php testDB setup\"",
     "cleanup": "echo \"y\" | bash cleanupTestMigrations.sh && docker exec cmfive bash -c \"php cmfive.php DB test\" -i ",
-    "test": "bash -c '${npm_config_clean:+npm run cleanup }' && bash -c 'npx playwright test --reporter=${npm_config_reporter:-list} --project=${npm_config_platform:-chromium} ${npm_config_module:+ --grep=\"$npm_config_module\"}'",
+    "test": "bash -c '${npm_config_clean:+npm run cleanup }' && bash -c 'PLAYWRIGHT_JUNIT_OUTPUT_FILE=../../junit.xml npx playwright test --reporter=${npm_config_reporter:-list} --project=${npm_config_platform:-chromium} ${npm_config_module:+ --grep=\"$npm_config_module\"}'",
     "test:with-retries": "bash -c '. ./run-test-with-retries.sh \"${npm_config_module:-}\" \"${npm_config_platform:-chromium}\" \"${npm_config_reporter:-github}\" \"${npm_config_attempts:-3}\"'"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@playwright/test": "^1.32.2",
+    "@playwright/test": "^1.49.0",
     "glob": "^9.3.2",
     "luxon": "^3.3.0"
   },

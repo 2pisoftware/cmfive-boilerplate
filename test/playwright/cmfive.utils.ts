@@ -49,6 +49,12 @@ export class CmfiveHelper {
 
         if (bootstrap5 || isMobile) {
             await navbarCategory.click();
+            // check that nav menu is open
+            const menuOpen = await page.locator("#topnav_" + category.toLowerCase().split(" ").join("_") + "_dropdown_link").getAttribute("aria-expanded"); // toHaveAttribute("aria-expanded", "true")
+            if (bootstrap5 && menuOpen != "true") {
+                await navbarCategory.click();
+            }
+
         } else { // Foundation
             await navbarCategory.hover();
         }
